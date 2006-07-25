@@ -1,0 +1,33 @@
+The Rhythmyx PSO Tool Kit (“PSOToolkit”) contained herein is owned by
+Percussion Software, Inc. (“PERCUSSION”). All patent, copyright, trademark, 
+trade secret, and other intellectual property rights are the exclusive 
+property of PERCUSSION.  No conveyance of such rights are contemplated herein.
+
+The license granted herein is solely for use of the PSOToolkit and is subject 
+to the Restrictions on Use below. 
+
+Restrictions on Use.  Licensee, as defined by an appropriate Rhythmyx Software License 
+and Support Agreement, will use the PSOToolkit only within the premises of 
+its own facilities.  Licensee will keep the PSOToolkit, including any source 
+code, strictly confidential and will not disclose such or any information 
+contained therein to any person or entity other than to those employees, 
+subcontractors, or third party development/support entities of Licensee having 
+a need to develop, support and maintain properly licensed Rhythmyx products, 
+and who will be covered by confidentiality agreements with terms similar in 
+intent to those contained herein.  Licensee will take reasonable measures 
+to protect the PSOToolkit against any disclosure or use not authorized by 
+this restriction, including but not limited to limiting the number of copies 
+of the PSOToolkit to that reasonably required to develop, support and maintain
+properly licensed Rhythmyx products.  This Agreement contains no licenses 
+other than those expressly granted.
+
+PERCUSSION MAKES NO REPRESENTATION OR WARRANTIES OF ANY KIND HEREUNDER, 
+EXPRESS OR IMPLIED, INCLUDING THOSE OF MERCHANTABILITY, TITLE, 
+NON-INFRINGEMENT OR FITNESS FOR A PARTICULAR PURPOSE, REGARDING THE PSOTOOLKIT.  
+
+PERCUSSION DOES NOT WARRANT OR CONDITION THAT THE OPERATION OF THE PSOTOOLKIT 
+WILL BE UNINTERRUPTED OR FREE OF ERRORS OR VIRUSES.
+
+IN NO EVENT SHALL PERCUSSION BE LIABLE TO ANY PARTY FOR ANY DAMAGES, DIRECT, 
+INDIRECT, INCIDENTAL, CONSEQUENTIAL, PUNITIVE OR OTHERWISE, RESULTING FROM 
+USE OF THE PSOTOOLKIT, REGARDLESS OF THE THEORY OF LIABILITY.

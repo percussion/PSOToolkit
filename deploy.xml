@@ -1,0 +1,38 @@
+<project name="Rhythmyx 6 Install Extensions" default="dist" basedir=".">
+	<description>
+       Install extensions on a Rhythmyx 6 server  
+	   The RHYTHMYX_HOME environment variable must be set 
+    </description>
+	<property environment="env"/>
+	<!-- base directory of Rhythmyx installation -->
+	<property name="rhythmyx.home" location="${env.RHYTHMYX_HOME}"/>
+	<property name="rhythmyx.lib" value="${rhythmyx.home}/AppServer/server/rx/deploy/rxapp.ear/rxapp.war/WEB-INF/lib"/>
+	<!-- relative paths -->
+	<property name="lib" location="lib"/>
+	
+
+	<target name="jarcopy" description="copy the jar file" >
+		<copy todir="${rhythmyx.lib}">
+		     <fileset dir="${lib}">
+		          <include name="**.jar" /> 
+		     </fileset>
+		</copy>
+	</target>
+	<target name="installExtensions">
+		<java classname="com.percussion.util.PSExtensionInstallTool" fork="true">
+			<arg value="${rhythmyx.home}"/>
+			<arg value="${basedir}"/>
+			<classpath>
+				<fileset dir="${rhythmyx.lib}"/>
+				<fileset dir="${rhythmyx.home}/AppServer/lib/endorsed"/>
+				<fileset dir="${rhythmyx.home}/AppServer/server/rx/lib"/>
+			</classpath>
+		</java>
+	</target>
+	<target name="dist">
+		<fail unless="rhythmyx.home" message="You must set the RHYTHMYX_HOME environment variable"/>
+		<echo>Installing Extensions to ${rhythmyx.home}</echo>
+		<antcall target="jarcopy"/>
+		<antcall target="installExtensions"/>
+	</target>
+</project>

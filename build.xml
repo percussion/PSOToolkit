@@ -1,0 +1,141 @@
+<project name="PSOToolkitRhino" default="dist" basedir=".">
+	<description>
+       PSO Toolkit for Rhino 
+    </description>
+	<!-- set global properties for this build -->
+    
+	<property environment="env"/>
+	<!-- base directory of Rhythmyx installation --> 
+	<property name="rhino.home" location="${env.RHINO_HOME}"/>
+	<!-- name of Rhythmyx Service -->
+	<property name="rhino.service" value="${env.RHINO_SERVICE}"/>
+	<!-- base of Axis Path -->
+	<property name="axis_home" location="${env.AXIS_HOME}"/> 
+	<!-- name of our output jar --> 
+	<property name="jarname" value="PSOToolkit60.jar" />	
+	<!-- name of our distribution zip -->
+	<property name="distfile" value="PSOToolkit60.zip" />	
+	
+	<property name="rhino.deploy" value="${rhino.home}/AppServer/server/rx/deploy" /> 
+	<property name="rhino.rxapp"  value="${rhino.deploy}/rxapp.ear/rxapp.war" /> 
+	<property name="rhino.rxpub"  value="${rhino.deploy}/RxServices.war"/> 
+	<property name="rhino.rxapp.lib"    value="${rhino.rxapp}/WEB-INF/lib"/>
+	<property name="rhino.rxapp.spring-config"
+	value="${rhino.rxapp}/WEB-INF/config/user/spring" />
+	
+	<property name="rhino.rxpub.lib" value="${rhino.rxpub}/WEB-INF/lib" />
+	<property name="rhino.rxpub.spring-config" value="${rhino.rxpub}/WEB-INF/config/spring" /> 
+	
+	<!-- relative paths -->
+	<property name="src" location="src"/>
+	<property name="lib" location="lib"/>
+	<property name="bin" location="bin"/>	
+	<property name="apidoc" location="apidoc" />
+	<!-- used for running Windows commands --> 
+	<property name="comspec" location="${env.ComSpec}"/>
+	<property name="cdrive" location="${env.USERPROFILE}"/> 
+	
+	<!-- Rhythmyx classpath  --> 
+	<path id="rx.class.path"> 
+		 <fileset dir="${rhino.rxapp.lib}">
+		 	<include name="**.jar"/>
+		 	<exclude name="${jarname}"/>
+		 </fileset>
+		 <fileset dir="${lib}" />   	
+		</path>
+	
+
+	<target name="init">
+		<!-- Create the time stamp -->
+		<tstamp/>
+	</target>
+	
+	<target name="clean" description="clean up">
+		<delete dir="${bin}"/>
+		<mkdir dir="${bin}"/>
+	</target>
+	
+	<target name="compile" description="compile the source ">
+		<!-- Compile the java code from ${src} into ${bin} -->
+		<javac srcdir="${src}" destdir="${bin}" debug="true" source="1.5" classpathref="rx.class.path" />
+		<copy todir="${bin}">
+    		<fileset dir="${src}">
+      			<include name="**/*.xml"/>
+    			<include name="**/*.properties" />
+    			<include name="**/*.betwixt" />
+    		</fileset>
+  		</copy>
+	</target>
+	
+	<target name="javadoc" depends="compile">
+		<mkdir dir="apidoc"/>
+		<javadoc destdir="apidoc" private="true" use="yes" 
+		windowtitle="${ant.project.name}">
+			<packageset dir="${src}" defaultexcludes="yes">
+				<include name="com/percussion/pso/**"/>	
+			</packageset>
+			<classpath refid="rx.class.path"/>
+		</javadoc>
+	</target>
+	
+	<target name="jarbuilder" depends="compile" description="just build the jar, no server">
+	    <delete file="${bin}/log4j.properties" />
+		<propertyfile file="${bin}/build.properties">
+			<entry key="build.number" value="${build.number}"/>
+			<entry key="build.date" type="date" pattern="EEEE MMM dd yyyy" value="now"/>
+    	</propertyfile>
+		<jar jarfile="${jarname}" basedir="${bin}">
+			<include name="com/percussion/pso/**"/>
+			<exclude name="log4j.properties" /> 
+			<include name="build.properties" /> 
+			<include name="readme.txt" />			
+		</jar>
+
+	</target>
+	
+	<target name="installExtensions">
+		<java classname="com.percussion.util.PSExtensionInstallTool" fork="true">
+		    <arg value="${rhino.home}" />
+			<arg value="${basedir}" />
+			<classpath>
+			    <path refid="rx.class.path" />
+			    <fileset dir="${rhino.home}/AppServer/lib/endorsed" />
+				<fileset dir="${rhino.home}/AppServer/server/rx/lib" />
+			</classpath>			
+		</java>     
+	</target>
+
+	
+	<target name="testbuild" description="build for local test">		
+		<echo>Stopping ${rhino.service}</echo>
+		<exec executable="net.exe" failonerror="false">
+			<arg line="stop ${rhino.service}"/>
+			<env key="COMSPEC" path="${comspec}"/>
+		</exec>
+		<property name="build.number" value="test build" /> 
+		<antcall target="jarbuilder"/>
+		<delete file="${rhino.home}/AppServer/server/rx/log/server.log" verbose="true" failonerror="false" />
+		<copy file="${jarname}" todir="${rhino.rxapp.lib}" verbose="true" />
+		<!--copy file="mybeans.xml" todir="${rhino.rxapp.spring-config}" verbose="true" /  -->
+		<echo>waiting for shutdown...</echo>
+	    <sleep seconds="5" /> 
+		<echo>Restarting ${rhino.service}</echo>
+		<exec executable="net.exe" failonerror="true">
+			<arg line="start ${rhino.service}"/>
+			<env key="COMSPEC" path="${comspec}"/>
+		</exec>
+	</target>
+	
+	<target name="dist" depends="init, clean, javadoc" description="generate the distribution">
+		<buildnumber/>
+		<antcall target="jarbuilder"/>	
+		<zip destfile="${distfile}">						
+			<zipfileset dir="." includes="${jarname}" prefix="lib" />
+			<fileset dir="." includes="readme.txt, build.number, deploy.xml" />
+			<fileset dir="." includes="license.txt, Extensions.xml" />
+			<zipfileset dir="${apidoc}" prefix="javadoc"/>			
+		</zip>
+			
+	</target>	
+
+</project>

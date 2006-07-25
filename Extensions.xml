@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PSXExtensionHandlerConfiguration handlerName="Java">
+	<Extension categorystring="" context="global/percussion/user/" deprecated="no" handler="Java" name="psoFolders" restoreRequestParamsOnError="no">
+		<initParam name="com.percussion.user.description">PSO folder utilities</initParam>
+		<initParam name="com.percussion.extension.version">1</initParam>
+		<initParam name="com.percussion.extension.reentrant">yes</initParam>
+		<initParam name="className">com.percussion.pso.jexl.PSOFolderTools</initParam>
+		<interface name="com.percussion.extension.IPSJexlExpression"/>
+		<suppliedResources/>
+	</Extension>
+
+</PSXExtensionHandlerConfiguration>
