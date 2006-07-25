@@ -84,7 +84,7 @@ public class PSOFolderTools extends PSJexlUtilBase implements IPSJexlExpression
 
       }
       log.warn("multiple paths found for item " + itemId);
-      return null;
+      return paths[0];
    }
    
 }
