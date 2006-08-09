@@ -50,19 +50,21 @@ public class PSORelationshipTools extends PSJexlUtilBase implements IPSJexlExpre
    @IPSJexlMethod(description="get the dependents of this item of a certain content type", 
          params={
 		@IPSJexlParam(name="itemId", description="the item GUID"),
-		@IPSJexlParam(name="contenttypeid", type="String", description="the name of the content type we are testing for")})
-   public List<PSItemSummary> getRelationships(IPSGuid itemId, String contenttypename) 
+		@IPSJexlParam(name="contenttypename", type="String", description="the name of the content type we are testing for"),
+		@IPSJexlParam(name="userName", type="String", description="the userName with which to make the request")})
+   public List<PSItemSummary> getRelationships(IPSGuid itemId, String contenttypename, String userName) 
+
    throws PSErrorException, PSExtensionProcessingException   
    {
-      String userName = "fred";
       String errmsg; 
-      if(itemId == null || contenttypename == null)
+      if(itemId == null || contenttypename == null || userName == null)
       {
-         errmsg = "No dependents found for null guid or null contenttypename"; 
+         errmsg = "No dependents found for null guid or null contenttypename or null user"; 
          log.error(errmsg); 
          throw new PSExtensionProcessingException(0, errmsg); 
       }
       IPSContentWs cws = PSContentWsLocator.getContentWebservice();
+
       IPSGuid contenttypeid;
       List<PSContentTypeSummary> ctypes = null;
       try
