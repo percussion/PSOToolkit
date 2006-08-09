@@ -9,6 +9,7 @@
 package com.percussion.pso.jexl;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -70,7 +71,14 @@ public class PSORelationshipTools extends PSJexlUtilBase implements IPSJexlExpre
       try
       {
          ctypes = cws.loadContentTypes(contenttypename);
-         contenttypeid = ctypes.get(0).getGuid();
+         if (ctypes.size() > 0)
+         {
+        	 contenttypeid = ctypes.get(0).getGuid();
+        	 }
+         else
+         {
+        	 return new ArrayList<PSItemSummary>();
+         }
       } catch (RemoteException e1)
       {
          log.error("Cannot load content types", e1); 
