@@ -101,12 +101,6 @@ public class PSORelationshipTools extends PSJexlUtilBase implements IPSJexlExpre
         log.error("Unexpected exception " + e.getMessage(), e );
         throw new PSExtensionProcessingException(this.getClass().getCanonicalName(), e); 
       } 
-      if(dependents.isEmpty())
-      {
-         errmsg = "cannot find dependents for " + itemId; 
-         log.error(errmsg); 
-         throw new PSExtensionProcessingException(0, errmsg); 
-      }
       return dependents;
    }
    
