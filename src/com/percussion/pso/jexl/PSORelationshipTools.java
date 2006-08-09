@@ -77,6 +77,7 @@ public class PSORelationshipTools extends PSJexlUtilBase implements IPSJexlExpre
         	 }
          else
          {
+             log.warn("Content type " + contenttypename + " not found"); 
         	 return new ArrayList<PSItemSummary>();
          }
       } catch (RemoteException e1)
