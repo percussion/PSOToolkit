@@ -8,16 +8,21 @@
  */
 package com.percussion.pso.jexl;
 
+import java.rmi.RemoteException;
+import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import com.percussion.cms.objectstore.PSRelationshipFilter;
 import com.percussion.extension.IPSJexlExpression;
 import com.percussion.extension.IPSJexlMethod;
 import com.percussion.extension.IPSJexlParam;
 import com.percussion.extension.PSExtensionProcessingException;
-import com.percussion.extension.PSJexlUtilBase;
+import com.percussion.extension.PSJexlUtilBase; 
 import com.percussion.utils.guid.IPSGuid;
 import com.percussion.webservices.PSErrorException;
 import com.percussion.webservices.content.IPSContentWs;
+import com.percussion.services.content.data.PSItemSummary;
+import com.percussion.services.content.data.PSContentTypeSummary;
 import com.percussion.webservices.content.PSContentWsLocator;
 
 /**
@@ -46,9 +51,10 @@ public class PSORelationshipTools extends PSJexlUtilBase implements IPSJexlExpre
          params={
 		@IPSJexlParam(name="itemId", description="the item GUID"),
 		@IPSJexlParam(name="contenttypeid", type="String", description="the name of the content type we are testing for")})
-   public String getRelationships(IPSGuid itemId, String contenttypename) 
+   public List<PSItemSummary> getRelationships(IPSGuid itemId, String contenttypename) 
    throws PSErrorException, PSExtensionProcessingException   
    {
+      String userName = "fred";
       String errmsg; 
       if(itemId == null || contenttypename == null)
       {
@@ -57,16 +63,28 @@ public class PSORelationshipTools extends PSJexlUtilBase implements IPSJexlExpre
          throw new PSExtensionProcessingException(0, errmsg); 
       }
       IPSContentWs cws = PSContentWsLocator.getContentWebservice();
-      String contentypeid = cws.loadContentTypes(contenttypename).getTypeId;
-      
-      String [] dependents;
+      IPSGuid contenttypeid;
+      List<PSContentTypeSummary> ctypes = null;
       try
       {
+         ctypes = cws.loadContentTypes(contenttypename);
+         contenttypeid = ctypes.get(0).getGuid();
+      } catch (RemoteException e1)
+      {
+         log.error("Cannot load content types", e1); 
+         throw new PSExtensionProcessingException(PSORelationshipTools.class.getName(), e1);
+      } 
+      
+      List<PSItemSummary> dependents = null; 
+      try
+      {
+         PSRelationshipFilter filter = new PSRelationshipFilter();
+         filter.setDependentContentTypeId(contenttypeid.longValue()); 
          dependents = cws.findDependents(
 				itemId, 
-				setOwnerId(itemId), 
-				setDependentContentTypeId(contenttypeid)
-			);
+				filter,
+                false,
+                userName);
       } catch (Exception e)
       {
         log.error("Unexpected exception " + e.getMessage(), e );
