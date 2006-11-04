@@ -57,7 +57,7 @@ public class PSONavTools extends PSJexlUtilBase implements IPSJexlExpression
     * &lt;div class="BreadCrumbs">
     *   #set($bpath = $user.psoNavTools.getAncestors($nav.self))      
     *   #foreach($bcrumb in $bpath)
-    *       #set($landing_page = $bcrumb.getProperty("rx:displaytitle").String)
+    *       #set($landing_page = $bcrumb.getProperty("nav:url").String)
     *       #set($title = $bcrumb.getProperty("rx:displaytitle").String)
     *       #if( $landing_page )
     *          &lt;a href="$landing_page">$title&lt;/a>
