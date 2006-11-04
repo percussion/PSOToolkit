@@ -8,7 +8,6 @@
  */
 package com.percussion.pso.jexl;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.logging.Log;
@@ -80,7 +79,7 @@ public class PSORelationshipTools extends PSJexlUtilBase implements IPSJexlExpre
              log.warn("Content type " + contenttypename + " not found"); 
         	 return new ArrayList<PSItemSummary>();
          }
-      } catch (RemoteException e1)
+      } catch (Exception e1)
       {
          log.error("Cannot load content types", e1); 
          throw new PSExtensionProcessingException(PSORelationshipTools.class.getName(), e1);
@@ -101,6 +100,12 @@ public class PSORelationshipTools extends PSJexlUtilBase implements IPSJexlExpre
         log.error("Unexpected exception " + e.getMessage(), e );
         throw new PSExtensionProcessingException(this.getClass().getCanonicalName(), e); 
       } 
+      if(dependents.isEmpty())
+      {
+         errmsg = "cannot find dependents for " + itemId; 
+         log.error(errmsg); 
+         throw new PSExtensionProcessingException(0, errmsg); 
+      }
       return dependents;
    }
    
