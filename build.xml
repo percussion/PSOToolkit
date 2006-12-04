@@ -1,4 +1,4 @@
-<project name="PSOToolkitRhino" default="dist" basedir=".">
+<project name="PSOToolkit60" default="dist" basedir=".">
 	<description>
        PSO Toolkit for Rhino 
     </description>
@@ -6,9 +6,9 @@
     
 	<property environment="env"/>
 	<!-- base directory of Rhythmyx installation --> 
-	<property name="rhino.home" location="${env.RHINO_HOME}"/>
+	<property name="rhythmyx.home" location="${env.RHYTHMYX_HOME}"/>
 	<!-- name of Rhythmyx Service -->
-	<property name="rhino.service" value="${env.RHINO_SERVICE}"/>
+	<property name="rhythmyx.service" value="${env.RHYTHMYX_SERVICE}"/>
 	<!-- base of Axis Path -->
 	<property name="axis_home" location="${env.AXIS_HOME}"/> 
 	<!-- name of our output jar --> 
@@ -16,7 +16,7 @@
 	<!-- name of our distribution zip -->
 	<property name="distfile" value="PSOToolkit60.zip" />	
 	
-	<property name="rhino.deploy" value="${rhino.home}/AppServer/server/rx/deploy" /> 
+	<property name="rhino.deploy" value="${rhythmyx.home}/AppServer/server/rx/deploy" /> 
 	<property name="rhino.rxapp"  value="${rhino.deploy}/rxapp.ear/rxapp.war" /> 
 	<property name="rhino.rxpub"  value="${rhino.deploy}/RxServices.war"/> 
 	<property name="rhino.rxapp.lib"    value="${rhino.rxapp}/WEB-INF/lib"/>
@@ -95,33 +95,33 @@
 	
 	<target name="installExtensions">
 		<java classname="com.percussion.util.PSExtensionInstallTool" fork="true">
-		    <arg value="${rhino.home}" />
+		    <arg value="${rhythmyx.home}" />
 			<arg value="${basedir}" />
 			<classpath>
 			    <path refid="rx.class.path" />
-			    <fileset dir="${rhino.home}/AppServer/lib/endorsed" />
-				<fileset dir="${rhino.home}/AppServer/server/rx/lib" />
+			    <fileset dir="${rhythmyx.home}/AppServer/lib/endorsed" />
+				<fileset dir="${rhythmyx.home}/AppServer/server/rx/lib" />
 			</classpath>			
 		</java>     
 	</target>
-
 	
 	<target name="testbuild" description="build for local test">		
-		<echo>Stopping ${rhino.service}</echo>
+		<echo>Stopping ${rhythmyx.service}</echo>
+		
 		<exec executable="net.exe" failonerror="false">
-			<arg line="stop ${rhino.service}"/>
+			<arg line="stop ${rhythmyx.service}"/>
 			<env key="COMSPEC" path="${comspec}"/>
 		</exec>
 		<property name="build.number" value="test build" /> 
 		<antcall target="jarbuilder"/>
-		<delete file="${rhino.home}/AppServer/server/rx/log/server.log" verbose="true" failonerror="false" />
+		<delete file="${rhythmyx.home}/AppServer/server/rx/log/server.log" verbose="true" failonerror="false" />
 		<copy file="${jarname}" todir="${rhino.rxapp.lib}" verbose="true" />
 		<!--copy file="mybeans.xml" todir="${rhino.rxapp.spring-config}" verbose="true" /  -->
 		<echo>waiting for shutdown...</echo>
 	    <sleep seconds="5" /> 
-		<echo>Restarting ${rhino.service}</echo>
+		<echo>Restarting ${rhythmyx.service}</echo>
 		<exec executable="net.exe" failonerror="true">
-			<arg line="start ${rhino.service}"/>
+			<arg line="start ${rhythmyx.service}"/>
 			<env key="COMSPEC" path="${comspec}"/>
 		</exec>
 	</target>

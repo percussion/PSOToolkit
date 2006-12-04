@@ -16,11 +16,27 @@
 		<interface name="com.percussion.extension.IPSJexlExpression"/>
 		<suppliedResources/>
 	</Extension>
-		<Extension categorystring="" context="global/percussion/user/" deprecated="no" handler="Java" name="psoNavTools" restoreRequestParamsOnError="no">
+	<Extension categorystring="" context="global/percussion/user/" deprecated="no" handler="Java" name="psoNavTools" restoreRequestParamsOnError="no">
 		<initParam name="com.percussion.user.description">PSO Navigation utilities</initParam>
 		<initParam name="com.percussion.extension.version">1</initParam>
 		<initParam name="com.percussion.extension.reentrant">yes</initParam>
 		<initParam name="className">com.percussion.pso.jexl.PSONavTools</initParam>
+		<interface name="com.percussion.extension.IPSJexlExpression"/>
+		<suppliedResources/>
+	</Extension>
+	<Extension categorystring="" context="global/percussion/user/" deprecated="no" handler="Java" name="psoListTools" restoreRequestParamsOnError="no">
+		<initParam name="com.percussion.user.description">PSO List utilities</initParam>
+		<initParam name="com.percussion.extension.version">1</initParam>
+		<initParam name="com.percussion.extension.reentrant">yes</initParam>
+		<initParam name="className">com.percussion.pso.jexl.PSOListTools</initParam>
+		<interface name="com.percussion.extension.IPSJexlExpression"/>
+		<suppliedResources/>
+	</Extension>
+	<Extension categorystring="" context="global/percussion/user/" deprecated="no" handler="Java" name="psoSlotTools" restoreRequestParamsOnError="no">
+		<initParam name="com.percussion.user.description">PSO Slot utilities</initParam>
+		<initParam name="com.percussion.extension.version">1</initParam>
+		<initParam name="com.percussion.extension.reentrant">yes</initParam>
+		<initParam name="className">com.percussion.pso.jexl.PSOSlotTools</initParam>
 		<interface name="com.percussion.extension.IPSJexlExpression"/>
 		<suppliedResources/>
 	</Extension>
