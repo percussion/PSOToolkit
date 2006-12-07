@@ -12,7 +12,6 @@
  ***************************************************************************/
 package com.percussion.pso.utils;
 
-//import com.percussion.server.IPSServerErrors; OBFUSCATED!!!
 import com.percussion.server.PSRequestParsingException;
 
 import java.util.ArrayList;
@@ -49,7 +48,8 @@ public class PSOParseUrlQueryString
       String curName = null;
       String lastTok = STR_URLENCODING_PARAM_TOKEN;
 
-      Map params = new HashMap()
+      
+      Map<String,Object> params = new HashMap<String,Object>()
       {
          /**
           * Maps the specified value to the specified key.  If a mapping
@@ -63,7 +63,8 @@ public class PSOParseUrlQueryString
           * <code>null</code> return can also indicate that the HashMap
           * previously associated <code>null</code> with the specified key.
           */
-         public Object put(Object key, Object value)
+         @SuppressWarnings(value={"unchecked"})
+         public Object put(String key, Object value)
          {
             Object oldValue = super.put( key, value );
             if (oldValue != null)

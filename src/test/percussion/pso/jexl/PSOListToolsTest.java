@@ -25,7 +25,7 @@ public class PSOListToolsTest extends TestCase
    private Vector <String> stringVectorTen;
    private Set <Integer> integerSetFour;
    private Object[] nullArray;
-   private Object[] emptyArray;
+   //private Object[] emptyArray;
    private PSOListTools listTools;
    
 
@@ -40,7 +40,7 @@ public class PSOListToolsTest extends TestCase
       listTools = new PSOListTools();
       emptyList = new ArrayList();
       nullArray = null;
-      emptyArray = new Object[] {};
+      //emptyArray = new Object[] {};
       stringVectorSingle = new Vector<String> ();
       stringVectorSingle.add("one");
       stringVectorThree = new Vector<String> ();
@@ -71,7 +71,7 @@ public class PSOListToolsTest extends TestCase
       listTools = null;
       emptyList = null;
       nullArray = null;
-      emptyArray = null;
+      //emptyArray = null;
       stringVectorSingle = null;
       stringVectorThree = null;
       stringVectorTen = null;

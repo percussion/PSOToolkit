@@ -67,7 +67,7 @@ public class PSOMutableUrl
       this.m_param.put(pName, pValue);    
    }
    
-   public void setParamList(Map newParams)
+   public void setParamList(Map<String,Object> newParams)
    {
       this.m_param.putAll(newParams); 
    }  
@@ -79,10 +79,7 @@ public class PSOMutableUrl
       {
          return null;
       }
-      else
-      {     
-         return obj.toString();
-      }
+      return obj.toString();
    }
    
    public void dropParam(String pName)

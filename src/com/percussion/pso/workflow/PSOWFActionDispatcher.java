@@ -138,7 +138,7 @@ public class PSOWFActionDispatcher extends PSDefaultExtension
     {
         String PROP_DELIMITER = ",";
         String VALUE_DELIMITER = "|";
-        ArrayList actions = new ArrayList();
+        ArrayList<String> actions = new ArrayList<String>();
         Properties props = new Properties();
         try
         {

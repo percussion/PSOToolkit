@@ -312,11 +312,10 @@ public class PSOListTools extends PSJexlUtilBase implements IPSJexlExpression
       {
          return new int [] { NumberUtils.toInt(start), NumberUtils.toInt(end) };
       }
-      else
-      {
-         throw new IllegalArgumentException(
+      
+      throw new IllegalArgumentException(
                "Either Start or End index is not a number");
-      }
+      
    }
    
    /**
