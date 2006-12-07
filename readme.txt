@@ -9,3 +9,21 @@ environment variable must point at your Rhythmyx 6.0 installation.
 Type the command: 
 
 ant -f deploy.xml 
+
+******************************
+To use the Workflow Dispatcher
+******************************
+- Install the Dispatcher by running ant -f deploy.xml
+- Restart the server
+- Log into the Content Explorer. 
+- Go to the Workflow tab
+- Select the Workflow that will use the dispatcher (note the workflow ID)
+- Select the State that will contain the transition with the dispatcher
+- Select the Transition to apply the dispatcher to (note the transition ID)
+- Save the Transition
+
+In the file system:
+- Go to rxconfig/Workflow and open dispatcher.properties
+- Create a new line for each transition that uses the dispatcher:
+	Sample: 5|4:psoSampleWFAction,sys_TouchParentItems
+	WFID|TRID:wfAction, wfAction
