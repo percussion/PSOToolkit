@@ -3,7 +3,7 @@
 // Decompiler options: packimports(3)
 // Source File Name:   WFActionDispatcher.java
 
-package com.percussion.pso.techtarget.workflow;
+package com.percussion.pso.workflow;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -267,8 +267,8 @@ public class PSOWFActionDispatcher extends PSDefaultExtension
         String value = null;
         try
         {
-            PSXPathEvaluator xe = new PSXPathEvaluator(doc);
-            value = xe.evaluate(expr);
+           PSXPathEvaluator xe = new PSXPathEvaluator(doc);
+           value = xe.evaluate(expr);
         }
         catch(Exception xle)
         {

@@ -20,6 +20,7 @@
 	<property name="rhino.rxapp"  value="${rhino.deploy}/rxapp.ear/rxapp.war" /> 
 	<property name="rhino.rxpub"  value="${rhino.deploy}/RxServices.war"/> 
 	<property name="rhino.rxapp.lib"    value="${rhino.rxapp}/WEB-INF/lib"/>
+	<property name="rhino.server.lib"  value="${rhythmyx.home}/AppServer/server/rx/lib" /> 
 	<property name="rhino.rxapp.spring-config"
 	value="${rhino.rxapp}/WEB-INF/config/user/spring" />
 	
@@ -40,6 +41,9 @@
 		 <fileset dir="${rhino.rxapp.lib}">
 		 	<include name="**.jar"/>
 		 	<exclude name="${jarname}"/>
+		 </fileset>
+		 <fileset dir="${rhino.server.lib}">
+		    <include name="saxon.jar" /> 
 		 </fileset>
 		 <fileset dir="${lib}" />   	
 		</path>
