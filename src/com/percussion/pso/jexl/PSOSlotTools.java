@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -66,21 +67,28 @@ public class PSOSlotTools extends PSJexlUtilBase implements IPSJexlExpression
    @IPSJexlMethod(description = "Get the contents of a slot as a list of assembly items", params =
    {
          @IPSJexlParam(name = "item", description = "the parent assembly item"),
-         @IPSJexlParam(name = "slot", description = "the slot"),
+         @IPSJexlParam(name = "slotName", description = "the slot name"),
          @IPSJexlParam(name = "params", description = "extra parameters to the process")}, returns = "list of assembly items")
    public List<IPSAssemblyItem> getSlotContents(IPSAssemblyItem item,
-         IPSTemplateSlot slot, Map<String, Object> params) throws Throwable
+         String slotName, Map<String, Object> params) throws Throwable
    {
       try
       {
+         IPSAssemblyService asm = PSAssemblyServiceLocator.getAssemblyService();
+         if(StringUtils.isBlank(slotName))
+         {
+            String emsg = "Slot name must not be blank";
+            ms_log.error(emsg);
+            throw new IllegalArgumentException(emsg); 
+         }
+         IPSTemplateSlot slot = asm.findSlotByName(slotName); 
          if (slot == null)
          {
             throw new IllegalArgumentException(
-                  "slot may not be null, check template's slot reference");
+                  "slot not found, check template's slot reference");
          }
          if (params == null)
             params = new HashMap<String, Object>();
-         IPSAssemblyService asm = PSAssemblyServiceLocator.getAssemblyService();
          // Handle old slots
          String findername = slot.getFinderName();
          if (findername == null)
