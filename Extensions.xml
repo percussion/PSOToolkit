@@ -44,7 +44,7 @@
       <initParam name="com.percussion.user.description">This dispatches multiple Workflow Actions on a single transition</initParam>
       <initParam name="com.percussion.extension.version">1</initParam>
       <initParam name="com.percussion.extension.reentrant">yes</initParam>
-      <initParam name="className">com.percussion.pso.techtarget.workflow.PSOWFActionDispatcher</initParam>
+      <initParam name="className">com.percussion.pso.workflow.PSOWFActionDispatcher</initParam>
       <interface name="com.percussion.extension.IPSWorkflowAction"/>
       <suppliedResources/>
    </Extension> 

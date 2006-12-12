@@ -9,26 +9,25 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
+import com.percussion.design.objectstore.PSNotFoundException;
+import com.percussion.extension.IPSExtension;
 import com.percussion.extension.IPSExtensionDef;
+import com.percussion.extension.IPSExtensionManager;
 import com.percussion.extension.IPSWorkFlowContext;
 import com.percussion.extension.IPSWorkflowAction;
 import com.percussion.extension.PSDefaultExtension;
 import com.percussion.extension.PSExtensionException;
 import com.percussion.extension.PSExtensionProcessingException;
+import com.percussion.extension.PSExtensionRef;
 import com.percussion.server.IPSRequestContext;
-import com.percussion.xml.PSXPathEvaluator;
+import com.percussion.server.PSServer;
 
 public class PSOWFActionDispatcher extends PSDefaultExtension
     implements IPSWorkflowAction 
@@ -81,64 +80,33 @@ public class PSOWFActionDispatcher extends PSDefaultExtension
         try
         {
             //Object actions[] = getWorkflowActions(contentType, transitionId);
-        	Object actions[] = getWorkflowActions(workflowId, transitionId);
-            for(int i = 0; i < actions.length; i++)
+        	List<String> actions = getWorkflowActions(workflowId, transitionId);
+            log.debug("found " + actions.size() + " actions to execute."); 
+            for(String action : actions)
             {
-                log.debug("Executing " + actions[i] + "... ");
-                String className = getWorkflowActionClassName(actions[i].toString());
-                Class cl = Class.forName(className);
-                Object action = cl.newInstance();
-                Method mt[] = cl.getMethods();
-                for(int j = 0; j < mt.length; j++)
-                    if(mt[j].getName().equals("init"))
-                    {
-                        Object initArgs[] = {
-                            null, null
-                        };
-                        mt[j].invoke(action, initArgs);
-                    }
-
-                for(int k = 0; k < mt.length; k++)
-                    if(mt[k].getName().equals("performAction"))
-                    {
-                        Object performActionArgs[] = {
-                            wfContext, request
-                        };
-                        mt[k].invoke(action, performActionArgs);
-                    }
-
+                log.debug("Executing " + action + "... ");
+                IPSWorkflowAction wfaction = (IPSWorkflowAction)this.getExtension(action);
+                if(wfaction != null)
+                {
+                   wfaction.performAction(wfContext, request);
+                }
             }
 
         }
-        catch(ClassNotFoundException nfx)
+        catch(Exception nfx)
         {
             log.error("WFActionDispatcher::performAction",nfx);
             throw new PSExtensionProcessingException("WFActionDispatcher::performAction", nfx);
         }
-        catch(InstantiationException inx)
-        {
-            log.error("WFActionDispatcher::performAction",inx);
-            throw new PSExtensionProcessingException("WFActionDispatcher::performAction", inx);
-        }
-        catch(IllegalAccessException iax)
-        {
-            log.error("WFActionDispatcher::performAction",iax);
-            throw new PSExtensionProcessingException("WFActionDispatcher::performAction", iax);
-        }
-        catch(InvocationTargetException itx)
-        {
-            log.error("WFActionDispatcher::performAction",itx);
-            throw new PSExtensionProcessingException("WFActionDispatcher::performAction", itx);
-        }
         log.debug("WFActionDispatcher::performAction done");
     }
 
-    private Object[] getWorkflowActions(int workflowId, int transitionId)
+    private List<String> getWorkflowActions(int workflowId, int transitionId)
         throws PSExtensionProcessingException
     {
         String PROP_DELIMITER = ",";
         String VALUE_DELIMITER = "|";
-        ArrayList<String> actions = new ArrayList<String>();
+        List<String> actions = new ArrayList<String>();
         Properties props = new Properties();
         try
         {
@@ -167,122 +135,28 @@ public class PSOWFActionDispatcher extends PSDefaultExtension
             if(props != null)
                 props.clear();
         }
-        return actions.toArray();
+        return actions;
     }
 
-    private String getCurrentExtensionVersion()
-        throws PSExtensionProcessingException
+
+    private IPSExtension getExtension(String workflowActionName) 
+       throws PSExtensionException, PSNotFoundException
     {
-        String sName = "getCurrentExtensionVersion";
-        Document document = null;
-        String currVersion = null;
-        document = parseFile(new File("Extensions/Extensions.xml"));
-        currVersion = evalXPath(document, "/PSXExtensionHandlerConfiguration/Extension[@name='Java']/initParam[@name='com.percussion.extension.version']");
-        return currVersion;
+       IPSExtension ext = null; 
+       IPSExtensionManager extMgr = PSServer.getExtensionManager(null);         
+       Iterator itr =  extMgr.getExtensionNames("Java",null,null,workflowActionName);
+       while(itr.hasNext())
+       {
+          PSExtensionRef ref  = (PSExtensionRef) itr.next();
+          log.debug("found extension " + ref.getFQN()); 
+          ext = extMgr.prepareExtension(ref, null);
+          log.debug("prepared extension " + ext.getClass().getCanonicalName()); 
+          return ext;
+       }  
+       log.error("Extension name " + workflowActionName + " was not found "); 
+       return ext;
     }
 
-    private String getWorkflowActionClassName(String workflowActionName)
-        throws PSExtensionProcessingException
-    {
-        String sName = "getWorkflowActionClassName";
-        Document document = null;
-        String className = null;
-        String currVersion = getCurrentExtensionVersion();
-        document = parseFile(new File("Extensions/Handlers/Java/" + currVersion + "/" + "Extensions.xml"));
-        className = evalXPath(document, "/PSXExtensionHandlerConfiguration/Extension[@name='" + workflowActionName + "']/initParam" + "[@name='className']");
-        return className;
-    }
-
-    private Document parseFile(File fileName)
-        throws PSExtensionProcessingException
-    {
-        String sName = "parseFile";
-        Document document = null;
-        DocumentBuilderFactory dbf = null;
-        DocumentBuilder parser = null;
-        try
-        {
-            dbf = DocumentBuilderFactory.newInstance();
-            parser = dbf.newDocumentBuilder();
-        }
-        catch(ParserConfigurationException pcx)
-        {
-            log.error("WFActionDispatcher::parseFile\n",pcx);
-            throw new PSExtensionProcessingException("WFActionDispatcher::parseFile", pcx);
-        }
-        Document doc = null;
-        try
-        {
-            doc = parser.parse(fileName);
-        }
-        catch(IOException e)
-        {
-            e.printStackTrace();
-        }
-        catch(SAXException e)
-        {
-            e.printStackTrace();
-        }
-        return doc;
-    }
-
-    //private int getContentType(int contentId, IPSRequestContext req)
-        //throws PSExtensionProcessingException
-    //{
-        //String sName = "getContentType";
-        //int contentTypeId = 0;
-        //Map params = new HashMap();
-        //params.put("sys_contentid", (new Integer(contentId)).toString());
-        //IPSInternalRequest ir = req.getInternalRequest("sys_ceSupport/contentstatus", params, false);
-        //if(ir == null)
-            //throw new PSExtensionProcessingException("WFActionDispatcher::getContentType", new Exception("*** Error: getInternalRequest returned null"));
-        //try
-        //{
-            //Document doc = ir.getResultDoc();
-            //System.out.println(PSXmlDocumentBuilder.toString(doc));
-            //String contentType = evalXPath(doc, "/ContentStatusRoot/ContentStatus/ContentTypeName/@typeId");
-            //System.out.println("Content type: " + contentType);
-            //contentTypeId = Integer.parseInt(contentType);
-        //}
-        //catch(PSInternalRequestCallException irex)
-        //{
-            //throw new PSExtensionProcessingException("WFActionDispatcher::getContentType", irex);
-        //}
-        //catch(NumberFormatException nfex)
-        //{
-            //throw new PSExtensionProcessingException("WFActionDispatcher::getContentType", nfex);
-        //}
-        //finally
-        //{
-            //if(ir != null)
-                //ir.cleanUp();
-        //}
-        //return contentTypeId;
-    //}
-
-    private String evalXPath(Document doc, String expr)
-        throws PSExtensionProcessingException
-    {
-        String sName = "evalXPath";
-        String value = null;
-        try
-        {
-           PSXPathEvaluator xe = new PSXPathEvaluator(doc);
-           value = xe.evaluate(expr);
-        }
-        catch(Exception xle)
-        {
-            throw new PSExtensionProcessingException(0, xle);
-        }
-        return value;
-    }
-
-    private static final String CLASSNAME = "WFActionDispatcher";
-    private static final String RX_DISPATCHER_FILE = "rxconfig/Workflow/dispatcher.properties";
-    private static final String RX_PROP_FILE = "rxconfig/Workflow/rxworkflow.properties";
-    private static final String RX_EXTVERSION_FILE = "Extensions/Extensions.xml";
-    private static final String RX_EXTENSION_PATH = "Extensions/Handlers/Java";
-    private static final String RX_EXTENSION_FILE = "Extensions.xml";
     IPSExtensionDef m_extensionDef;
     File m_codeRoot;
 }
