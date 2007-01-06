@@ -85,7 +85,8 @@ public class PSOWFActionDispatcher extends PSDefaultExtension
             for(String action : actions)
             {
                 log.debug("Executing " + action + "... ");
-                IPSWorkflowAction wfaction = (IPSWorkflowAction)this.getExtension(action);
+                IPSWorkflowAction wfaction = (IPSWorkflowAction)this.getExtension(action, 
+                      IPSWorkflowAction.class.getName());
                 if(wfaction != null)
                 {
                    wfaction.performAction(wfContext, request);
@@ -139,12 +140,13 @@ public class PSOWFActionDispatcher extends PSDefaultExtension
     }
 
 
-    private IPSExtension getExtension(String workflowActionName) 
+    private IPSExtension getExtension(String workflowActionName, String interfaceName) 
        throws PSExtensionException, PSNotFoundException
     {
        IPSExtension ext = null; 
        IPSExtensionManager extMgr = PSServer.getExtensionManager(null);         
-       Iterator itr =  extMgr.getExtensionNames("Java",null,null,workflowActionName);
+       Iterator itr =  extMgr.getExtensionNames("Java",null,interfaceName,
+             workflowActionName);
        while(itr.hasNext())
        {
           PSExtensionRef ref  = (PSExtensionRef) itr.next();
