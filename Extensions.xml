@@ -48,4 +48,17 @@
       <interface name="com.percussion.extension.IPSWorkflowAction"/>
       <suppliedResources/>
    </Extension> 
+   <Extension categorystring="" context="global/percussion/generic/" deprecated="no" handler="Java" name="PSONextNumberUdf" restoreRequestParamsOnError="no">
+		<initParam name="com.percussion.user.description">Generate the next number for a key</initParam>
+		<initParam name="com.percussion.extension.version">1</initParam>
+		<initParam name="com.percussion.extension.reentrant">yes</initParam>
+		<initParam name="className">com.percussion.pso.legacy.PSONextNumberUDF</initParam>
+		<interface name="com.percussion.extension.IPSUdfProcessor"/>
+		<PSXExtensionParamDef id="0">
+			<name>keyName</name>
+			<dataType>java.lang.String</dataType>
+			<description>Next Number Table Key Name</description>
+		</PSXExtensionParamDef>
+		<suppliedResources/>
+	</Extension>   
 </PSXExtensionHandlerConfiguration>
