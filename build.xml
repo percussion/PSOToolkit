@@ -12,9 +12,10 @@
 	<!-- base of Axis Path -->
 	<property name="axis_home" location="${env.AXIS_HOME}"/> 
 	<!-- name of our output jar --> 
-	<property name="jarname" value="PSOToolkit60.jar" />	
+	<property name="jarname" value="PSOToolkit61P2.jar" />	
 	<!-- name of our distribution zip -->
-	<property name="distfile" value="PSOToolkit60.zip" />	
+	<property name="distfile" value="PSOToolkit6.zip" />	
+	<property name="testdistfile" value="PSOToolkit6-test.zip" /> 
 	
 	<property name="rhino.deploy" value="${rhythmyx.home}/AppServer/server/rx/deploy" /> 
 	<property name="rhino.rxapp"  value="${rhino.deploy}/rxapp.ear/rxapp.war" /> 
@@ -23,6 +24,7 @@
 	<property name="rhino.server.lib"  value="${rhythmyx.home}/AppServer/server/rx/lib" /> 
 	<property name="rhino.rxapp.spring-config"
 	value="${rhino.rxapp}/WEB-INF/config/user/spring" />
+	<property name="rhino.rxapp.WEB-INF" value="${rhino.rxapp}/WEB-INF" />
 	
 	<property name="rhino.rxpub.lib" value="${rhino.rxpub}/WEB-INF/lib" />
 	<property name="rhino.rxpub.spring-config" value="${rhino.rxpub}/WEB-INF/config/spring" /> 
@@ -44,6 +46,8 @@
 		 </fileset>
 		 <fileset dir="${rhino.server.lib}">
 		    <include name="saxon.jar" /> 
+		 	<include name="javax.servlet.jar"/>
+		 	<include name="jboss-j2ee.jar" /> 
 		 </fileset>
 		 <fileset dir="${lib}" />   	
 		</path>
@@ -120,6 +124,9 @@
 		<antcall target="jarbuilder"/>
 		<delete file="${rhythmyx.home}/AppServer/server/rx/log/server.log" verbose="true" failonerror="false" />
 		<copy file="${jarname}" todir="${rhino.rxapp.lib}" verbose="true" />
+		<copy todir="${rhino.rxapp.WEB-INF}">
+			<fileset dir="WEB-INF" />
+		</copy>
 		<!--copy file="mybeans.xml" todir="${rhino.rxapp.spring-config}" verbose="true" /  -->
 		<echo>waiting for shutdown...</echo>
 	    <sleep seconds="5" /> 
@@ -130,6 +137,18 @@
 		</exec>
 	</target>
 	
+	<target name="remotetest" description="Build for remote test">
+		<property name="build.number" value="test build" /> 
+		<antcall target="jarbuilder"/>
+		<zip destfile="${testdistfile}">						
+			<zipfileset dir="." includes="${jarname}" prefix="lib" />
+			<fileset dir="." includes="readme.txt, build.number, deploy.xml" />
+			<fileset dir="." includes="license.txt, Extensions.xml" />
+			<zipfileset dir="WEB-INF" prefix="WEB-INF" />
+		</zip>
+
+	</target>
+	
 	<target name="dist" depends="init, clean, javadoc" description="generate the distribution">
 		<buildnumber/>
 		<antcall target="jarbuilder"/>	
@@ -137,6 +156,7 @@
 			<zipfileset dir="." includes="${jarname}" prefix="lib" />
 			<fileset dir="." includes="readme.txt, build.number, deploy.xml" />
 			<fileset dir="." includes="license.txt, Extensions.xml" />
+			<zipfileset dir="WEB-INF" prefix="WEB-INF" />
 			<zipfileset dir="${apidoc}" prefix="javadoc"/>			
 		</zip>
 			

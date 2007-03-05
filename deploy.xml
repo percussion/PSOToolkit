@@ -6,7 +6,8 @@
 	<property environment="env"/>
 	<!-- base directory of Rhythmyx installation -->
 	<property name="rhythmyx.home" location="${env.RHYTHMYX_HOME}"/>
-	<property name="rhythmyx.lib" value="${rhythmyx.home}/AppServer/server/rx/deploy/rxapp.ear/rxapp.war/WEB-INF/lib"/>
+	<property name="rhythmyx.WEB-INF" value="${rhythmyx.home}/AppServer/server/rx/deploy/rxapp.ear/rxapp.war/WEB-INF"/>
+	<property name="rhythmyx.lib" value="${rhythmyx.WEB-INF}/lib"/>
 	<!-- relative paths -->
 	<property name="lib" location="lib"/>
 	
@@ -19,6 +20,9 @@
 			<fileset dir="${basedir}">
 				<include name="**.jar" />
 			</fileset>
+		</copy>
+		<copy todir="${rhythmyx.WEB-INF}" verbose="true">
+		   <fileset dir="WEB-INF" /> 
 		</copy>
 	</target>
 	<target name="installExtensions">

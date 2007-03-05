@@ -61,4 +61,35 @@
 		</PSXExtensionParamDef>
 		<suppliedResources/>
 	</Extension>   
+	<Extension name="sys_previewFilter" context="global/percussion/itemfilter" handler="Java" categorystring="itemfilter" deprecated="no">
+		<initParam name="com.percussion.user.description">Items revisions are filtered to select the current or edit revisions of items</initParam>
+		<initParam name="com.percussion.extension.version">1</initParam>
+		<initParam name="className">com.percussion.services.filter.impl.PSPreviewFilter</initParam>
+		<initParam name="com.percussion.extension.reentrant">yes</initParam>
+		<initParam name="com.percussion.services.filter.priority">99</initParam>
+		<interface name="com.percussion.services.filter.IPSItemFilterRule"/>
+		<suppliedResources/>
+     </Extension>
+     	<Extension categorystring="" context="global/percussion/itemfilter/" deprecated="no" handler="Java" name="PSOStagingRevisionFilter" restoreRequestParamsOnError="no">
+		<initParam name="com.percussion.user.description">Filter rule that corrects the revision of  items in staging states. </initParam>
+		<initParam name="com.percussion.extension.version">2</initParam>
+		<initParam name="com.percussion.extension.reentrant">yes</initParam>
+		<initParam name="className">com.percussion.pso.itemfilter.PSORevisionCorrectingItemFilter</initParam>
+		<interface name="com.percussion.services.filter.IPSItemFilterRule"/>
+		<PSXExtensionParamDef id="0">
+			<name>workflow_states</name>
+			<dataType>java.lang.String</dataType>
+			<description>Names of states where current revision is used, comma separated</description>
+		</PSXExtensionParamDef>
+		<suppliedResources/>
+	</Extension>
+    <Extension categorystring="publisher" context="global/percussion/cms/publisher/" deprecated="no" handler="Java" name="PSOPublishContent" restoreRequestParamsOnError="no">
+		<initParam name="com.percussion.user.description">This exit allows an edition to be run on a workflow transition.</initParam>
+		<initParam name="com.percussion.extension.version">1</initParam>
+		<initParam name="com.percussion.extension.reentrant">yes</initParam>
+		<initParam name="className">com.percussion.pso.workflow.PSOPublishContent</initParam>
+		<interface name="com.percussion.extension.IPSWorkflowAction"/>
+		<suppliedResources/>
+	</Extension>
+     
 </PSXExtensionHandlerConfiguration>
