@@ -7,6 +7,7 @@
 package test.percussion.pso.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +54,38 @@ public class SimplifyParameterMapTest extends TestCase
       assertEquals("xyzzy",outmap.get("string")); 
       assertEquals("X", outmap.get("list")); 
       assertEquals("fee",outmap.get("array")); 
+      
+   }
+   
+   public void testGetValueAsList()
+   {
+      List<String> result; 
+      result = SimplifyParameters.getValueAsList("foo");
+      assertEquals(1,result.size());
+      assertEquals("foo",result.get(0));
+      
+      result = SimplifyParameters.getValueAsList("fee,fie,fo,fum"); 
+      assertEquals(4,result.size()); 
+      assertEquals("fee", result.get(0)); 
+      assertEquals("fum", result.get(3));
+      
+      result = SimplifyParameters.getValueAsList("fee;fie:fo:fum"); 
+      assertEquals(4,result.size()); 
+      assertEquals("fee", result.get(0)); 
+      assertEquals("fum", result.get(3));
+      
+      String[] arr = {"fee", "fie", "fum"}; 
+      result = SimplifyParameters.getValueAsList(arr);
+      assertEquals(3,result.size()); 
+      assertEquals("fee", result.get(0)); 
+      assertEquals("fum", result.get(2));
+      
+      List in = Arrays.asList(arr);
+      result = SimplifyParameters.getValueAsList(in);
+      assertEquals(3,result.size()); 
+      assertEquals("fee", result.get(0)); 
+      assertEquals("fum", result.get(2));
+      
       
    }
 }

@@ -9,6 +9,8 @@ package com.percussion.pso.utils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,4 +87,38 @@ public class SimplifyParameters
       }
       return sval;
    }
+   
+   @SuppressWarnings("unchecked")
+   public static List<String> getValueAsList(Object value)
+   {
+      List<String> result = new ArrayList<String>();
+      if(value == null)
+      {
+         log.debug("null value returns empty list"); 
+         return result;
+      }
+      if(value instanceof List)
+      {
+         List<Object> ff = (List<Object>)value;
+         for(Object vl : ff)
+         {
+            result.add(vl.toString());
+         }
+         return result;
+      }
+      if(value instanceof String[])
+      {
+         String[] arr = (String [])value;
+         return Arrays.<String>asList(arr);
+      }
+      if(value instanceof String)
+      {
+       String[] arr = value.toString().split(LIST_REGEX);
+       return Arrays.<String>asList(arr);
+      }
+      
+      
+      return result;
+   }
+   private static final String LIST_REGEX = "[,:;]"; 
 }
