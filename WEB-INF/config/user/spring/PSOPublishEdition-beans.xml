@@ -4,7 +4,7 @@
 <beans>
    <bean id="PSOPublishEditionService" class="com.percussion.pso.workflow.PublishEditionService" >
       <property name="baseUrl" value="http://127.0.0.1" />
-      <property name="listenerPort" value="9932" /> 
+      <property name="listenerPort" value="9962" /> 
       <!-- 
       Uncomment these lines to use remote mode. 
       <property name="cmsUser" value="rxpublisher" /> 
@@ -26,6 +26,29 @@
                     </entry>
                  </map>
              </entry>
+             <entry key="6">
+					<!-- PSOTools workflow -->
+					<map>
+						<entry key="15">
+							<map>
+								<entry key="1008">
+									<!-- PSOTools2 Community -->
+									<value>324</value>
+									<!-- PSOTools2 Staging edition -->
+								</entry>
+							</map>
+						</entry>
+						<entry key="16"> <!-- republish transition -->
+							<map>
+								<entry key="1008">
+									<!-- PSOTools2 Community -->
+									<value>324</value>
+									<!-- PSOTools2 Staging edition -->
+								</entry>
+							</map>
+						</entry>
+					</map>
+				</entry>
          </map>   
       </property>
    </bean>

@@ -55,7 +55,7 @@ public class EditionInitiator implements Runnable
          Document pageResult = callServer();
          String code = getResponseCode(pageResult); 
          if(StringUtils.isNotBlank(code) && 
-            code.equals(PSPublisherHandlerResponse.RESPONSE_CODE_INPROGRESS))
+            code.equals(PSPublisherHandlerResponse.RESPONSE_CODE_PUBLISH))
          {
             log.info("Edition started successfully " + edition.getEditionId());
          }
@@ -66,7 +66,10 @@ public class EditionInitiator implements Runnable
             //something wrong, retry 
             if(edition.decrementAndTestRetries())
             {
-               log.debug("retry edition"); 
+               log.debug("retrying edition"); 
+               PublishEditionService svc = 
+                  PSOPublishEditionServiceLocator.getPublishEditionService();
+               svc.retryQueuedEdition(edition);
             }
          }
       } catch (HttpException ex)

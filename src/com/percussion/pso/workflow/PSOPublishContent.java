@@ -58,7 +58,7 @@ public class PSOPublishContent extends PSDefaultExtension
        
        int workflowId = wfContext.getWorkflowID();
        int transitionId = wfContext.getTransitionID();
-       String community = (String)request.getPrivateObject(IPSHtmlParameters.SYS_COMMUNITY);
+       String community = (String)request.getSessionPrivateObject(IPSHtmlParameters.SYS_COMMUNITY);
        if(StringUtils.isBlank(community))
        {
           String errmsg = "Community must not be blank"; 
