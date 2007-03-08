@@ -78,6 +78,9 @@ public class PublishEditionService implements InitializingBean
          initServices();
          listenerPort = rxinfo.getProperty(IPSRhythmyxInfo.Key.LISTENER_PORT).toString();
       }
+      log.debug("CMS User is " + this.cmsUser);
+      log.debug("CMS Password is " + this.cmsPassword); 
+      log.debug("Local is " + this.local);
    }
 
    public void runQueuedEdition(QueuedEdition ed)
@@ -202,6 +205,7 @@ public class PublishEditionService implements InitializingBean
    public void setCmsPassword(String cmsPassword)
    {
       this.cmsPassword = cmsPassword;
+      log.debug("Setting CMS Password"); 
       this.local = false; 
    }
    /**
@@ -217,6 +221,7 @@ public class PublishEditionService implements InitializingBean
    public void setCmsUser(String cmsUser)
    {
       this.cmsUser = cmsUser;
+      log.debug("Setting CMS User " + cmsUser); 
       this.local = false;
    }
    /**

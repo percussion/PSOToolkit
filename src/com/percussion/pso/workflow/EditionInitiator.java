@@ -103,6 +103,7 @@ public class EditionInitiator implements Runnable
       if(edition.isLocal())
       {
          NameValuePair sessparm = new NameValuePair("pssessionid",edition.getSessionId());
+         log.debug("Local Publishing " + edition.getSessionId()); 
          NameValuePair[] putparms = { editparm, pubparm, sessparm };  
          method.setQueryString(putparms); 
       }
@@ -111,6 +112,9 @@ public class EditionInitiator implements Runnable
          client.getState().setCredentials(null, edition.getUri(), 
                new UsernamePasswordCredentials(edition.getCmsUser(), edition.getCmsPassword()));
          method.addRequestHeader("RX_USEBASICAUTH", "yes");
+         NameValuePair[] putparms = { editparm, pubparm};
+         method.setQueryString(putparms); 
+         log.debug("Remote Publishing " + edition.getCmsUser()); 
          method.setDoAuthentication(true);
       }
       
@@ -124,11 +128,16 @@ public class EditionInitiator implements Runnable
    private String getResponseCode(Document doc)
    {
       PSXmlTreeWalker walker = new PSXmlTreeWalker(doc.getDocumentElement()); 
+      if(log.isDebugEnabled())
+      {
+         log.debug(PSXmlDocumentBuilder.toString(doc));
+      }
       Element resp = walker.getNextElement(PSPublisherHandlerResponse.ELEM_RESPONSE);
       if(resp != null)
       {
          String code = resp.getAttribute(PSPublisherHandlerResponse.ATTR_CODE);
          log.debug("Response code is " + code);
+         log.info("Publisher Response Message: " + walker.getElementData()); 
          return code;
       }
       return null;
