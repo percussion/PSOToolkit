@@ -28,7 +28,12 @@ import com.percussion.services.system.data.PSState;
 import com.percussion.utils.guid.IPSGuid;
 
 /**
+ * Corrects revisions of items in Staging states where the current revision 
+ * is desired. 
  * 
+ * This filter determines if an item is in one of the named states set within
+ * its parameters. If the item is in one of the states, the <code>Current</code> revision will
+ * be used in place of the <code>Public</code> revision. 
  *
  * @author DavidBenua
  *
@@ -42,11 +47,12 @@ public class PSORevisionCorrectingItemFilter extends PSBaseFilter
     */
    private static final Log log = LogFactory.getLog(PSORevisionCorrectingItemFilter.class);
 
+   /* System services */ 
    private static IPSSystemService sys = null; 
    private static IPSGuidManager gmgr = null;
    private static IPSCmsContentSummaries summ = null; 
    /**
-    * 
+    * Default constructor
     */
    public PSORevisionCorrectingItemFilter()
    {
@@ -54,7 +60,7 @@ public class PSORevisionCorrectingItemFilter extends PSBaseFilter
    }
   
    /**
-    * @see com.percussion.services.filter.IPSItemFilterRule#filter(java.util.Set, java.util.Map)
+    * @see com.percussion.services.filter.IPSItemFilterRule#filter(java.util.List, java.util.Map)
     */
    public List<IPSFilterItem> filter(List<IPSFilterItem> items,
          Map<String, String> params) throws PSFilterException
@@ -92,6 +98,12 @@ public class PSORevisionCorrectingItemFilter extends PSBaseFilter
       return results; 
    }
    
+   /**
+    * Corrects the revision of an individual GUID. 
+    * @param in the GUID to check. 
+    * @param wfStates a list of Workflow State names
+    * @return a GUID with the corrected revision.
+    */
    private static IPSGuid correctGuid(IPSGuid in, List<String> wfStates)
    {
       initServices();
@@ -107,6 +119,11 @@ public class PSORevisionCorrectingItemFilter extends PSBaseFilter
       return in;
    }
    
+   /**
+    * Initializes system services.  
+    * Used to prevent references to these services during extension 
+    * registration.
+    */
    private static void initServices()
    {
       if(sys == null)
@@ -117,10 +134,13 @@ public class PSORevisionCorrectingItemFilter extends PSBaseFilter
       }
    }
    
- 
+   /**
+    * The Workflow States Parameter name
+    */
    public static final String WORKFLOW_STATES = "workflow_states";
    /**
     * @param gmgr The gmgr to set.
+    * Used only in unit tests.
     */
    public static void setGmgr(IPSGuidManager gmgr)
    {

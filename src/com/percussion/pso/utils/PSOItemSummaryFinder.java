@@ -140,7 +140,7 @@ public class PSOItemSummaryFinder
     /**
     * Sets the summary service. 
     * Should be used only in unit tests. 
-    * @param sumsvc The sumsvc to set.
+    * @param sumservice The sumsvc to set.
     */
    public void setSumsvc(IPSCmsContentSummaries sumservice)
    {

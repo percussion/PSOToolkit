@@ -44,7 +44,7 @@ public class RxRequestUtils
    /**
     * Convience function to get the rx username from a servlet request.
     * @param req
-    * @return
+    * @return the user name
     */
    public static String getUserName(ServletRequest req) {
       IPSRequestContext irq = getRequest(req);

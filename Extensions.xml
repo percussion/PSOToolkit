@@ -91,5 +91,34 @@
 		<interface name="com.percussion.extension.IPSWorkflowAction"/>
 		<suppliedResources/>
 	</Extension>
+	<Extension categorystring="SlotContentFinder" context="global/percussion/slotcontentfinder/" deprecated="no" handler="Java" name="PSOReverseSlotContentFinder" restoreRequestParamsOnError="no">
+		<initParam name="com.percussion.user.description"/>
+		<initParam name="com.percussion.extension.version">1</initParam>
+		<initParam name="com.percussion.extension.reentrant">yes</initParam>
+		<initParam name="className">com.percussion.pso.finder.PSOReverseSlotContentFinder</initParam>
+		<interface name="com.percussion.services.assembly.IPSSlotContentFinder"/>
+		<PSXExtensionParamDef id="0">
+			<name>template</name>
+			<dataType>java.lang.String</dataType>
+			<description>The template to use to format the returned items, will override the template specified by the relationship if defined. A typical use for this would be an FAQ where the same slot is rendered twice. You may specify either a name or an id.</description>
+		</PSXExtensionParamDef>
+		<PSXExtensionParamDef id="1">
+			<name>max_results</name>
+			<dataType>java.lang.String</dataType>
+			<description>The maximum number of items to return for the slot, defaults to unlimited.</description>
+		</PSXExtensionParamDef>
+		<PSXExtensionParamDef id="1">
+			<name>source_slot</name>
+			<dataType>java.lang.String</dataType>
+			<description>the name of the slot to reverse.  Null to include ALL relationships.</description>
+		</PSXExtensionParamDef>		
+		<PSXExtensionParamDef id="2">
+			<name>order_by</name>
+			<dataType>java.lang.String</dataType>
+			<description>One or more comma separated field components. Each component names a field available in the related content objects and a direction. The syntax of this mirrors that for the JSR-170 queries.</description>
+		</PSXExtensionParamDef>
+		<suppliedResources/>
+	</Extension>
+	
      
 </PSXExtensionHandlerConfiguration>
