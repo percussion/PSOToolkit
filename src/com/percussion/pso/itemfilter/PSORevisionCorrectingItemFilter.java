@@ -12,6 +12,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.percussion.cms.objectstore.PSComponentSummary;
+import com.percussion.design.objectstore.PSLocator;
 import com.percussion.pso.utils.SimplifyParameters;
 import com.percussion.services.catalog.PSTypeEnum;
 import com.percussion.services.filter.IPSFilterItem;
@@ -116,8 +117,9 @@ public class PSORevisionCorrectingItemFilter extends PSBaseFilter
       {
          return gmgr.makeGuid(sum.getCurrentLocator());
       }
-      return in;
-   }
+      PSLocator loc = new PSLocator(sum.getContentId(), sum.getPublicOrCurrentRevision());
+      return gmgr.makeGuid(loc); 
+  }
    
    /**
     * Initializes system services.  
