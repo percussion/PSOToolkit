@@ -9,9 +9,12 @@
  */
 package com.percussion.pso.jexl;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -328,5 +331,54 @@ public class PSOListTools extends PSJexlUtilBase implements IPSJexlExpression
    private int [] convertIndexs(Number start, Number end) {
       return new int [] {start.intValue(), end.intValue()};
    }
+
+   /**
+    * Reverses the order of the elements in the specified list.
+    * Proxies {@link java.util.Collections#reverse(java.util.List)}
+    * @param list the list whose elements are to be reversed. this list must
+    * support the <code>set</code> method.
+    * @see java.util.Collections#reverse(java.util.List)
+    */
+   @IPSJexlMethod(description = "Reverses the order of the elements in the specified list.", 
+         params =
+   {
+         @IPSJexlParam(name = "list", description = "the list whose elements are to be reversed.")}
+   )
+   public void reverse(List list)
+   {
+      Collections.reverse(list);
+   }
+
+   /* (non-Javadoc)
+    * @see java.lang.Object#toString()
+    */
+   @Override
+   public String toString()
+   {
+      boolean first = true;
+      StringBuilder s = new StringBuilder();
+      Method[] methods = this.getClass().getMethods();
+      for (int i = 0; i < methods.length; i++)
+      {
+         Method m = methods[i];
+         if (m.isAnnotationPresent(IPSJexlMethod.class))
+         {
+            if (first)
+               first = false;
+            else
+               s.append(",");
+            s.append(m.getName() + "(");
+            Class[] params = m.getParameterTypes();
+            for (int j = 0; j < params.length; j++) {
+            s.append(params[j].getName());
+            if (j < (params.length - 1))
+                s.append(",");
+            }
+            s.append(")");
+         }
+      }
+      return s.toString();
+   }
+   
 
 }
