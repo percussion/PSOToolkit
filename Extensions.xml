@@ -40,6 +40,14 @@
 		<interface name="com.percussion.extension.IPSJexlExpression"/>
 		<suppliedResources/>
 	</Extension>
+	<Extension categorystring="" context="global/percussion/user/" deprecated="no" handler="Java" name="psoObjectFinder" restoreRequestParamsOnError="no">
+		<initParam name="com.percussion.user.description">PSO Object finder. Finds legacy objects for this item.</initParam>
+		<initParam name="com.percussion.extension.version">1</initParam>
+		<initParam name="com.percussion.extension.reentrant">yes</initParam>
+		<initParam name="className">com.percussion.pso.jexl.PSOObjectFinder</initParam>
+		<interface name="com.percussion.extension.IPSJexlExpression"/>
+		<suppliedResources/>
+	</Extension>
 	<Extension categorystring="" context="global/percussion/user/" deprecated="no" handler="Java" name="psoListTools" restoreRequestParamsOnError="no">
 		<initParam name="com.percussion.user.description">PSO List utilities</initParam>
 		<initParam name="com.percussion.extension.version">1</initParam>

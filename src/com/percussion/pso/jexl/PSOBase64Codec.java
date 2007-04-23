@@ -61,6 +61,14 @@ public class PSOBase64Codec extends PSJexlUtilBase implements IPSJexlExpression
         @IPSJexlParam(name="source", description="binary stream to encode")})
    public String encode(InputStream stream)
    {
+      return encode(streamToBytes(stream));
+   }
+   
+   @IPSJexlMethod(description="copy a binary stream to a byte array", 
+         params={
+        @IPSJexlParam(name="stream", description="binary stream to copy")})
+   public byte[] streamToBytes(InputStream stream)
+   {
       ByteArrayOutputStream baos = new ByteArrayOutputStream(); 
       try
       {
@@ -75,9 +83,8 @@ public class PSOBase64Codec extends PSJexlUtilBase implements IPSJexlExpression
         // should never happen unless we run out of memory
         log.error("Unexpected exception " + ex.getMessage(), ex);
       } 
-      return encode(baos.toByteArray());
+      return baos.toByteArray();
    }
-   
    @IPSJexlMethod(description="Encode a binary byte array", 
          params={
         @IPSJexlParam(name="source", description="binary byte array to encode")})
