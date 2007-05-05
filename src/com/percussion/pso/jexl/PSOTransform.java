@@ -89,11 +89,11 @@ public class PSOTransform extends PSJexlUtilBase implements IPSJexlExpression
          
          return outString.toString();
 
-      } catch (Exception ex)
+      } catch (Throwable ex)
       {         
-         log.error("XSLT Exception " + ex.getMessage(), ex);
+         log.error("XSLT Error: " + ex.getMessage(), ex);
       } 
-      return null;
+      return "";
    }
    
    private static String wrapField(String field)
