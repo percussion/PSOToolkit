@@ -15,8 +15,10 @@ import com.percussion.extension.IPSJexlMethod;
 import com.percussion.extension.IPSJexlParam;
 import com.percussion.extension.PSJexlUtilBase;
 import com.percussion.pso.utils.PSOItemSummaryFinder;
+import com.percussion.server.PSRequest;
 import com.percussion.services.content.data.PSContentTypeSummary;
 import com.percussion.utils.guid.IPSGuid;
+import com.percussion.utils.request.PSRequestInfo;
 import com.percussion.webservices.content.IPSContentWs;
 import com.percussion.webservices.content.PSContentWsLocator;
 
@@ -99,7 +101,26 @@ public class PSOObjectFinder extends PSJexlUtilBase
       }
       return null;
    }
-
+ 
+   @IPSJexlMethod(description="Get the JSESSIONID value for the current request",
+      params={})
+   public String getJSessionId()
+   {
+       String jsession = PSRequestInfo.
+           getRequestInfo(PSRequestInfo.KEY_JSESSIONID).toString();
+       log.debug("JSESSIONID=" + jsession);
+       return jsession;
+   }
+   
+   @IPSJexlMethod(description="Get the PSSESSIONID value for the current request",
+         params={})
+   public String getPSSessionId()
+   {
+      PSRequest req = (PSRequest)PSRequestInfo.getRequestInfo(PSRequestInfo.KEY_PSREQUEST);
+      String sessionid = req.getUserSessionId();
+      log.debug("PSSessionId=" + sessionid ); 
+      return sessionid;
+   }
    /**
     * @param cws The cws to set. This routine should only be used
     * for unit testing. 
