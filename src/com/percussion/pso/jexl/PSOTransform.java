@@ -6,7 +6,6 @@
  */
 package com.percussion.pso.jexl;
 
-import java.io.File;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
@@ -23,8 +22,6 @@ import com.percussion.extension.IPSJexlExpression;
 import com.percussion.extension.IPSJexlMethod;
 import com.percussion.extension.IPSJexlParam;
 import com.percussion.extension.PSJexlUtilBase;
-import com.percussion.services.general.IPSRhythmyxInfo;
-import com.percussion.services.general.PSRhythmyxInfoLocator;
 import com.percussion.xmldom.PSStylesheetCacheManager;
 
 /**
@@ -72,44 +69,28 @@ public class PSOTransform extends PSJexlUtilBase implements IPSJexlExpression
     * The parameters may be referenced with <code>&lt;xsl:param...</code> 
     * as a direct child of the <code>&lt;xsl:stylesheet></code> node.   
     * @param source the source string.  
-    * @param stylesheetName the name of the stylesheet, relative to the Rhythmyx root.
+    * @param stylesheetName the name of the stylesheet, relative to the Rhythmyx root. This should be
+    * a file url. For example: <code>file:rx_resource/stylesheets/myStylesheet.xsl</code>
     * @param params a map of parameter names and values. 
     * @return the transformed source
     */
    @IPSJexlMethod(description="Transform a value with an XSLT transform", 
          params={
         @IPSJexlParam(name="source", type="String", description="the source to transform"),
-        @IPSJexlParam(name="stylesheetName", type="String", description="the URI of the stylesheet to apply"),
+        @IPSJexlParam(name="stylesheetName", type="String", description="the file: URL of the stylesheet to apply"),
         @IPSJexlParam(name="params", description="XSLT parameters for stylesheet")})
    public String transform(String source, String stylesheetName, Map<String,Object> params)
    {
       URL styleFile;
+      PSCachedStylesheet styleCached = null; 
       
       try
       {
-         IPSRhythmyxInfo info = PSRhythmyxInfoLocator.getRhythmyxInfo(); 
-         String rxRoot = info.getProperty(IPSRhythmyxInfo.Key.ROOT_DIRECTORY).toString();
-         log.debug("Rx Root is " + rxRoot);
-         File f; 
-         if (stylesheetName.startsWith("file:") && stylesheetName.length() > 6 &&
-               stylesheetName.charAt(5) != '/')
-         {
-            f = new File(rxRoot, stylesheetName.substring(5));
-            
-         }
-         else
-         {  
-            f = new File(rxRoot, stylesheetName); 
-            
-         }
-         log.debug("Stylesheet file is " + f.toString()); 
-         styleFile = f.toURL(); 
-         PSCachedStylesheet styleCached = 
-            PSStylesheetCacheManager.getStyleSheetFromCache(styleFile);
+         styleFile = new URL(stylesheetName);
+         styleCached = PSStylesheetCacheManager.getStyleSheetFromCache(styleFile);
          
          Transformer nt = styleCached.getStylesheetTemplate().newTransformer();
          
-         //TransformerFactory xfactory = TransformerFactory.newInstance();
          for(String pkey : params.keySet())
          { 
             Object pval = params.get(pkey);
