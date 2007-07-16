@@ -1,13 +1,15 @@
 This is the PSOToolkit for Rhythmyx 6.x  Routines will be added here
 as we find uses for them.  
 
-THIS VERSION REQUIRES RHYTHMYX 6.1 Build 200701P02 (3181) [RX-11065]  OR LATER BUILDS
-If you are using an earlier build, see the 6.0 branch in the PSO Code Library.  
+THIS VERSION REQUIRES RHYTHMYX 6.5 OR LATER 
+
+
+If you are using 6.0 or 6.1  see the Rhino and 6.1 branches in the PSO Code Library.  
 
 To deploy the toolkit, unzip the distribution into a new subdirectory. 
 
 You must have Java 1.5 and Apache Ant properly intstalled. The RHYTHMYX_HOME
-environment variable must point at your Rhythmyx 6.0 installation.  
+environment variable must point at your Rhythmyx 6.5 installation.  
 
 Manually remove (and backup) any previous PSOToolkit6 JARS from the 
 /Rhythmyx/AppServer/Server/rx/deploy/rxapp.ear/rxapp.war/WEB-INF/lib folder

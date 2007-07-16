@@ -23,9 +23,10 @@ import com.percussion.services.guidmgr.IPSGuidManager;
 import com.percussion.services.guidmgr.PSGuidManagerLocator;
 import com.percussion.services.legacy.IPSCmsContentSummaries;
 import com.percussion.services.legacy.PSCmsContentSummariesLocator;
-import com.percussion.services.system.IPSSystemService;
-import com.percussion.services.system.PSSystemServiceLocator;
-import com.percussion.services.system.data.PSState;
+import com.percussion.services.workflow.IPSWorkflowService;
+import com.percussion.services.workflow.PSWorkflowServiceLocator;
+import com.percussion.services.workflow.data.PSState;
+
 import com.percussion.utils.guid.IPSGuid;
 
 /**
@@ -49,7 +50,7 @@ public class PSORevisionCorrectingItemFilter extends PSBaseFilter
    private static final Log log = LogFactory.getLog(PSORevisionCorrectingItemFilter.class);
 
    /* System services */ 
-   private static IPSSystemService sys = null; 
+   private static IPSWorkflowService work = null; 
    private static IPSGuidManager gmgr = null;
    private static IPSCmsContentSummaries summ = null; 
    /**
@@ -79,17 +80,9 @@ public class PSORevisionCorrectingItemFilter extends PSBaseFilter
          log.debug("Corrected Guid is " + revguid); 
          if(!itemguid.equals(revguid)) 
          {
-            try
-            {
-               log.debug("replacing GUID " + itemguid + " with GUID " + revguid);
-               IPSFilterItem revItem = item.clone(revguid);
-               results.add(revItem);
-            } catch (CloneNotSupportedException ex)
-            {
-               log.error("Unable to clone " + item);
-               //should NEVER happen.
-               throw new IllegalStateException("Clone not supported"); 
-            }  
+            log.debug("replacing GUID " + itemguid + " with GUID " + revguid);
+            IPSFilterItem revItem = item.clone(revguid);
+            results.add(revItem);  
          }
          else
          {
@@ -111,7 +104,7 @@ public class PSORevisionCorrectingItemFilter extends PSBaseFilter
       PSComponentSummary sum = summ.loadComponentSummary(gmgr.makeLocator(in).getId());
       IPSGuid workflowid = gmgr.makeGuid(sum.getWorkflowAppId(), PSTypeEnum.WORKFLOW);
       IPSGuid stateid = gmgr.makeGuid(sum.getContentStateId(), PSTypeEnum.WORKFLOW_STATE);      
-      PSState state = sys.loadWorkflowState(stateid, workflowid);
+      PSState state = work.loadWorkflowState(stateid, workflowid);
       
       if(wfStates.contains(state.getName()))
       {
@@ -128,11 +121,11 @@ public class PSORevisionCorrectingItemFilter extends PSBaseFilter
     */
    private static void initServices()
    {
-      if(sys == null)
+      if(gmgr == null)
       {
          gmgr = PSGuidManagerLocator.getGuidMgr();
          summ = PSCmsContentSummariesLocator.getObjectManager();
-         sys = PSSystemServiceLocator.getSystemService();         
+         work = PSWorkflowServiceLocator.getWorkflowService(); 
       }
    }
    
@@ -158,10 +151,12 @@ public class PSORevisionCorrectingItemFilter extends PSBaseFilter
    }
 
    /**
-    * @param sys The sys to set.
+    * @param work The work to set.
     */
-   public static void setSys(IPSSystemService sys)
+   public static void setWork(IPSWorkflowService work)
    {
-      PSORevisionCorrectingItemFilter.sys = sys;
-   } 
+      PSORevisionCorrectingItemFilter.work = work;
+   }
+
+  
 }

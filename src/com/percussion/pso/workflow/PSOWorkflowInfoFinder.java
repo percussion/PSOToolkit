@@ -12,8 +12,8 @@ import org.apache.commons.logging.LogFactory;
 import com.percussion.cms.objectstore.PSComponentSummary;
 import com.percussion.error.PSException;
 import com.percussion.pso.utils.PSOItemSummaryFinder;
-import com.percussion.services.system.data.PSState;
-import com.percussion.services.system.data.PSWorkflow;
+import com.percussion.services.workflow.data.PSState;
+import com.percussion.services.workflow.data.PSWorkflow;
 import com.percussion.webservices.system.IPSSystemWs;
 import com.percussion.webservices.system.PSSystemWsLocator;
 

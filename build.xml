@@ -1,6 +1,6 @@
-<project name="PSOToolkit60" default="dist" basedir=".">
+<project name="PSOToolkit65" default="dist" basedir=".">
 	<description>
-       PSO Toolkit for Rhino 
+       PSO Toolkit for Rhythmyx 6.5
     </description>
 	<!-- set global properties for this build -->
     
@@ -12,7 +12,7 @@
 	<!-- base of Axis Path -->
 	<property name="axis_home" location="${env.AXIS_HOME}"/> 
 	<!-- name of our output jar --> 
-	<property name="jarname" value="PSOToolkit61P2.jar" />	
+	<property name="jarname" value="PSOToolkit65.jar" />	
 	<!-- name of our distribution zip -->
 	<property name="distfile" value="PSOToolkit6.zip" />	
 	<property name="testdistfile" value="PSOToolkit6-test.zip" /> 
