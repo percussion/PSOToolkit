@@ -139,17 +139,18 @@ public class PSOWFActionDispatcher extends PSDefaultExtension
         return actions;
     }
 
-
+ 
+    @SuppressWarnings("unchecked")
     private IPSExtension getExtension(String workflowActionName, String interfaceName) 
        throws PSExtensionException, PSNotFoundException
     {
        IPSExtension ext = null; 
        IPSExtensionManager extMgr = PSServer.getExtensionManager(null);         
-       Iterator itr =  extMgr.getExtensionNames("Java",null,interfaceName,
+       Iterator<PSExtensionRef> itr =  extMgr.getExtensionNames("Java",null,interfaceName,
              workflowActionName);
        while(itr.hasNext())
        {
-          PSExtensionRef ref  = (PSExtensionRef) itr.next();
+          PSExtensionRef ref  = itr.next();
           log.debug("found extension " + ref.getFQN()); 
           ext = extMgr.prepareExtension(ref, null);
           log.debug("prepared extension " + ext.getClass().getCanonicalName()); 

@@ -124,7 +124,7 @@
 		<antcall target="jarbuilder"/>
 		<delete file="${rhythmyx.home}/AppServer/server/rx/log/server.log" verbose="true" failonerror="false" />
 		<copy file="${jarname}" todir="${rhino.rxapp.lib}" verbose="true" />
-		<copy todir="${rhino.rxapp.WEB-INF}">
+		<copy todir="${rhino.rxapp.WEB-INF}" verbose="true" >
 			<fileset dir="WEB-INF" />
 		</copy>
 		<!--copy file="mybeans.xml" todir="${rhino.rxapp.spring-config}" verbose="true" /  -->

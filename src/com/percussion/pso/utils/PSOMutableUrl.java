@@ -12,7 +12,7 @@ import com.percussion.server.PSRequestParsingException;
 
 /**
  * A URL that can be modified. Methods for changing the root as well as 
- * as the HTML Parmaeter exist. 
+ * as the HTML Parameter exist. 
  * 
  * @author DavidBenua
  *
@@ -86,10 +86,12 @@ public class PSOMutableUrl
    {
       this.m_param.remove(pName); 
    } 
-   public Map getParamMap()
+   public Map<String, Object> getParamMap()
    {
       return m_param; 
    } 
+   
+   @SuppressWarnings("unchecked")
    public String toString()
    {
       StringBuffer sb = new StringBuffer();

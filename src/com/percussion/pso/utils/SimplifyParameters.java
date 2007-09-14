@@ -50,6 +50,7 @@ public class SimplifyParameters
       return outMap; 
    }
    
+   @SuppressWarnings("unchecked")
    public static String simplifyValue(Object value)
    {
       if(value == null)

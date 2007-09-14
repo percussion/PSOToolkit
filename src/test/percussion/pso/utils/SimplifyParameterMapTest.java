@@ -57,6 +57,7 @@ public class SimplifyParameterMapTest extends TestCase
       
    }
    
+   @SuppressWarnings("unchecked")
    public void testGetValueAsList()
    {
       List<String> result; 

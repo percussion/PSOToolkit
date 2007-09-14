@@ -125,6 +125,134 @@
 		<interface name="com.percussion.extension.IPSWorkflowAction"/>
 		<suppliedResources/>
 	</Extension>
+		<Extension name="PSOThumbnailGenerator" context="user/" handler="Java" categorystring="contenteditor" deprecated="no">
+		<initParam name="com.percussion.user.description">Automatically generates the thumbnail for the uploaded full image./</initParam>
+		<initParam name="com.percussion.extension.version">1</initParam>
+		<initParam name="com.percussion.extension.reentrant">yes</initParam>
+		<initParam name="className">com.percussion.pso.transform.PSOThumbnailGenerator</initParam>
+		<interface name="com.percussion.extension.IPSRequestPreProcessor"/>
+		<interface name="com.percussion.extension.IPSItemInputTransformer"/>
+		<PSXExtensionParamDef id="0">
+			<name>SourceFieldName</name>
+			<dataType>java.lang.String</dataType>
+			<description/>
+		</PSXExtensionParamDef>
+		<PSXExtensionParamDef id="0">
+			<name>ThumbnailFieldName</name>
+			<dataType>java.lang.String</dataType>
+			<description/>
+		</PSXExtensionParamDef>
+		<PSXExtensionParamDef id="0">
+			<name>MaxDimension</name>
+			<dataType>java.lang.String</dataType>
+			<description/>
+		</PSXExtensionParamDef>
+		<PSXExtensionParamDef id="0">
+			<name>Thumbnail_prefix</name>
+			<dataType>java.lang.String</dataType>
+			<description/>
+		</PSXExtensionParamDef>
+		<suppliedResources/>
+	</Extension>
+		<Extension name="PSOValidateRelatedItems" context="user/" handler="Java" categorystring="itemvalidation" deprecated="no" restoreRequestParamsOnError="no">
+		<initParam name="com.percussion.user.description">Item Validation exit for related content</initParam>
+		<initParam name="com.percussion.extension.version">1</initParam>
+		<initParam name="className">com.percussion.pso.validation.PSOValidateRelatedItems</initParam>
+		<initParam name="com.percussion.extension.reentrant">yes</initParam>
+		<interface name="com.percussion.extension.IPSItemValidator"/>
+		<interface name="com.percussion.extension.IPSResultDocumentProcessor" />
+		<PSXExtensionParamDef id="0">
+			<name>QueryResource</name>
+			<dataType>java.lang.String</dataType>
+			<description>Not used in this version</description>
+		</PSXExtensionParamDef>
+		<PSXExtensionParamDef id="0">
+			<name>TransitionID</name>
+			<dataType>java.lang.String</dataType>
+			<description>Transition to validate, use * for all transitions</description>
+		</PSXExtensionParamDef>
+		<PSXExtensionParamDef id="0">
+			<name>VariantID1</name>
+			<dataType>java.lang.String</dataType>
+			<description>Not used in this version</description>
+		</PSXExtensionParamDef>
+		<PSXExtensionParamDef id="0">
+			<name>SlotName1</name>
+			<dataType>java.lang.String</dataType>
+			<description>Slot to validate</description>
+		</PSXExtensionParamDef>
+		<PSXExtensionParamDef id="0">
+			<name>MustOccur1</name>
+			<dataType>java.lang.String</dataType>
+			<description>MORE_THAN, LESS_THAN or EXACTLY</description>
+		</PSXExtensionParamDef>
+		<PSXExtensionParamDef id="0">
+			<name>Number1</name>
+			<dataType>java.lang.String</dataType>
+			<description>number of items in slot</description>
+		</PSXExtensionParamDef>
+		<PSXExtensionParamDef id="0">
+			<name>VariantID2</name>
+			<dataType>java.lang.String</dataType>
+			<description>Not used in this version</description>
+		</PSXExtensionParamDef>
+		<PSXExtensionParamDef id="0">
+			<name>SlotName2</name>
+			<dataType>java.lang.String</dataType>
+			<description>Slot to validate</description>
+		</PSXExtensionParamDef>
+		<PSXExtensionParamDef id="0">
+			<name>MustOccur2</name>
+			<dataType>java.lang.String</dataType>
+			<description>MORE_THAN, LESS_THAN or EXACTLY</description>
+		</PSXExtensionParamDef>
+		<PSXExtensionParamDef id="0">
+			<name>Number2</name>
+			<dataType>java.lang.String</dataType>
+			<description>number of items in slot</description>
+		</PSXExtensionParamDef>
+		<PSXExtensionParamDef id="0">
+			<name>VariantID3</name>
+			<dataType>java.lang.String</dataType>
+			<description>Not used in this version</description>
+		</PSXExtensionParamDef>
+		<PSXExtensionParamDef id="0">
+			<name>SlotName3</name>
+			<dataType>java.lang.String</dataType>
+			<description>Slot to validate</description>
+		</PSXExtensionParamDef>
+		<PSXExtensionParamDef id="0">
+			<name>MustOccur3</name>
+			<dataType>java.lang.String</dataType>
+			<description>MORE_THAN, LESS_THAN or EXACTLY</description>
+		</PSXExtensionParamDef>
+		<PSXExtensionParamDef id="0">
+			<name>Number3</name>
+			<dataType>java.lang.String</dataType>
+			<description>number of items in slot</description>
+		</PSXExtensionParamDef>
+		<PSXExtensionParamDef id="0">
+			<name>VariantID4</name>
+			<dataType>java.lang.String</dataType>
+			<description>Not used in this version</description>
+		</PSXExtensionParamDef>
+		<PSXExtensionParamDef id="0">
+			<name>SlotName4</name>
+			<dataType>java.lang.String</dataType>
+			<description>Slot to validate</description>
+		</PSXExtensionParamDef>
+		<PSXExtensionParamDef id="0">
+			<name>MustOccur4</name>
+			<dataType>java.lang.String</dataType>
+			<description>MORE_THAN, LESS_THAN or EXACTLY</description>
+		</PSXExtensionParamDef>
+		<PSXExtensionParamDef id="0">
+			<name>Number4</name>
+			<dataType>java.lang.String</dataType>
+			<description>number of items in slot</description>
+		</PSXExtensionParamDef>
+		<suppliedResources/>
+	</Extension>
 	<Extension categorystring="SlotContentFinder" context="global/percussion/slotcontentfinder/" deprecated="no" handler="Java" name="PSOReverseSlotContentFinder" restoreRequestParamsOnError="no">
 		<initParam name="com.percussion.user.description"/>
 		<initParam name="com.percussion.extension.version">1</initParam>
@@ -153,6 +281,27 @@
 		</PSXExtensionParamDef>
 		<suppliedResources/>
 	</Extension>
-	
-     
+	<Extension categorystring="" context="global/percussion/user/" deprecated="no" handler="Java" name="PSOSQLContentFinder" restoreRequestParamsOnError="no">
+      <initParam name="com.percussion.user.description">Slot Content Finder for 	</initParam>
+      <initParam name="com.percussion.extension.version">3</initParam>
+      <initParam name="className">com.percussion.pso.finder.PSOSQLContentFinder</initParam>
+      <initParam name="com.percussion.extension.reentrant">yes</initParam>
+      <interface name="com.percussion.services.assembly.IPSSlotContentFinder"/>
+      <PSXExtensionParamDef id="0">
+         <name>query</name>
+         <dataType>java.lang.String</dataType>
+         <description>The SQL Query to execute</description>
+      </PSXExtensionParamDef>
+      <PSXExtensionParamDef id="0">
+         <name>template</name>
+         <dataType>java.lang.String</dataType>
+         <description>The template to add to the slot</description>
+      </PSXExtensionParamDef>
+      <PSXExtensionParamDef id="0">
+         <name>max_results</name>
+         <dataType>java.lang.Number</dataType>
+         <description>The max nr of results</description>
+      </PSXExtensionParamDef>
+      <suppliedResources/>
+   </Extension>     
 </PSXExtensionHandlerConfiguration>

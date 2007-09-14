@@ -130,6 +130,7 @@ public class PSOListTools extends PSJexlUtilBase implements IPSJexlExpression
          @IPSJexlParam(name = "collection", description = "the collection to be used"),
          @IPSJexlParam(name = "start", description = "the start index (negative means count back from the end of the collection)"),
          @IPSJexlParam(name = "end", description = "the end index (exclusive)")}, returns = "a subset of collection as a list")
+         @SuppressWarnings("unchecked")
    public List sublist(Collection c, int start, int end)
    {
       log.debug("processing sublist(Collection c, int start, int end)");
@@ -182,6 +183,7 @@ public class PSOListTools extends PSJexlUtilBase implements IPSJexlExpression
     * @param end
     * @return a subset of the collection never <code>null</code>
     */
+   @SuppressWarnings("unchecked")
    public List sublist(Collection c, String start, String end)
    {
       log.debug("processing sublist(Collection c, String start, String end)");
@@ -196,6 +198,7 @@ public class PSOListTools extends PSJexlUtilBase implements IPSJexlExpression
     * @param end
     * @return a subset of the collection never <code>null</code>.
     */
+   @SuppressWarnings("unchecked")
    public List sublist(Collection c, Number start, Number end)
    {
       log.debug("processing sublist(Collection c, Number start, Number end)");
@@ -211,6 +214,7 @@ public class PSOListTools extends PSJexlUtilBase implements IPSJexlExpression
     * @param end
     * @return a subset of the collection never <code>null</code>.
     */
+   @SuppressWarnings("unchecked")
    public List sublist(Object[] c, int start, int end) {
       log.debug("processing sublist(Object[] c, int start, int end)");
       List rvalue;
@@ -231,6 +235,7 @@ public class PSOListTools extends PSJexlUtilBase implements IPSJexlExpression
     * @return a subset of the collection never <code>null</code>.
     * @see #sublist(Collection, int, int)
     */
+   @SuppressWarnings("unchecked")
    public List sublist(Object[] c, String start, String end) {
       log.debug("processing sublist(Object[] c, String start, String end)");
       int [] i = convertIndexs(start,end);
@@ -343,6 +348,7 @@ public class PSOListTools extends PSJexlUtilBase implements IPSJexlExpression
    {
          @IPSJexlParam(name = "list", description = "the list whose elements are to be reversed.")}
    )
+   @SuppressWarnings("unchecked")
    public void reverse(List list)
    {
       Collections.reverse(list);
@@ -352,6 +358,7 @@ public class PSOListTools extends PSJexlUtilBase implements IPSJexlExpression
     * @see java.lang.Object#toString()
     */
    @Override
+   @SuppressWarnings("unchecked")
    public String toString()
    {
       boolean first = true;

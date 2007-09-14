@@ -96,6 +96,7 @@ public class PSOReverseSlotContentFinder extends PSBaseSlotContentFinder  implem
     * @see com.percussion.services.assembly.impl.finder.PSBaseSlotContentFinder#getSlotItems(com.percussion.services.assembly.IPSAssemblyItem, com.percussion.services.assembly.IPSTemplateSlot, java.util.Map)
     */
    @Override
+   @SuppressWarnings("unchecked")
    protected Set<SlotItem> getSlotItems(IPSAssemblyItem sourceItem, IPSTemplateSlot slot, 
           Map<String, Object> selectors) 
       throws RepositoryException, PSFilterException, PSAssemblyException
@@ -158,10 +159,10 @@ public class PSOReverseSlotContentFinder extends PSBaseSlotContentFinder  implem
          throw new PSAssemblyException(0, ex, ex.getMessage() );
       } 
       int sortrank = 0; //note: sortrank isn't really used here, but the SlotItem requires one 
-      Iterator iter = relations.iterator(); 
+      Iterator<PSRelationship> iter = relations.iterator(); 
       while(iter.hasNext())
       {
-         PSRelationship rel = (PSRelationship) iter.next();
+         PSRelationship rel =  iter.next();
          if(isRelationshipInSlot(rel, sourceSlot))
          {
             IPSGuid guid = gmgr.makeGuid(rel.getOwner()); 

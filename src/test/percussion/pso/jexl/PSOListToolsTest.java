@@ -14,6 +14,7 @@ import com.percussion.pso.jexl.PSOListTools;
 
 import junit.framework.TestCase;
 
+@SuppressWarnings("unchecked")
 public class PSOListToolsTest extends TestCase
 {
 
