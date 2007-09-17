@@ -11,6 +11,9 @@
 	<property name="rhythmyx.service" value="${env.RHYTHMYX_SERVICE}"/>
 	<!-- base of Axis Path -->
 	<property name="axis_home" location="${env.AXIS_HOME}"/> 
+	<!-- base of JMock Path -->
+	<property name="jmock_home" location="${env.JMOCK_HOME}" /> 
+	
 	<!-- name of our output jar --> 
 	<property name="jarname" value="PSOToolkit65.jar" />	
 	<!-- name of our distribution zip -->
@@ -29,6 +32,7 @@
 	<property name="rhino.rxpub.lib" value="${rhino.rxpub}/WEB-INF/lib" />
 	<property name="rhino.rxpub.spring-config" value="${rhino.rxpub}/WEB-INF/config/spring" /> 
 	
+	<property name="jmock.lib" location="${jmock_home}" />
 	<!-- relative paths -->
 	<property name="src" location="src"/>
 	<property name="lib" location="lib"/>
@@ -49,7 +53,8 @@
 		 	<include name="javax.servlet.jar"/>
 		 	<include name="jboss-j2ee.jar" /> 
 		 </fileset>
-		 <fileset dir="${lib}" />   	
+		 <fileset dir="${lib}" />   
+		 <fileset dir="${jmock.lib}"/>
 		</path>
 	
 

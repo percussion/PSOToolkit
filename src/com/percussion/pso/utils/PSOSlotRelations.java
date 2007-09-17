@@ -35,6 +35,8 @@ import com.percussion.utils.guid.IPSGuid;
  * view and modify the contents of a specific slot.  
  * This is accomplished by wrapping the legacy Active Assembly Processor Proxy using objects 
  * that are consistent with the Java service API.  
+ * These methods should only be used when the Java Service API cannot be used for 
+ * some reason. 
  *
  * @author DavidBenua
  *
