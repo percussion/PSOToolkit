@@ -17,8 +17,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.percussion.cms.PSCmsException;
 import com.percussion.cms.objectstore.IPSFieldValue;
+import com.percussion.cms.objectstore.IPSItemAccessor;
 import com.percussion.cms.objectstore.PSBinaryValue;
-import com.percussion.cms.objectstore.PSCoreItem;
 import com.percussion.cms.objectstore.PSDateValue;
 import com.percussion.cms.objectstore.PSItemField;
 import com.percussion.cms.objectstore.PSTextValue;
@@ -52,7 +52,7 @@ public class RxItemUtils
     * may be <code>empty</code>
     * @throws PSCmsException when value cannot be converted
     */
-   public static String getFieldValue(PSCoreItem item, String fieldName) throws PSCmsException
+   public static String getFieldValue(IPSItemAccessor item, String fieldName) throws PSCmsException
    {
       PSItemField fld = item.getFieldByName(fieldName);
       if(fld == null)
@@ -69,7 +69,7 @@ public class RxItemUtils
       return value.getValueAsString(); 
    }
    
-   public static Number getFieldNumeric(PSCoreItem item, String fieldName) throws PSCmsException
+   public static Number getFieldNumeric(IPSItemAccessor item, String fieldName) throws PSCmsException
    {
       PSItemField fld = item.getFieldByName(fieldName);
       if(fld == null)
@@ -96,7 +96,7 @@ public class RxItemUtils
       return ZERO;
    }
    
-   public static Date getFieldDate(PSCoreItem item, String fieldName) throws PSCmsException
+   public static Date getFieldDate(IPSItemAccessor item, String fieldName) throws PSCmsException
    {
       PSItemField fld = item.getFieldByName(fieldName);
       if(fld == null)
@@ -118,7 +118,7 @@ public class RxItemUtils
       return null;
    }
    
-   public static List<String> getFieldValues(PSCoreItem item, String fieldName) throws PSCmsException
+   public static List<String> getFieldValues(IPSItemAccessor item, String fieldName) throws PSCmsException
    {
        List<String> list = new ArrayList<String>(); 
        PSItemField fld = item.getFieldByName(fieldName);
@@ -137,7 +137,7 @@ public class RxItemUtils
        return list; 
    }
    
-   public static void setFieldValue(PSCoreItem item, String fieldName, IPSFieldValue value)
+   public static void setFieldValue(IPSItemAccessor item, String fieldName, IPSFieldValue value)
    {
       PSItemField fld = item.getFieldByName(fieldName);
       if(fld == null)
@@ -150,28 +150,28 @@ public class RxItemUtils
       fld.addValue(value);
    }
    
-   public static void setFieldValue(PSCoreItem item, String fieldName, String textValue)
+   public static void setFieldValue(IPSItemAccessor item, String fieldName, String textValue)
    {
       log.debug("setting field " + fieldName + " value " + textValue); 
       IPSFieldValue val = new PSTextValue(textValue); 
       setFieldValue(item, fieldName, val); 
    }
    
-   public static void setFieldValue(PSCoreItem item, String fieldName, Date dateValue)
+   public static void setFieldValue(IPSItemAccessor item, String fieldName, Date dateValue)
    {
       log.debug("setting field " + fieldName + " value " + dateValue); 
       IPSFieldValue val = new PSDateValue(dateValue);
       setFieldValue(item, fieldName, val);
    }
    
-   public static void setFieldValue(PSCoreItem item, String fieldName, Number numbValue)
+   public static void setFieldValue(IPSItemAccessor item, String fieldName, Number numbValue)
    {
       log.debug("setting field " + fieldName + " value " + numbValue); 
       String textValue = String.valueOf(numbValue); 
       IPSFieldValue val = new PSTextValue(textValue); 
       setFieldValue(item, fieldName, val); 
    }
-   public static void setFieldValue(PSCoreItem item, String fieldName, InputStream streamValue)
+   public static void setFieldValue(IPSItemAccessor item, String fieldName, InputStream streamValue)
    {
       IPSFieldValue val;
       try
@@ -186,7 +186,7 @@ public class RxItemUtils
       
    }
    
-   public static void setFieldValue(PSCoreItem item, String fieldName, List<String> listValue)
+   public static void setFieldValue(IPSItemAccessor item, String fieldName, List<String> listValue)
    {
       log.debug("setting mult-value field " + fieldName); 
       PSItemField fld = item.getFieldByName(fieldName);
