@@ -20,7 +20,6 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import com.percussion.cms.objectstore.PSAaRelationship;
 import com.percussion.cms.objectstore.PSRelationshipFilter;
 import com.percussion.design.objectstore.PSLocator;
-import com.percussion.design.objectstore.PSRelationshipConfig;
 import com.percussion.pso.utils.PSOSlotContents;
 import com.percussion.services.assembly.IPSAssemblyTemplate;
 import com.percussion.services.assembly.IPSTemplateSlot;
