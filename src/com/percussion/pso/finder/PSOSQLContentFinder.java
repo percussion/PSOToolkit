@@ -36,7 +36,8 @@ import com.percussion.utils.guid.IPSGuid;
 /**
  * Slot finder that uses a SQL Query.
  * <h2>Parameters</h2>  
- * There are 5 parameters: sqlquery, template and sqlparams 
+ * There are 5 parameters: sqlquery, sqlparams, template, max_results and 
+ * order_by.  
  * 
  * <h3>sqlquery</h3>
  * The SQL Query to execute.  This must be a valid SQL query for the 
@@ -77,12 +78,13 @@ import com.percussion.utils.guid.IPSGuid;
  * Instead of a Map of named parameters, the caller must provide a List of 
  * parameter values.  In the JEXL bindings that can be done like this: 
  * <pre>
- * $slotparams.sqlquery = "select G.CONTENTID  from RXS_CT_GENERIC G, CONTENTSTATUS C where ... "
- * $sql[0]="foo" 
+ * $slotparams.sqlquery = "select G.CONTENTID  from RXS_CT_GENERIC G, CONTENTSTATUS C where G.USAGE = ? and ... "
+ * $sql[0]="Y" 
  * $sql[1]=100
  * $slotparams.sqlparams = $sql
  * </pre>
  * 
+ * @see java.sql.PreparedStatement
  * @author DavidBenua
  *
  */
