@@ -20,17 +20,17 @@
 	<property name="distfile" value="PSOToolkit6.zip" />	
 	<property name="testdistfile" value="PSOToolkit6-test.zip" /> 
 	
-	<property name="rhino.deploy" value="${rhythmyx.home}/AppServer/server/rx/deploy" /> 
-	<property name="rhino.rxapp"  value="${rhino.deploy}/rxapp.ear/rxapp.war" /> 
-	<property name="rhino.rxpub"  value="${rhino.deploy}/RxServices.war"/> 
-	<property name="rhino.rxapp.lib"    value="${rhino.rxapp}/WEB-INF/lib"/>
-	<property name="rhino.server.lib"  value="${rhythmyx.home}/AppServer/server/rx/lib" /> 
-	<property name="rhino.rxapp.spring-config"
-	value="${rhino.rxapp}/WEB-INF/config/user/spring" />
-	<property name="rhino.rxapp.WEB-INF" value="${rhino.rxapp}/WEB-INF" />
+	<property name="rhythmyx.deploy" value="${rhythmyx.home}/AppServer/server/rx/deploy" /> 
+	<property name="rhythmyx.rxapp"  value="${rhythmyx.deploy}/rxapp.ear/rxapp.war" /> 
+	<property name="rhythmyx.rxpub"  value="${rhythmyx.deploy}/RxServices.war"/> 
+	<property name="rhythmyx.rxapp.lib"    value="${rhythmyx.rxapp}/WEB-INF/lib"/>
+	<property name="rhythmyx.server.lib"  value="${rhythmyx.home}/AppServer/server/rx/lib" /> 
+	<property name="rhythmyx.rxapp.spring-config"
+	value="${rhythmyx.rxapp}/WEB-INF/config/user/spring" />
+	<property name="rhythmyx.rxapp.WEB-INF" value="${rhythmyx.rxapp}/WEB-INF" />
 	
-	<property name="rhino.rxpub.lib" value="${rhino.rxpub}/WEB-INF/lib" />
-	<property name="rhino.rxpub.spring-config" value="${rhino.rxpub}/WEB-INF/config/spring" /> 
+	<property name="rhythmyx.rxpub.lib" value="${rhythmyx.rxpub}/WEB-INF/lib" />
+	<property name="rhythmyx.rxpub.spring-config" value="${rhythmyx.rxpub}/WEB-INF/config/spring" /> 
 	
 	<property name="jmock.lib" location="${jmock_home}" />
 	<!-- relative paths -->
@@ -44,11 +44,11 @@
 	
 	<!-- Rhythmyx classpath  --> 
 	<path id="rx.class.path"> 
-		 <fileset dir="${rhino.rxapp.lib}">
+		 <fileset dir="${rhythmyx.rxapp.lib}">
 		 	<include name="**.jar"/>
 		 	<exclude name="${jarname}"/>
 		 </fileset>
-		 <fileset dir="${rhino.server.lib}">
+		 <fileset dir="${rhythmyx.server.lib}">
 		    <include name="saxon.jar" /> 
 		 	<include name="javax.servlet.jar"/>
 		 	<include name="jboss-j2ee.jar" /> 
@@ -111,9 +111,23 @@
 		    <arg value="${rhythmyx.home}" />
 			<arg value="${basedir}" />
 			<classpath>
-			    <path refid="rx.class.path" />
-			    <fileset dir="${rhythmyx.home}/AppServer/lib/endorsed" />
-				<fileset dir="${rhythmyx.home}/AppServer/server/rx/lib" />
+			    <fileset dir="${rhythmyx.rxapp.lib}">
+			    	<include name="rxserver.jar"/>
+			    	<include name="rxclient.jar"/> 
+			    	<include name="rxutils.jar" />
+			    	<include name="rxservices.jar" />
+			    	<include name="commons-lang*.jar"/> 
+			    	<include name="jcr*.jar" /> 
+			    	<include name="commons-logging*.jar" /> 
+			    	<include name="commons-collections*.jar" /> 
+			    	<include name="commons-httpclient*.jar" /> 
+				</fileset>
+			    <fileset dir="${rhythmyx.home}/AppServer/lib/endorsed" >
+				    <include name="xml-apis.jar" />
+			    </fileset>
+				<fileset dir="${rhythmyx.home}/AppServer/server/rx/lib">
+					<include name="javax.servlet.jar" /> 
+		    	</fileset>				
 			</classpath>			
 		</java>     
 	</target>
@@ -128,11 +142,11 @@
 		<property name="build.number" value="test build" /> 
 		<antcall target="jarbuilder"/>
 		<delete file="${rhythmyx.home}/AppServer/server/rx/log/server.log" verbose="true" failonerror="false" />
-		<copy file="${jarname}" todir="${rhino.rxapp.lib}" verbose="true" />
-		<copy todir="${rhino.rxapp.WEB-INF}" verbose="true" >
+		<copy file="${jarname}" todir="${rhythmyx.rxapp.lib}" verbose="true" />
+		<copy todir="${rhythmyx.rxapp.WEB-INF}" verbose="true" >
 			<fileset dir="WEB-INF" />
 		</copy>
-		<!--copy file="mybeans.xml" todir="${rhino.rxapp.spring-config}" verbose="true" /  -->
+		<!--copy file="mybeans.xml" todir="${rhythmyx.rxapp.spring-config}" verbose="true" /  -->
 		<echo>waiting for shutdown...</echo>
 	    <sleep seconds="5" /> 
 		<echo>Restarting ${rhythmyx.service}</echo>

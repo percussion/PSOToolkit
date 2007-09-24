@@ -30,10 +30,24 @@
 			<arg value="${rhythmyx.home}"/>
 			<arg value="${basedir}"/>
 			<classpath>
-				<fileset dir="${rhythmyx.lib}"/>
-				<fileset dir="${rhythmyx.home}/AppServer/lib/endorsed"/>
-				<fileset dir="${rhythmyx.home}/AppServer/server/rx/lib"/>
-			</classpath>
+			    <fileset dir="${rhythmyx.lib}">
+			    	<include name="rxserver.jar"/>
+			    	<include name="rxclient.jar"/> 
+			    	<include name="rxutils.jar" />
+			    	<include name="rxservices.jar" />
+			    	<include name="commons-lang*.jar"/> 
+			    	<include name="jcr*.jar" /> 
+			    	<include name="commons-logging*.jar" /> 
+			    	<include name="commons-collections*.jar" /> 
+			    	<include name="commons-httpclient*.jar" /> 
+				</fileset>
+			    <fileset dir="${rhythmyx.home}/AppServer/lib/endorsed" >
+				    <include name="xml-apis.jar" />
+			    </fileset>
+				<fileset dir="${rhythmyx.home}/AppServer/server/rx/lib">
+					<include name="javax.servlet.jar" /> 
+		    	</fileset>				
+			</classpath>	
 		</java>
 	</target>
 	<target name="dist">
