@@ -34,16 +34,17 @@ import com.percussion.services.guidmgr.PSGuidManagerLocator;
 import com.percussion.utils.guid.IPSGuid;
 
 /**
- * Slot finder that uses a SQL Query.
+ * Slot finder that uses a raw SQL Query.
  * <h2>Parameters</h2>  
- * There are 5 parameters: sqlquery, sqlparams, template, max_results and 
- * order_by.  
+ * There are 5 parameters: <code>query</code>, <code>sqlparams</code>, 
+ * <code>template</code>, <code>max_results</code> and 
+ * <code>order_by</code>.  
  * 
- * <h3>sqlquery</h3>
+ * <h3>query</h3>
  * The SQL Query to execute.  This must be a valid SQL query for the 
  * backend repository.  It may contain ? placeholder parameters as defined
  * in <code>java.sql.PreparedStatement</code>. This parameter is
- * mandatory. Never <code>null</code> or <code>empty</code>
+ * mandatory. Never <code>null</code> or <code>empty</code>. 
  * <h3>sqlparams</h3>
  * A <code>List<Object></code> of parameters to substitute in the SQL Query. These parameters 
  * must be of the appropriate type for the query, and the number of elements
@@ -55,15 +56,25 @@ import com.percussion.utils.guid.IPSGuid;
  * This parameter is handled by the superclass. Note that this parameter does
  * not control result set processing.  In the event of very large result sets, it 
  * is possible to run out of memory even if this parameter is specified properly.
- * The sqlquery should adjusted to return only the appropriate results.  
+ * The query should adjusted to return only the appropriate results.  
  * <h3>order_by</h3>
  * This parameter is handled by the superclass. Note that this parameter will cause
  * a JSR 170 query, and the syntax defines how the result set is resorted. 
- * Consider instead adding an order by clause to the <code>sqlquery</code>
+ * Consider instead adding an <code>order by</code> clause to the <code>query</code>
  * parameter. 
  *  
- * <h2>Result Set</h2> *
- * The <code>sqlquery</code> select may include up to 3 columns: 
+ * <p>
+ * Note that only the "standard" parameters defined in the base class
+ * (<code>query</code>, <code>template</code>, <code>max_results</code>
+ * and <code>order_by</code>)
+ * can be specified in the slot definition. Any values for these parameters 
+ * that are specified in the JEXL bindings will override values defined in the slot
+ * definition. The <code>sqlparams</code> parameter  
+ * must be defined in the JEXL bindings and passed to the 
+ * <code>#slot</code> macro.
+ * </p>  
+ * <h2>Result Set</h2>
+ * The <code>query</code> select may include up to 3 columns: 
  * <ol>
  * <li> The content id - mandatory. 
  * <li> The folder id - optional, must be <code>Numeric</code>
@@ -74,16 +85,26 @@ import com.percussion.utils.guid.IPSGuid;
  * superclass will provide a default template from the parameters. 
  * 
  * <h2>Example</h2>
- * The parameter passing for SQL queries is differnt from JSR-170 queries. 
+ * The parameter passing for SQL queries is different from JSR-170 queries. 
  * Instead of a Map of named parameters, the caller must provide a List of 
  * parameter values.  In the JEXL bindings that can be done like this: 
  * <pre>
- * $slotparams.sqlquery = "select G.CONTENTID  from RXS_CT_GENERIC G, CONTENTSTATUS C where G.USAGE = ? and ... "
+ * $slotparams.query = "select G.CONTENTID  from RXS_CT_GENERIC G, CONTENTSTATUS C where G.USAGE = ? and ... "
  * $sql[0]="Y" 
  * $sql[1]=100
  * $slotparams.sqlparams = $sql
  * </pre>
- * 
+ *
+ * In the Velocity template, refer to these parameters by referencing 
+ * the binding variable. 
+ * <pre> 
+ * #slot("myslot" "header" "before" "after" "footer" $slotparams ) 
+ * </pre>
+ * Note the lack of quotes on the last parameter.  It is not possible 
+ * to pass SQL parameters using the String form of parameters 
+ * commonly used with JCR Queries.   
+ *
+ *
  * @see java.sql.PreparedStatement
  * @author DavidBenua
  *
