@@ -111,7 +111,7 @@ public class PSOSlotContentsTest extends MockObjectTestCase
          contents.setCws(cws); 
          contents.setGmgr(gmgr);
 
-         List<PSAaRelationship> r2 = contents.getSlotContents(new PSLegacyGuid(3L), slot1);
+         List<PSAaRelationship> r2 = contents.getSlotContents(new PSLegacyGuid(3L), new PSLegacyGuid(1L));
 
          assertNotNull(r2); 
          assertEquals(3, r2.size()); 

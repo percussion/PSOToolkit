@@ -17,6 +17,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.percussion.cms.objectstore.PSAaRelationship;
 import com.percussion.cms.objectstore.PSRelationshipFilter;
+import com.percussion.design.objectstore.PSLocator;
 import com.percussion.services.guidmgr.IPSGuidManager;
 import com.percussion.services.guidmgr.PSGuidManagerLocator;
 import com.percussion.utils.guid.IPSGuid;
@@ -83,19 +84,30 @@ public class PSOSlotContents
          new TreeSet<PSAaRelationship>(new SlotItemComparator());
       
       PSRelationshipFilter filter = new PSRelationshipFilter();
-      filter.setCategory(PSRelationshipFilter.FILTER_CATEGORY_ACTIVE_ASSEMBLY); 
-      filter.setOwner(gmgr.makeLocator(parentItem)); 
+      filter.setCategory(PSRelationshipFilter.FILTER_CATEGORY_ACTIVE_ASSEMBLY);
+      PSLocator oloc = gmgr.makeLocator(parentItem); 
+      log.debug("Owner locator is  " + oloc); 
+      log.debug("Owner Slot GUID is " + slot);
+      
+      filter.setOwner(oloc); 
       
       // load ALL AA relations for the parent item
       // Note that Slot will be null unless we load the reference info. 
       List<PSAaRelationship> allRelations = cws.loadContentRelations(filter, true);  
+      log.debug("this item has " + allRelations.size() + " active assembly children "); 
       
       for(PSAaRelationship rel : allRelations)
       {
-         if(rel.getSlotId() == slot)
-         { //this item is in our slot. Order will be determined by the comparator. 
+         //log.debug("returned slot GUID is " + rel.getSlotId()); 
+         if(slot.equals(rel.getSlotId()))
+         { //this item is in our slot. Order will be determined by the comparator.
+            //log.debug("found matching slot"); 
             slotRelations.add(rel); 
          }
+//         else
+//         {
+//            log.debug("no match on slot"); 
+//         }
       }
       
       //we just need our slot as a list.  
