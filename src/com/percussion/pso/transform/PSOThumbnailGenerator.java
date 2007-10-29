@@ -10,6 +10,9 @@ import java.io.OutputStream;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.percussion.extension.IPSExtensionDef;
 import com.percussion.extension.IPSItemInputTransformer;
 import com.percussion.extension.IPSRequestPreProcessor;
@@ -41,7 +44,9 @@ import com.percussion.util.PSPurgableTempFile;
 
 public class PSOThumbnailGenerator extends PSFileInfo
    implements IPSItemInputTransformer, IPSRequestPreProcessor {
-
+ 
+   private static Log log = LogFactory.getLog(PSOThumbnailGenerator.class); 
+   
    public PSOThumbnailGenerator() {
    }
 
@@ -111,8 +116,9 @@ public class PSOThumbnailGenerator extends PSFileInfo
       }
       else{
          if (obj!=null)
-            throw new PSParameterMismatchException("Parameter " + sourceFieldName +
-               " is not a valid type. The parameter should be a sys_file control");
+         {
+            logMessage("Input image field is not an image file: no thumbnail will be generated.",request);
+         }
       }
       super.preProcessRequest(params, request);
    }
@@ -160,7 +166,7 @@ public class PSOThumbnailGenerator extends PSFileInfo
       }
       catch (IOException e) {
 //         e.printStackTrace();
-         System.out.println("Could not create thumbnail " + thumb + " for " + orig);
+         log.error("Could not create thumbnail " + thumb + " for " + orig, e);
       }
    }
 
@@ -192,12 +198,8 @@ public class PSOThumbnailGenerator extends PSFileInfo
       return fileName;
    }
 
-//   private void logMessage(String msg)
-//   {
-//      System.out.println(msg);
-//   }
-
    private void logMessage(String msg, IPSRequestContext req){
+      log.info(msg);
       req.printTraceMessage(msg);
    }
 }
