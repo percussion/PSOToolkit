@@ -8,15 +8,29 @@
  */
 package com.percussion.pso.jexl;
 
+import java.io.File;
+import java.util.List;
+
+import static java.util.Arrays.asList;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.percussion.cms.objectstore.PSFolder;
+import com.percussion.design.objectstore.PSLocator;
+import com.percussion.extension.IPSExtensionDef;
 import com.percussion.extension.IPSJexlExpression;
 import com.percussion.extension.IPSJexlMethod;
 import com.percussion.extension.IPSJexlParam;
+import com.percussion.extension.PSExtensionException;
 import com.percussion.extension.PSExtensionProcessingException;
 import com.percussion.extension.PSJexlUtilBase;
+import com.percussion.services.assembly.IPSAssemblyItem;
+import com.percussion.services.guidmgr.IPSGuidManager;
+import com.percussion.services.guidmgr.PSGuidManagerLocator;
 import com.percussion.utils.guid.IPSGuid;
 import com.percussion.webservices.PSErrorException;
+import com.percussion.webservices.PSErrorResultsException;
 import com.percussion.webservices.content.IPSContentWs;
 import com.percussion.webservices.content.PSContentWsLocator;
 
@@ -24,6 +38,7 @@ import com.percussion.webservices.content.PSContentWsLocator;
  * 
  *
  * @author DavidBenua
+ * @author AdamGent
  *
  */
 public class PSOFolderTools extends PSJexlUtilBase implements IPSJexlExpression 
@@ -32,7 +47,8 @@ public class PSOFolderTools extends PSJexlUtilBase implements IPSJexlExpression
     * Logger for this class
     */
    private static final Log log = LogFactory.getLog(PSOFolderTools.class);
-   
+   private IPSContentWs contentWs;
+   private IPSGuidManager guidManager;
    
    /**
     * 
@@ -54,12 +70,10 @@ public class PSOFolderTools extends PSJexlUtilBase implements IPSJexlExpression
          log.error(errmsg); 
          throw new PSExtensionProcessingException(0, errmsg); 
       }
-      IPSContentWs cws = PSContentWsLocator.getContentWebservice();
-      
-      String[] paths = null;
+    String[] paths = null;
       try
       {
-         paths = cws.findFolderPaths(itemId);
+         paths = contentWs.findFolderPaths(itemId);
       } catch (Exception e)
       {
         log.error("Unexpected exception " + e.getMessage(), e );
@@ -86,5 +100,43 @@ public class PSOFolderTools extends PSJexlUtilBase implements IPSJexlExpression
       log.warn("multiple paths found for item " + itemId);
       return paths[0];
    }
+
+   @IPSJexlMethod(description="get the folder path for this item", 
+           params={@IPSJexlParam(name="assemblyItem", description="$sys.assemblyItem")},
+           returns="the path of the folder that contains this item"
+   )
+   public String getParentFolderPath(IPSAssemblyItem assemblyItem) throws PSErrorResultsException { 
+       int id = assemblyItem.getFolderId();
+       if (id < 0) return null;
+       IPSGuid folderGuid = guidManager.makeGuid(new PSLocator(id, -1));
+       List<PSFolder> folders = contentWs.loadFolders(asList(folderGuid));
+       if (folders.size() < 1) return null;
+       return folders.get(0).getFolderPath();
+       
+   }
+
+   @Override
+    public void init(IPSExtensionDef def, File codeRoot)
+            throws PSExtensionException {
+        super.init(def, codeRoot);
+        contentWs = PSContentWsLocator.getContentWebservice();
+        guidManager = PSGuidManagerLocator.getGuidMgr();
+    }
+
+    public IPSContentWs getContentWs() {
+        return contentWs;
+    }
+
+    public void setContentWs(IPSContentWs contentWs) {
+        this.contentWs = contentWs;
+    }
+
+    public IPSGuidManager getGuidManager() {
+        return guidManager;
+    }
+
+    public void setGuidManager(IPSGuidManager guidManager) {
+        this.guidManager = guidManager;
+    }
    
 }
