@@ -38,7 +38,7 @@ public class PSOProxyQueryResourceTest {
     }
     
     @Test
-    public void shouldGetAtomFeedWithUrlAsExtensionParam() throws Exception {
+    public void shouldReturnAnXmlDocumentFromTheUrlProvidedAsAnExtensionParameter() throws Exception {
         IPSRequestContext request = makeRequest(makeRequestParams(null, null, null));
         Object[] eParams = makeParams("http://news.google.com/?output=atom");
         Document doc = proxy.processResultDocument(eParams, request, null);
@@ -47,7 +47,7 @@ public class PSOProxyQueryResourceTest {
     }
     
     @Test
-    public void shouldGetAtomFeedWithUrlAsRequestParam() throws Exception {
+    public void shouldReturnAnXmlDocumentFromTheUrlProvidedAsARequestParameter() throws Exception {
         IPSRequestContext request = makeRequest(
                 makeRequestParams("http://news.google.com/?output=atom", null, null));
         Object[] eParams = new Object[] {};
@@ -57,7 +57,9 @@ public class PSOProxyQueryResourceTest {
     }
     
     @Test
-    public void shouldGetAtomFeedWithOutputParameterFromRequest() throws Exception {
+    public void 
+    shouldReturnAnXmlDocumentFromTheGivenUrlWithTheRequestParametersAppendedToTheUrl() 
+    throws Exception {
         Map<String,String> params = makeRequestParams(null, null, null);
         params.put("output", "atom");
         params.put("test", "");
