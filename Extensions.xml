@@ -324,5 +324,27 @@
          <description>The sort order for the results</description>
       </PSXExtensionParamDef>
       <suppliedResources/>
-   </Extension>     
+   </Extension>
+   <Extension name="PSOProxyQueryResource" context="user/" handler="Java" categorystring="contenteditor" deprecated="no" restoreRequestParamsOnError="no">
+		<initParam name="com.percussion.user.description">This exit allows you to make internal request to external resource that produce XML.</initParam>
+		<initParam name="com.percussion.extension.version">1</initParam>
+		<initParam name="className">com.percussion.pso.legacy.PSOProxyQueryResource</initParam>
+		<initParam name="com.percussion.extension.reentrant">yes</initParam>
+		<interface name="com.percussion.extension.IPSResultDocumentProcessor" />
+      <PSXExtensionParamDef id="0">
+         <name>url</name>
+         <dataType>java.lang.String</dataType>
+         <description>(required) The url call.</description>
+      </PSXExtensionParamDef>
+      <PSXExtensionParamDef id="0">
+         <name>user</name>
+         <dataType>java.lang.String</dataType>
+         <description>(optional) The user name if authentication is required.</description>
+      </PSXExtensionParamDef>
+      <PSXExtensionParamDef id="0">
+         <name>password</name>
+         <dataType>java.lang.String</dataType>
+         <description>(optional) The password if authentication is required.</description>
+      </PSXExtensionParamDef>
+	</Extension>     
 </PSXExtensionHandlerConfiguration>
