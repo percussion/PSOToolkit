@@ -13,6 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import com.percussion.design.objectstore.IPSReplacementValue;
 import com.percussion.extension.IPSExtensionDef;
 import com.percussion.server.IPSRequestContext;
+import com.percussion.services.assembly.IPSSlotContentFinder;
 
 /**
  * 
@@ -27,6 +28,9 @@ public class PSOExtensionParamsHelper {
     Object[] params;
     IPSExtensionDef extensionDef;
     Map<String,String> extensionParameters;
+    Map<String,? extends Object> slotArguments;
+    Map<String,Object> slotSelectors;
+    
     IPSRequestContext request;
     
     /**
@@ -82,6 +86,33 @@ public class PSOExtensionParamsHelper {
     }
     
     /**
+     * Use this constructor to help with slot finders.
+     * @see IPSSlotContentFinder#find(com.percussion.services.assembly.IPSAssemblyItem, com.percussion.services.assembly.IPSTemplateSlot, Map)
+     * @param args slot finders args from slotfinder.getFinderArguments()
+     * @param selectors The selectors that are passed with the find method.
+     * @param log
+     */
+    public PSOExtensionParamsHelper(Map<String,? extends Object> args, 
+            Map<String,Object> selectors, Log log) {
+        doLog(log);
+        if (args == null)
+        {
+            String message = "args may not be null";
+            this.log.error(message);
+           throw new IllegalArgumentException(message);
+        }
+        if (selectors == null)
+        {
+            String message = "selectors may not be null";
+            this.log.error(message);
+           throw new IllegalArgumentException(message);
+        }
+        this.slotArguments = args;
+        this.slotSelectors = selectors;
+        
+    }
+    
+    /**
      * Gets a parameter by first trying to get it from the request then
      * followed by the parameters passed to the extension.
      * 
@@ -89,6 +120,42 @@ public class PSOExtensionParamsHelper {
      * @return The value of the parameter, or null if the parameter is not found.
      */
     public String getParameter(String paramName) {
+        
+        if (slotSelectors != null && slotArguments != null) {
+            // This helper is for a slot finder.
+            Object val = slotSelectors.get(paramName);
+            if (val != null) {
+                log.debug("Got the parameter name = " + paramName
+                        + " value = " + val + " from the slot selectors.");
+            }
+            if (val == null)
+            {
+               val = slotArguments.get(paramName);
+               if (val != null) {
+                   log.debug("Got the parameter name = " + paramName
+                           + " value = " + val + " from the slot arguments.");
+               }
+            }
+            if (val instanceof String)
+               return (String) val;
+            else if (val instanceof String[])
+            {
+               String vals[] = (String[]) val;
+               if (vals.length == 0) {
+                   String errorMessage = "No value for " + paramName;
+                   log.error(errorMessage);
+                  throw new RuntimeException(errorMessage);
+               }
+               return vals[0];
+            }
+            else if (val != null)
+               return val.toString();
+            else {
+                log.debug("Returning null for slot aruments and selectors");
+               return null;
+            }
+        }
+        
         if (request != null) {
             String value = request.getParameter(paramName);
             log.debug("Got the parameter name = " + paramName
