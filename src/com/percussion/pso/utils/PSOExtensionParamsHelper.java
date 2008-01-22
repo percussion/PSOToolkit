@@ -174,6 +174,10 @@ public class PSOExtensionParamsHelper {
         }
     }
     
+    public Number getRequiredParameterAsNumber(String paramName) {
+        return paramToNumber(paramName, getRequiredParameter(paramName));
+    }
+    
     /**
      * Gets a parameter and if its null or an empty String then an
      * IllegalArgumentException is thrown.
@@ -192,6 +196,11 @@ public class PSOExtensionParamsHelper {
         return value;
     }
     
+    public Number getOptionalParameterAsNumber(String paramName, String defaultValue) {
+        return paramToNumber(paramName, getOptionalParameter(paramName, defaultValue));
+    }
+    
+    
     /**
      * Gets a parameter and if its null or empty returns the provided default value.
      * 
@@ -208,6 +217,12 @@ public class PSOExtensionParamsHelper {
         else {
             return value;
         }
+    }
+    
+    public void errorOnParameter(String paramName, String reason) {
+        String error = "Parameter: " + paramName + " is invalid."+ " Reason: " + reason;
+        log.error(error);
+        throw new IllegalArgumentException(error);
     }
     
     public Number paramToNumber(String paramName, String param) {
