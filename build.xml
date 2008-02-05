@@ -1,4 +1,4 @@
-<project name="PSOToolkit65" default="dist" basedir=".">
+<project name="PSOToolkit65" default="dist" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
 	<description>
        PSO Toolkit for Rhythmyx 6.5
     </description>
@@ -36,7 +36,8 @@
 	<!-- relative paths -->
 	<property name="src" location="src"/>
 	<property name="lib" location="lib"/>
-	<property name="bin" location="bin"/>	
+	<property name="bin" location="bin"/>
+	<property name="ivylib" location="ivylib" /> 
 	<property name="apidoc" location="apidoc" />
 	<!-- used for running Windows commands --> 
 	<property name="comspec" location="${env.ComSpec}"/>
@@ -44,17 +45,9 @@
 	
 	<!-- Rhythmyx classpath  --> 
 	<path id="rx.class.path"> 
-		 <fileset dir="${rhythmyx.rxapp.lib}">
+		 <fileset dir="${ivylib}">
 		 	<include name="**.jar"/>
-		 	<exclude name="${jarname}"/>
 		 </fileset>
-		 <fileset dir="${rhythmyx.server.lib}">
-		    <include name="saxon.jar" /> 
-		 	<include name="javax.servlet.jar"/>
-		 	<include name="jboss-j2ee.jar" /> 
-		 </fileset>
-		 <fileset dir="${lib}" />   
-		 <fileset dir="${jmock.lib}"/>
 		</path>
 	
 
@@ -63,9 +56,24 @@
 		<tstamp/>
 	</target>
 	
-	<target name="clean" description="clean up">
+	<target name="clean" description="clean up" depends="configure">
 		<delete dir="${bin}"/>
 		<mkdir dir="${bin}"/>
+		<ivy:cleancache />
+		<delete dir="${ivylib}" /> 
+		<mkdir dir="${ivylib}" />
+	</target>
+	
+	<target name="configure">
+	   <ivy:settings file="ivysettings.xml" />
+    </target>
+
+	<target name="resolve" depends="configure" >
+	   <ivy:resolve /> 
+	</target>
+	
+	<target name="retrieve" depends="resolve">
+	   <ivy:retrieve pattern="${ivylib}/[artifact].[ext]" />   	
 	</target>
 	
 	<target name="compile" description="compile the source ">
