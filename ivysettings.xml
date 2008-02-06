@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <ivysettings>
   <settings defaultResolver="percussion"/>
+  <properties file="${ivy.settings.dir}/ivy-local.properties" />
   <include url="http://foo.percussion.local/ivyrepo/ivysettings.xml" /> 
   
 </ivysettings>
