@@ -56,16 +56,19 @@
 		<tstamp/>
 	</target>
 	
-	<target name="clean" description="clean up" depends="configure">
+	<target name="ivyclean" depends="configure">
+		<ivy:cleancache />
+	</target>
+	
+	<target name="clean" description="clean up">
 		<delete dir="${bin}"/>
 		<mkdir dir="${bin}"/>
-		<ivy:cleancache />
 		<delete dir="${ivylib}" /> 
 		<mkdir dir="${ivylib}" />
 	</target>
 	
 	<target name="configure">
-	   <ivy:settings file="ivysettings.xml" />
+	   <ivy:settings url="http://foo.percussion.local/ivyrepo/ivysettings.xml" />
     </target>
 
 	<target name="resolve" depends="configure" >

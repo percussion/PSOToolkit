@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <ivysettings>
-  <settings defaultResolver="percussion-shared"/>
-  <resolvers>
-  <!--  sftp name="percussion-shared" host="foo.percussion.local" user="ivyrep" userPassword="ivy4foo"  -->
-      <sftp name="percussion-shared" host="127.0.0.1" user="ivyrep" userPassword="ivy4foo" port="8822">
-         <ivy pattern="/home/ivyrep/repo/[organization]/[module]-ivy-[revision].xml" />
-         <artifact pattern="/home/ivyrep/repo/[organization]/[module]/[revision]/[artifact]-[revision].[ext]" />
-         <artifact pattern="/home/ivyrep/repo/[organization]/[module]/[revision]/[artifact].[ext]" />
-      </sftp>
-  </resolvers>
+  <settings defaultResolver="percussion"/>
+  <include url="http://foo.percussion.local/ivyrepo/ivysettings.xml" /> 
+  
 </ivysettings>
