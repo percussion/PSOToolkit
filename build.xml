@@ -1,4 +1,4 @@
-<project name="PSOToolkit65" default="dist" basedir=".">
+<project name="PSOToolkit65" default="dist" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
 	<description>
        PSO Toolkit for Rhythmyx 6.5
     </description>
@@ -9,13 +9,9 @@
 	<property name="rhythmyx.home" location="${env.RHYTHMYX_HOME}"/>
 	<!-- name of Rhythmyx Service -->
 	<property name="rhythmyx.service" value="${env.RHYTHMYX_SERVICE}"/>
-	<!-- base of Axis Path -->
-	<property name="axis_home" location="${env.AXIS_HOME}"/> 
-	<!-- base of JMock Path -->
-	<property name="jmock_home" location="${env.JMOCK_HOME}" /> 
-	
+
 	<!-- name of our output jar --> 
-	<property name="jarname" value="PSOToolkit65.jar" />	
+	<property name="jarname" value="PSOToolkit-6.5.jar" />	
 	<!-- name of our distribution zip -->
 	<property name="distfile" value="PSOToolkit6.zip" />	
 	<property name="testdistfile" value="PSOToolkit6-test.zip" /> 
@@ -28,15 +24,12 @@
 	<property name="rhythmyx.rxapp.spring-config"
 	value="${rhythmyx.rxapp}/WEB-INF/config/user/spring" />
 	<property name="rhythmyx.rxapp.WEB-INF" value="${rhythmyx.rxapp}/WEB-INF" />
-	
-	<property name="rhythmyx.rxpub.lib" value="${rhythmyx.rxpub}/WEB-INF/lib" />
-	<property name="rhythmyx.rxpub.spring-config" value="${rhythmyx.rxpub}/WEB-INF/config/spring" /> 
-	
-	<property name="jmock.lib" location="${jmock_home}" />
+
 	<!-- relative paths -->
 	<property name="src" location="src"/>
 	<property name="lib" location="lib"/>
-	<property name="bin" location="bin"/>	
+	<property name="bin" location="bin"/>
+	<property name="ivylib" location="ivylib" /> 
 	<property name="apidoc" location="apidoc" />
 	<!-- used for running Windows commands --> 
 	<property name="comspec" location="${env.ComSpec}"/>
@@ -44,17 +37,9 @@
 	
 	<!-- Rhythmyx classpath  --> 
 	<path id="rx.class.path"> 
-		 <fileset dir="${rhythmyx.rxapp.lib}">
+		 <fileset dir="${ivylib}">
 		 	<include name="**.jar"/>
-		 	<exclude name="${jarname}"/>
 		 </fileset>
-		 <fileset dir="${rhythmyx.server.lib}">
-		    <include name="saxon.jar" /> 
-		 	<include name="javax.servlet.jar"/>
-		 	<include name="jboss-j2ee.jar" /> 
-		 </fileset>
-		 <fileset dir="${lib}" />   
-		 <fileset dir="${jmock.lib}"/>
 		</path>
 	
 
@@ -63,9 +48,35 @@
 		<tstamp/>
 	</target>
 	
+	<target name="ivy-clean" depends="ivy-configure">
+		<ivy:cleancache />
+		<delete dir="${ivylib}" /> 
+		<mkdir dir="${ivylib}" />
+	</target>
+	
 	<target name="clean" description="clean up">
 		<delete dir="${bin}"/>
 		<mkdir dir="${bin}"/>
+	</target>
+	
+	<target name="ivy-configure">
+	   <ivy:settings url="http://foo.percussion.local/ivyrepo/ivysettings.xml" />
+    </target>
+
+	<target name="ivy-resolve" depends="ivy-configure" >
+	   <ivy:resolve conf="test"/> 
+	</target>
+	
+	<target name="ivy-retrieve" depends="ivy-resolve">
+	   <ivy:retrieve pattern="${ivylib}/[artifact].[ext]" />   	
+	</target>
+	
+	<target name="ivy-publish" depends="ivy-resolve"  >
+		<ivy:publish resolver="foo-shared-sftp" forcedeliver="true"  
+			pubrevision="6.5" overwrite="true" 
+			conf="default" status="release" >
+			<artifacts pattern="${lib}/[artifact]-[revision].[ext]" /> 
+		</ivy:publish>
 	</target>
 	
 	<target name="compile" description="compile the source ">
@@ -75,7 +86,6 @@
     		<fileset dir="${src}">
       			<include name="**/*.xml"/>
     			<include name="**/*.properties" />
-    			<include name="**/*.betwixt" />
     		</fileset>
   		</copy>
 	</target>
@@ -85,7 +95,7 @@
 		<javadoc destdir="apidoc" private="true" use="yes" 
 		windowtitle="${ant.project.name}">
 			<packageset dir="${src}" defaultexcludes="yes">
-				<include name="com/percussion/pso/**"/>	
+				<include name="com/percussion/**"/>	
 			</packageset>
 			<classpath refid="rx.class.path"/>
 		</javadoc>
@@ -97,7 +107,7 @@
 			<entry key="build.number" value="${build.number}"/>
 			<entry key="build.date" type="date" pattern="EEEE MMM dd yyyy" value="now"/>
     	</propertyfile>
-		<jar jarfile="${jarname}" basedir="${bin}">
+		<jar jarfile="${lib}/${jarname}" basedir="${bin}">
 			<include name="com/percussion/pso/**"/>
 			<exclude name="log4j.properties" /> 
 			<include name="build.properties" /> 
@@ -142,7 +152,7 @@
 		<property name="build.number" value="test build" /> 
 		<antcall target="jarbuilder"/>
 		<delete file="${rhythmyx.home}/AppServer/server/rx/log/server.log" verbose="true" failonerror="false" />
-		<copy file="${jarname}" todir="${rhythmyx.rxapp.lib}" verbose="true" />
+		<copy file="${lib}/${jarname}" todir="${rhythmyx.rxapp.lib}" verbose="true" />
 		<copy todir="${rhythmyx.rxapp.WEB-INF}" verbose="true" >
 			<fileset dir="WEB-INF" />
 		</copy>
@@ -160,7 +170,7 @@
 		<property name="build.number" value="test build" /> 
 		<antcall target="jarbuilder"/>
 		<zip destfile="${testdistfile}">						
-			<zipfileset dir="." includes="${jarname}" prefix="lib" />
+			<zipfileset dir="${lib}" includes="${jarname}" prefix="lib" />
 			<fileset dir="." includes="readme.txt, build.number, deploy.xml" />
 			<fileset dir="." includes="license.txt, Extensions.xml" />
 			<zipfileset dir="WEB-INF" prefix="WEB-INF" />
@@ -172,7 +182,7 @@
 		<buildnumber/>
 		<antcall target="jarbuilder"/>	
 		<zip destfile="${distfile}">						
-			<zipfileset dir="." includes="${jarname}" prefix="lib" />
+			<zipfileset dir="${lib}" includes="${jarname}" prefix="lib" />
 			<fileset dir="." includes="readme.txt, build.number, deploy.xml" />
 			<fileset dir="." includes="license.txt, Extensions.xml" />
 			<zipfileset dir="WEB-INF" prefix="WEB-INF" />
@@ -180,5 +190,6 @@
 		</zip>
 			
 	</target>	
+
 
 </project>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ivysettings>
+  <settings defaultResolver="foo-shared-http"/>
+  <properties file="${ivy.settings.dir}/ivy-local.properties" />
+  <include url="http://${ivyrepo.http.host}:${ivyrepo.http.port}/ivyrepo/ivysettings.xml" /> 
+  
+</ivysettings>
