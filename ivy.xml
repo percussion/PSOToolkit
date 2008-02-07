@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="/ivyrepo/ivy-doc.xsl"?>
 <ivy-module version="1.3">
     <info 
         organisation="percussion"
@@ -6,6 +7,9 @@
         revision="6.5" 
         status="release">
 	</info>
+	<publications>
+	   <artifact name="PSOToolkit" type="jar" />
+	</publications>
 	<dependencies>
 	  <dependency org="percussion" name="rhythmyx" rev="6.5"/>
 	  <dependency org="apache" name="commons-httpclient" rev="2.0.2" />
