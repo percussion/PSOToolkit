@@ -1,7 +1,25 @@
 <project name="PSOToolkit65" default="dist" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
 	<description>
        PSO Toolkit for Rhythmyx 6.5
+		
+	   This build file depends on Ivy 2.0 (beta 1, but should be upward compatible)
+	   
     </description>
+	<!-- =================================
+	Download and install Ivy2 from http://ant.apache.org/ivy
+    Modify your Ant runtime preferences in Eclipse to include the Ivy JARs
+    Setup your ivy-local.properties  for your user / environment (see the sample file)
+    
+    To build for the first time: 
+    1) Run the ivy-retrieve target
+    2) In Project Properties, add all JARs in the ivylib folder. 
+    3) Build (using the testbuild and dist targets)
+    4) Run the ivy-publish target 
+    
+    You should occasionally refresh (with ivy-retrieve) and
+    do ivy-publish each time a new build is released. 
+    
+   	-->
 	<!-- set global properties for this build -->
     
 	<property environment="env"/>
