@@ -78,7 +78,7 @@
 	</target>
 	
 	<target name="ivy-configure">
-	   <ivy:settings url="http://foo.percussion.local/ivyrepo/ivysettings.xml" />
+	   <ivy:settings />
     </target>
 
 	<target name="ivy-resolve" depends="ivy-configure" >
