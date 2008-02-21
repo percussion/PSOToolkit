@@ -1,8 +1,10 @@
 /*
  * com.percussion.pso.jexl PSOListTools.java
  * 
- * @copyright 2006 Percussion Software, Inc. All rights reserved.
- * See license.txt for detailed restrictions. 
+ * COPYRIGHT (c) 1999 - 2008 by Percussion Software, Inc., Woburn, MA USA.
+ * All rights reserved. This material contains unpublished, copyrighted
+ * work including confidential and proprietary information of Percussion.
+ *
  * 
  * @author Adam Gent
  *

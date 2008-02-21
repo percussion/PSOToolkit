@@ -1,6 +1,10 @@
 /*
  * com.percussion.pso.jexl PSOObjectFinder.java
- *  
+ *
+ * @COPYRIGHT (c) 1999 - 2008 by Percussion Software, Inc., Woburn, MA USA.
+ * All rights reserved. This material contains unpublished, copyrighted
+ * work including confidential and proprietary information of Percussion.
+ *
  * @author davidbenua
  *
  */

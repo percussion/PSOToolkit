@@ -1,9 +1,10 @@
 /*
  * com.percussion.pso.jexl PSOSlotTools.java
  * 
- * @copyright 2006 Percussion Software, Inc. All rights reserved.
- * See license.txt for detailed restrictions. 
- * 
+ * COPYRIGHT (c) 1999 - 2008 by Percussion Software, Inc., Woburn, MA USA.
+ * All rights reserved. This material contains unpublished, copyrighted
+ * work including confidential and proprietary information of Percussion.
+ *
  * @author Adam Gent
  *
  */
@@ -37,7 +38,7 @@ import com.percussion.utils.exceptions.PSExceptionHelper;
 /**
  * This class is a utility class to help work with slots.
  * 
- * @see #getSlotContents(IPSAssemblyItem, IPSTemplateSlot, Map)
+ * 
  * @author agent
  *
  */
@@ -58,12 +59,15 @@ public class PSOSlotTools extends PSJexlUtilBase implements IPSJexlExpression
    /**
     * Get the contents of a slot as a list of assembly items.
     * 
-    * @param item
-    * @param slot
-    * @param params
+    * @param item the Assembly Item
+    * @param slotName the name of the slot
+    * @param params the combined map of parameters to pass to the slot finder.  
+    * Never <code>null</code> may be <code>empty</code>
     * @return a list of results
     * @throws Throwable
+    * @deprecated use PSAssemblerUtils.getSlotItems() instead. 
     */
+   @Deprecated
    @IPSJexlMethod(description = "Get the contents of a slot as a list of assembly items", params =
    {
          @IPSJexlParam(name = "item", description = "the parent assembly item"),

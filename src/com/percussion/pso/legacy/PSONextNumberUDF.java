@@ -1,6 +1,10 @@
-/*
+/**************************************
  * com.percussion.pso.legacy PSONextNumberUDF.java
  *  
+ * COPYRIGHT (c) 1999 - 2008 by Percussion Software, Inc., Woburn, MA USA.
+ * All rights reserved. This material contains unpublished, copyrighted
+ * work including confidential and proprietary information of Percussion.
+ *
  * @author davidbenua
  *
  */
@@ -18,7 +22,7 @@ import com.percussion.fastforward.utils.PSUtils;
 import com.percussion.server.IPSRequestContext;
 
 /**
- * 
+ * Allocates the next number in a sequence. 
  *
  * @author davidbenua
  *
@@ -40,6 +44,11 @@ public class PSONextNumberUDF extends PSSimpleJavaUdfExtension
       super();
    }
    /**
+    * Generates the next key in a sequence.  Calls the internal PSUtils 
+    * method for allocating a block based on the name supplied in 
+    * <code>params[0]</code>.  
+    * @param params the parameter array
+    * @param request the callers request context
     * @see com.percussion.extension.IPSUdfProcessor#processUdf(java.lang.Object[], com.percussion.server.IPSRequestContext)
     */
    public Object processUdf(Object[] params, IPSRequestContext request)

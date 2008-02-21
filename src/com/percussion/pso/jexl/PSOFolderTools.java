@@ -1,8 +1,11 @@
 /*
- * com.percussion.pso.sandbox PSOFolderTools.java
+ * com.percussion.pso.jexl PSOFolderTools.java
  * 
- * @copyright 2006 Percussion Software, Inc. All rights reserved.
- * See license.txt for detailed restrictions. 
+ * COPYRIGHT (c) 1999 - 2008 by Percussion Software, Inc., Woburn, MA USA.
+ * All rights reserved. This material contains unpublished, copyrighted
+ * work including confidential and proprietary information of Percussion.
+ *
+ * @author AdamGent
  * @author DavidBenua
  *
  */
@@ -42,7 +45,7 @@ import com.percussion.webservices.content.IPSContentWs;
 import com.percussion.webservices.content.PSContentWsLocator;
 
 /**
- * 
+ * JEXL functions for folder manipulation. 
  *
  * @author DavidBenua
  * @author AdamGent
@@ -65,6 +68,14 @@ public class PSOFolderTools extends PSJexlUtilBase implements IPSJexlExpression
       super();
    }
    
+   /**
+    * Get the folder path for an item. 
+    * @param itemId the GUID for the item
+    * @return the parent folder path. If there are multiple paths, the 
+    * first one will be returned. 
+    * @throws PSErrorException
+    * @throws PSExtensionProcessingException
+    */
    @IPSJexlMethod(description="get the folder path for this item", 
          params={@IPSJexlParam(name="itemId", description="the item GUID")})
    public String getParentFolderPath(IPSGuid itemId) 
@@ -108,6 +119,14 @@ public class PSOFolderTools extends PSJexlUtilBase implements IPSJexlExpression
       return paths[0];
    }
 
+   /**
+    * Gets the path of a folder containing this item. 
+    * @param assemblyItem the assembly item whose parent folder will be fetched. 
+    * @return the folder path of the containing folder. 
+    * @throws PSErrorResultsException
+    * @throws PSExtensionProcessingException
+    * @throws PSErrorException
+    */
    @IPSJexlMethod(description="get the folder path for this item", 
            params={@IPSJexlParam(name="assemblyItem", description="$sys.assemblyItem")},
            returns="the path of the folder that contains this item"
@@ -121,7 +140,7 @@ public class PSOFolderTools extends PSJexlUtilBase implements IPSJexlExpression
          * (ie sys_folderid was not passed as a parameter) then we are going
          * to have to lookup the folder using the same process that managed nav
          * does.
-         * Unfortuanatly this process is tightly coupled to Nav so we have
+         * Unfortunately this process is tightly coupled to Nav so we have
          * to instantiate the PSNavHelper class instead of using a service.
          * TODO Dave should look over this.
          */

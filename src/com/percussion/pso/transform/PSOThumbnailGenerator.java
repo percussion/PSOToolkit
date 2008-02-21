@@ -1,3 +1,12 @@
+/***
+ * com.percussion.pso.transform PSOThumbnailGenerator.java
+ *
+ * COPYRIGHT (c) 1999 - 2008 by Percussion Software, Inc., Woburn, MA USA.
+ * All rights reserved. This material contains unpublished, copyrighted
+ * work including confidential and proprietary information of Percussion.
+ *
+ */
+
 package com.percussion.pso.transform;
 
 import java.awt.Graphics2D;
@@ -30,7 +39,7 @@ import com.percussion.util.PSPurgableTempFile;
 
 
 /**
- * generates a fixed size thumbnail from an uploaded image. 
+ * Generates a fixed size thumbnail from an uploaded image. 
  * 
  * <p>Title: PSOThumbnailGenerator </p>
  * <p>Description: A Pre-exit that can be used on an Image Content editor to automatically
@@ -47,7 +56,6 @@ import com.percussion.util.PSPurgableTempFile;
  * @author DavidBenua
  * @version 2.0
  */
-
 public class PSOThumbnailGenerator extends PSFileInfo
    implements IPSItemInputTransformer, IPSRequestPreProcessor {
  
@@ -165,6 +173,17 @@ public class PSOThumbnailGenerator extends PSFileInfo
       super.preProcessRequest(params, request);
    }
 
+   /**
+    * Makes a thumbnai file from a byte stream.  
+    * @param imageStream the image as a byte stream. 
+    * @param source_filename the file name from the source image upload. 
+    * @param thumb_prefix the prefix to be applied to the thumbnail file.
+    * @param parent_mimetype the content type of the image data. This must contain
+    * the word "image". 
+    * @param maxDimension the maximum size of the thumbnail.  
+    * @return the thumbnail as a file.  Will be <code>null</code> if any errors
+    * occur.  
+    */
    public PSPurgableTempFile makeThumbFile(InputStream imageStream, String source_filename, String thumb_prefix, String parent_mimetype, int maxDimension )
    {
       log.debug("processing file " + source_filename);
@@ -188,7 +207,7 @@ public class PSOThumbnailGenerator extends PSFileInfo
            return thumb_temp; 
          }
          catch(IOException ioe){
-            log.error("unable to create thumbnail " + thumb_filename, ioe); 
+            log.error("unable to create thumbnail " + thumb_filename, ioe);            
          }
       }
       else{
@@ -200,8 +219,9 @@ public class PSOThumbnailGenerator extends PSFileInfo
    /**
     * Reads an image in a file and creates a thumbnail in another file. 
     * Modified slightly to use ImageIO instead of Sun JPEG CODEC.  
-    * @param outstream
-    * @param instream
+    * @param outstream the thumbnail image as a byte stream.  This image will
+    * always be coded as a JPEG. 
+    * @param instream the source image as a byte stream. 
     * @param maxDim The width and height of the thumbnail must be maxDim pixels or less.
     */
    public void createThumbnail(OutputStream outstream, InputStream instream,  int maxDim) throws IOException

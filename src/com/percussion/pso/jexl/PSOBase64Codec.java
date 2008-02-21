@@ -1,7 +1,12 @@
 /*
  * com.percussion.pso.jexl PSOBase64Codec.java
- *  
+ *
  * @author DavidBenua
+ *  
+ * COPYRIGHT (c) 1999 - 2008 by Percussion Software, Inc., Woburn, MA USA.
+ * All rights reserved. This material contains unpublished, copyrighted
+ * work including confidential and proprietary information of Percussion.
+ *
  *
  */
 package com.percussion.pso.jexl;
@@ -20,7 +25,7 @@ import com.percussion.extension.IPSJexlExpression;
 import com.percussion.extension.IPSJexlMethod;
 import com.percussion.extension.IPSJexlParam;
 import com.percussion.extension.PSJexlUtilBase;
-import com.percussion.tools.PSCopyStream;
+import com.percussion.tools.PSCopyStream; 
 
 /**
  * 
@@ -43,10 +48,19 @@ public class PSOBase64Codec extends PSJexlUtilBase implements IPSJexlExpression
       super();
    }
 
+   /**
+    * Base64 encode a binary property
+    * @param jcrProperty the property to encode
+    * @return a base 64 encoded String representing the property value.
+    * @throws ValueFormatException
+    * @throws RepositoryException
+    * @throws IOException 
+    * @throws UnsupportedEncodingException 
+    */
    @IPSJexlMethod(description="Encode a binary property", 
          params={
         @IPSJexlParam(name="source", description="binary property to encode")})
-   public String encode(Property jcrProperty) throws ValueFormatException, RepositoryException
+   public String encode(Property jcrProperty) throws ValueFormatException, RepositoryException, UnsupportedEncodingException, IOException
    {
       if(jcrProperty == null)
       {
@@ -56,18 +70,32 @@ public class PSOBase64Codec extends PSJexlUtilBase implements IPSJexlExpression
       return encode(jcrProperty.getStream()); 
    }
 
+   /**
+    * Base64 encode a binary stream.  
+    * @param stream the byte stream to be encoded.
+    * @return a base 64 encoded String representing the binary value. 
+    * @throws IOException 
+    * @throws UnsupportedEncodingException 
+    */
    @IPSJexlMethod(description="Encode a binary stream", 
          params={
         @IPSJexlParam(name="source", description="binary stream to encode")})
-   public String encode(InputStream stream)
+   public String encode(InputStream stream) throws UnsupportedEncodingException, IOException
    {
       return encode(streamToBytes(stream));
    }
    
+   /**
+    * Copy a binary stream into a byte array.
+    * @param stream the binary stream to be copied
+    * @return the byte array. Will be <code>null</code> if the 
+    * stream is <code>null</code>. 
+    * @throws IOException if a memory error occurs. 
+    */
    @IPSJexlMethod(description="copy a binary stream to a byte array", 
          params={
         @IPSJexlParam(name="stream", description="binary stream to copy")})
-   public byte[] streamToBytes(InputStream stream)
+   public byte[] streamToBytes(InputStream stream) throws IOException
    {
       ByteArrayOutputStream baos = new ByteArrayOutputStream(); 
       try
@@ -82,13 +110,22 @@ public class PSOBase64Codec extends PSJexlUtilBase implements IPSJexlExpression
       {
         // should never happen unless we run out of memory
         log.error("Unexpected exception " + ex.getMessage(), ex);
+        throw ex;
       } 
       return baos.toByteArray();
    }
+   
+   /**
+    * Base 54 encode a byte array
+    * @param bytes the byte array to be encoded. 
+    * @return a base64 encoded String representing the binary value. 
+    * @throws UnsupportedEncodingException if an error occurs. ASCII 
+    * should always be supported, so this exception is impossible.  
+    */
    @IPSJexlMethod(description="Encode a binary byte array", 
          params={
         @IPSJexlParam(name="source", description="binary byte array to encode")})
-   public String encode(byte[] bytes)
+   public String encode(byte[] bytes) throws UnsupportedEncodingException
    {
       byte[] out = Base64.encodeBase64(bytes);
       try
@@ -98,7 +135,7 @@ public class PSOBase64Codec extends PSJexlUtilBase implements IPSJexlExpression
       {
          //ASCII is always supported, this should never happen 
          log.error("Unsupported Encoding " + ex.getMessage(), ex);
-         return null;
+         throw ex; 
       }
       
    }

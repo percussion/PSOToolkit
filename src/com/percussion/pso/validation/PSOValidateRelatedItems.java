@@ -1,18 +1,9 @@
 /*[ PSOValidateRelatedItems.java ]*************************************************
  *
- * COPYRIGHT (c) 2001 by Percussion Software, Inc., Stoneham, MA USA.
+ * COPYRIGHT (c) 2001,2008 by Percussion Software, Inc., Stoneham, MA USA.
  * All rights reserved. This material contains unpublished, copyrighted
  * work including confidential and proprietary information of Percussion.
  *
- * $Id: PSOValidateRelatedItems.java 1.1 2001/11/06 Scott Morales Exp $
- *
- * Version Labels : $Name: $
- *
- * Locked By      : $Locker: $
- *
- * Revision History:
- *   Initial revision
- * 1.1 Added functionality to handle variant id as a parameter.
  *
  ****************************************************************************/
 
@@ -320,8 +311,7 @@ public class PSOValidateRelatedItems extends PSDefaultExtension implements
 	 * The sixth parameter must be either AND or OR inorder to validate
 	 * additional slots.
 	 * 
-	 * @param Object[] -
-	 *            the params to be validated.
+	 * @param args the params to be validated.
 	 */
 	private void validateParams(Object[] args)
 			throws PSParameterMismatchException {
