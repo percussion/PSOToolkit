@@ -13,7 +13,7 @@
 	
 
 	<target name="jarcopy" description="copy the jar file" >
-		<fail unless="${env.RHYTHMYX_HOME}" message="You must set the RHYTHMYX_HOME environment variable"/>
+		<fail unless="env.RHYTHMYX_HOME" message="You must set the RHYTHMYX_HOME environment variable"/>
 		<copy todir="${rhythmyx.lib}">
 		     <fileset dir="${lib}">
 		          <include name="**.jar" /> 
@@ -27,7 +27,7 @@
 		</copy>
 	</target>
 	<target name="installExtensions">
-		<fail unless="${env.RHYTHMYX_HOME}" message="You must set the RHYTHMYX_HOME environment variable"/>
+		<fail unless="env.RHYTHMYX_HOME" message="You must set the RHYTHMYX_HOME environment variable"/>
 		<java classname="com.percussion.util.PSExtensionInstallTool" fork="true">
 			<arg value="${rhythmyx.home}"/>
 			<arg value="${basedir}"/>
@@ -53,7 +53,7 @@
 		</java>
 	</target>
 	<target name="dist">
-		<fail unless="${env.RHYTHMYX_HOME}" message="You must set the RHYTHMYX_HOME environment variable"/>
+		<fail unless="env.RHYTHMYX_HOME" message="You must set the RHYTHMYX_HOME environment variable"/>
 		<echo>Installing Extensions to ${rhythmyx.home}</echo>
 		<antcall target="jarcopy"/>
 		<antcall target="installExtensions"/>
