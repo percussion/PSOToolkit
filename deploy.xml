@@ -14,7 +14,7 @@
 
 	<target name="jarcopy" description="copy the jar file" >
 		<fail unless="env.RHYTHMYX_HOME" message="You must set the RHYTHMYX_HOME environment variable"/>
-		<copy todir="${rhythmyx.lib}">
+		<copy todir="${rhythmyx.lib}" verbose="true">
 		     <fileset dir="${lib}">
 		          <include name="**.jar" /> 
 		     </fileset>
@@ -26,6 +26,7 @@
 		   <fileset dir="WEB-INF" /> 
 		</copy>
 	</target>
+	
 	<target name="installExtensions">
 		<fail unless="env.RHYTHMYX_HOME" message="You must set the RHYTHMYX_HOME environment variable"/>
 		<java classname="com.percussion.util.PSExtensionInstallTool" fork="true">
@@ -52,10 +53,19 @@
 			</classpath>	
 		</java>
 	</target>
+	
+	<target name="javadoc">
+		<fail unless="env.RHYTHMYX_HOME" message="You must set the RHYTHMYX_HOME environment variable"/>
+		<copy todir="${rhythmyx.home}/Docs/Rhythmyx/PSOToolkit">
+		   <fileset dir="javadoc" />
+	    </copy>
+	</target>
+	
 	<target name="dist">
 		<fail unless="env.RHYTHMYX_HOME" message="You must set the RHYTHMYX_HOME environment variable"/>
-		<echo>Installing Extensions to ${rhythmyx.home}</echo>
+		<echo>Installing PSOToolkit to ${rhythmyx.home}</echo>
 		<antcall target="jarcopy"/>
 		<antcall target="installExtensions"/>
+		<antcall target="javadoc" />
 	</target>
 </project>

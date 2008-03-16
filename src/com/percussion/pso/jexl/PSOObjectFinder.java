@@ -20,7 +20,9 @@ import com.percussion.extension.IPSJexlParam;
 import com.percussion.extension.PSJexlUtilBase;
 import com.percussion.pso.utils.PSOItemSummaryFinder;
 import com.percussion.server.PSRequest;
+import com.percussion.server.PSUserSession;
 import com.percussion.services.content.data.PSContentTypeSummary;
+import com.percussion.util.IPSHtmlParameters;
 import com.percussion.utils.guid.IPSGuid;
 import com.percussion.utils.request.PSRequestInfo;
 import com.percussion.webservices.content.IPSContentWs;
@@ -106,6 +108,11 @@ public class PSOObjectFinder extends PSJexlUtilBase
       return null;
    }
  
+   /**
+    * Gets the JSESSIONID value for the current session.
+    * @return the jsessionid
+    * @deprecated in 6.5 and later, replaced by PSSessionUtils.getJSessionId(). 
+    */
    @IPSJexlMethod(description="Get the JSESSIONID value for the current request",
       params={})
    public String getJSessionId()
@@ -116,6 +123,11 @@ public class PSOObjectFinder extends PSJexlUtilBase
        return jsession;
    }
    
+   /**
+    * Gets the PSSessionId for the current session. 
+    * @return the pssessionid. 
+    * @deprecated in 6.5 and later, replaced by PSSessionUtils.getPSSessionId.
+    */
    @IPSJexlMethod(description="Get the PSSESSIONID value for the current request",
          params={})
    public String getPSSessionId()
@@ -125,6 +137,65 @@ public class PSOObjectFinder extends PSJexlUtilBase
       log.debug("PSSessionId=" + sessionid ); 
       return sessionid;
    }
+   
+   /**
+    * Gets the users current locale.
+    * @return the users current locale, or <code>null</code> if none is defined. 
+    */
+   @IPSJexlMethod(description="get the users current locale",
+         params={})
+   public String getUserLocale()
+   {
+      PSUserSession session = getSession();
+      Object obj = session.getPrivateObject(IPSHtmlParameters.SYS_LANG);
+      if(obj != null)
+      {
+         return obj.toString(); 
+      }
+      return null;
+   }
+   
+   /**
+    * Gets the name of the current user community.
+    * @return the user community name, or <code>null</code> if none
+    * is defined. 
+    */
+   @IPSJexlMethod(description="get the users current community name",
+         params={})
+   public String getUserCommunity()
+   {
+      PSUserSession session = getSession();
+      return session.getUserCurrentCommunity();       
+   }
+
+   /**
+    * Gets the users current community id. 
+    * @return the community id, or <code>null</code> if none is defined. 
+    */
+   @IPSJexlMethod(description="get the users current community id",
+         params={})
+   public String getUserCommunityId()
+   {
+      PSUserSession session = getSession();
+      Object obj = session.getPrivateObject(IPSHtmlParameters.SYS_COMMUNITY);
+      if(obj != null)
+      {
+         return obj.toString(); 
+      }
+      return null;
+   }
+   
+   /**
+    * Gets the user session. 
+    * @return the user session
+    */
+   private PSUserSession getSession()
+   {
+      PSRequest req = (PSRequest)PSRequestInfo.getRequestInfo(PSRequestInfo.KEY_PSREQUEST);
+      PSUserSession session = req.getUserSession();
+      return session; 
+   }
+   
    /**
     * @param cws The cws to set. This routine should only be used
     * for unit testing. 

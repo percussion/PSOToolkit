@@ -19,6 +19,12 @@ Type the command:
 
 ant -f deploy.xml 
 
+This version now installs the JavaDoc for the toolkit into the server's "Docs"
+directory. It can be accessed from the server at: 
+
+http://<server>:<port>/Rhythmyx/Docs/Rhythmyx/PSOToolkit/index.html 
+
+
 ******************************
 To use the Workflow Dispatcher
 ******************************
