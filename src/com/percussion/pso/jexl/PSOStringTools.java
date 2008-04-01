@@ -10,10 +10,13 @@
  */
 package com.percussion.pso.jexl;
 
+import java.util.Locale;
+
 import com.percussion.extension.IPSJexlExpression;
 import com.percussion.extension.IPSJexlMethod;
 import com.percussion.extension.IPSJexlParam;
 import com.percussion.extension.PSJexlUtilBase;
+import com.percussion.i18n.PSI18nUtils;
 
 /**
  * Tools for String manipulation. Just basics for now
@@ -56,5 +59,18 @@ public class PSOStringTools extends PSJexlUtilBase implements IPSJexlExpression
    public StringBuilder getStringBuilder()
    {
       return new StringBuilder();
+   }
+   
+   /**
+    * Gets a locale based on the string representation. 
+    * @param locString the String. 
+    * @return the target Locale object.  Will be <code>null</code> if the input is 
+    * <code>null</code> or invalid.  
+    */
+   @IPSJexlMethod(description="gets a java.util.Locale based on the String representation",
+         params={@IPSJexlParam(name="locString", description="locale as a String")})
+   public Locale getLocale(String locString)
+   {
+      return PSI18nUtils.getLocaleFromString(locString); 
    }
 }
