@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.query.InvalidQueryException;
@@ -57,7 +58,8 @@ public class PSOQueryTools extends PSJexlUtilBase implements IPSJexlExpression
    
    
    /**
-    * Executes a JCR Query. 
+    * Executes a JCR Query. The results are returned as a List.  Each element of the list is a Map
+    * that contains name / value pairs representing the columns of the query.  
     * @param query the JCR Query to execute
     * @param maxRows the maximum number of rows. Set to -1 for unlimited rows.
     * @param params the parameters to pass to the query. 
@@ -76,16 +78,10 @@ public class PSOQueryTools extends PSJexlUtilBase implements IPSJexlExpression
    public List<Map<String, Value>> executeQuery(String query, int maxRows, Map<String,? extends Object> params, String locale ) 
       throws InvalidQueryException, RepositoryException
    {
-      if(StringUtils.isBlank(query))
-      {
-         String emsg = "The query must not be null or empty"; 
-         log.error(emsg); 
-         throw new IllegalArgumentException(emsg); 
-      }
+      
       initServices();
-      List<Map<String, Value>> results = new ArrayList<Map<String, Value>>(); 
-      Query q = cmgr.createQuery(query, Query.SQL);
-      QueryResult qres = cmgr.executeQuery(q, maxRows, params, locale);
+      List<Map<String, Value>> results = new ArrayList<Map<String, Value>>();
+      QueryResult qres = performQuery(query, maxRows, params, locale);
       List<String> colNames = Arrays.<String>asList(qres.getColumnNames()); 
       RowIterator rows = qres.getRows();
       while(rows.hasNext())
@@ -102,6 +98,47 @@ public class PSOQueryTools extends PSJexlUtilBase implements IPSJexlExpression
       return results; 
    }
    
+   /**
+    * Executes a JCR Query and returns the Nodes. The resulting NodeIterator can be used 
+    * to load the individual Nodes rather than using the result values.  
+    * @param query the JCR Query
+    * @param maxRows the maximum number of rows. Set to -1 for unlimited rows.
+    * @param params the the parameters to pass to the query. 
+    * @param locale the locale. Defaults to the JVM system locale if not present. 
+    * @return the Nodes from the query. Never <code>null</code> but may be <code>empty</code>. 
+    * @throws InvalidQueryException
+    * @throws RepositoryException
+    */
+   @IPSJexlMethod(description="executes a JCR Query and returns the Nodes", params={
+         @IPSJexlParam(name="query", description="the query string"),
+         @IPSJexlParam(name="maxRows", description="max number of rows to return"), 
+         @IPSJexlParam(name="params", description="parameters for query"), 
+         @IPSJexlParam(name="locale", description="locale for collating results")
+      })
+      public NodeIterator executeQueryNodes(String query, int maxRows, Map<String,? extends Object> params, String locale ) 
+         throws InvalidQueryException, RepositoryException
+      {
+         
+         initServices();
+         QueryResult qres = performQuery(query, maxRows, params, locale);
+         return qres.getNodes();
+      }
+   
+   private QueryResult performQuery(String query, int maxRows, Map<String,? extends Object> params, String locale ) 
+      throws InvalidQueryException, RepositoryException
+   {
+      initServices();
+      if(StringUtils.isBlank(query))
+      {
+         String emsg = "The query must not be null or empty"; 
+         log.error(emsg); 
+         throw new IllegalArgumentException(emsg); 
+      }      
+      Query q = cmgr.createQuery(query, Query.SQL);
+      QueryResult qres = cmgr.executeQuery(q, maxRows, params, locale);
+      return qres;
+   }
+         
    private static void initServices()
    {
       if(cmgr == null)

@@ -347,4 +347,26 @@
          <description>(optional) The password if authentication is required.</description>
       </PSXExtensionParamDef>
 	</Extension>     
+	<Extension name="PSOFileUploadValidation" context="user/" handler="Java" categorystring="fieldvalidation" deprecated="no">
+		<initParam name="com.percussion.user.description">This UDF can be use to limit the size and/or restrict the MIME type of files being uploaded into Rhythmyx using the sys_File control.</initParam>
+		<initParam name="com.percussion.extension.version">45</initParam>
+		<initParam name="com.percussion.extension.reentrant">yes</initParam>
+		<initParam name="className">com.percussion.pso.validation.PSOFileUploadValidation</initParam>
+		<interface name="com.percussion.extension.IPSFieldValidator"/>
+		<PSXExtensionParamDef id="0">
+			<name>fieldName</name>
+			<dataType>java.lang.String</dataType>
+			<description>the name attribute of the PSXField that is mapped to a sys_File control. Cannot be null.</description>
+		</PSXExtensionParamDef>
+		<PSXExtensionParamDef id="0">
+			<name>maxSize</name>
+			<dataType>java.lang.String</dataType>
+			<description>the maximum allowed file size (in bytes); a value of (-1) means unlimited.</description>
+		</PSXExtensionParamDef>
+		<PSXExtensionParamDef id="0">
+			<name>mimeTypes</name>
+			<dataType>java.lang.String</dataType>
+			<description>comma-separated list of allowed Mime types, e.g., text/html, image/jpeg, etc.</description>
+		</PSXExtensionParamDef>
+	</Extension>
 </PSXExtensionHandlerConfiguration>
