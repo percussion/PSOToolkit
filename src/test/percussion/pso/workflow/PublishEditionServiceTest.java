@@ -40,7 +40,7 @@ public class PublishEditionServiceTest extends TestCase
    public void testService()
    {
       assertNotNull(svc);
-      assertEquals("9932", svc.getListenerPort());
+      assertEquals("9962", svc.getListenerPort());
    }
    
    public void testFindEdition()

@@ -119,6 +119,24 @@
 		</javadoc>
 	</target>
 	
+	<target name="test" depends="compile" description="run unit tests">
+		<property name="build-test-results" location="${bin}/test-results" />
+		<delete dir="${build-test-results}" />
+		<mkdir dir="${build-test-results}" />
+		<junit printsummary="yes" haltonerror="no">
+			<classpath>
+				<path location="${bin}" />
+				<path refid="rx.class.path" />  
+			</classpath>
+			<formatter type="plain" />
+			<batchtest fork="yes" todir="${build-test-results}">
+				<fileset dir="${src}">
+					<include name="test/percussion/**/*Test.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+	
 	<target name="jarbuilder" depends="compile" description="just build the jar, no server">
 	    <delete file="${bin}/log4j.properties" />
 		<propertyfile file="${bin}/build.properties">

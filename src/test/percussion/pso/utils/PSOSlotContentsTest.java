@@ -16,6 +16,8 @@ import org.jmock.Expectations;
 import org.jmock.integration.junit3.JUnit3Mockery;
 import org.jmock.integration.junit3.MockObjectTestCase;
 import org.jmock.lib.legacy.ClassImposteriser;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.percussion.cms.objectstore.PSAaRelationship;
 import com.percussion.cms.objectstore.PSRelationshipFilter;
@@ -59,6 +61,7 @@ public class PSOSlotContentsTest extends MockObjectTestCase
    /**
     * @see junit.framework.TestCase#setUp()
     */
+   @Before
    protected void setUp() throws Exception
    {
       super.setUp();
@@ -68,6 +71,7 @@ public class PSOSlotContentsTest extends MockObjectTestCase
    /**
     * Test method for {@link com.percussion.pso.utils.PSOSlotContents#PSOSlotContents()}.
     */
+   @Test
    public void testPSOSlotContents()
    {
       PSOSlotContents contents = new PSOSlotContents(); 
