@@ -369,4 +369,25 @@
 			<description>comma-separated list of allowed Mime types, e.g., text/html, image/jpeg, etc.</description>
 		</PSXExtensionParamDef>
 	</Extension>
+		<Extension name="PSFolderFollowerEffect" categorystring="relationship" context="user/" deprecated="no" handler="Java" restoreRequestParamsOnError="no">
+		<initParam name="com.percussion.user.description">Moves the dependent item to the owners folders.</initParam>
+		<initParam name="com.percussion.extension.version">1</initParam>
+		<initParam name="com.percussion.extension.reentrant">yes</initParam>
+		<initParam name="className">com.percussion.pso.effects.PSFolderFollowerEffect</initParam>
+		<interface name="com.percussion.relationship.IPSEffect"/>
+		<suppliedResources/>
+	</Extension>
+		<Extension name="PSFolderOwnerSubfolderEffect" categorystring="relationship" context="user/" deprecated="no" handler="Java" restoreRequestParamsOnError="no">
+		<initParam name="com.percussion.user.description">Adds the dependent item to a subfolder of the owners folders.</initParam>
+		<initParam name="com.percussion.extension.version">1</initParam>
+		<initParam name="com.percussion.extension.reentrant">yes</initParam>
+		<initParam name="className">com.percussion.pso.effects.PSFolderOwnerSubfolderEffect</initParam>
+		<interface name="com.percussion.relationship.IPSEffect"/>
+		<PSXExtensionParamDef id="0">
+         <name>subfolderPath</name>
+         <dataType>java.lang.String</dataType>
+         <description>Relative path to the subfolder.</description>
+      </PSXExtensionParamDef>
+		<suppliedResources/>
+	</Extension>
 </PSXExtensionHandlerConfiguration>
