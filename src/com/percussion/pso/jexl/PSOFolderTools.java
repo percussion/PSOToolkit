@@ -72,7 +72,8 @@ public class PSOFolderTools extends PSJexlUtilBase implements IPSJexlExpression
     * Get the folder path for an item. 
     * @param itemId the GUID for the item
     * @return the parent folder path. If there are multiple paths, the 
-    * first one will be returned. 
+    * first one will be returned. Will be <code>null</code> if the item is
+    * not in any folders. 
     * @throws PSErrorException
     * @throws PSExtensionProcessingException
     */
@@ -100,14 +101,16 @@ public class PSOFolderTools extends PSJexlUtilBase implements IPSJexlExpression
       if(paths == null)
       {
          errmsg = "cannot find folder path for " + itemId; 
-         log.error(errmsg); 
-         throw new PSExtensionProcessingException(0, errmsg); 
+         log.info(errmsg);
+         return null; 
+         //throw new PSExtensionProcessingException(0, errmsg); 
       }
       if(paths.length == 0)
       {
          errmsg = "no paths returned for " + itemId; 
-         log.error(errmsg);
-         throw new PSExtensionProcessingException(0, errmsg); 
+         log.info(errmsg);
+         return null;
+         //throw new PSExtensionProcessingException(0, errmsg); 
       }
       if(paths.length == 1)
       {
