@@ -98,7 +98,7 @@ public class PSOStringTools extends PSJexlUtilBase implements IPSJexlExpression
            @IPSJexlParam(name="body", description="the string to truncate"),
            @IPSJexlParam(name="maxWords", description="The maximum number of words")
            })
-   public String truncateByWords(String body, int maxWords) {
+   public String truncateByWords(String body, Number maxWords) {
        int size = body.length();
        int words = 0;
        boolean inWord = false;
@@ -107,7 +107,7 @@ public class PSOStringTools extends PSJexlUtilBase implements IPSJexlExpression
            int code = parse.codePointAt(i);
            if (Character.isWhitespace(code) || code == 0x00a0) {
                inWord = false;
-               if (words == maxWords) {
+               if (words == maxWords.intValue()) {
                    return parse.substring(0, i);
                }
            }
