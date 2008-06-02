@@ -93,7 +93,8 @@ public class PSOStringTools extends PSJexlUtilBase implements IPSJexlExpression
        return root.getTextContent();
    }
 
-   @IPSJexlMethod(description="Truncates a string by words.",
+   @IPSJexlMethod(description="Truncates a string by words. " +
+   		"A word is a group of one or more adjacent letters that are not whitespace (nbsp is a whitespace).",
            params={
            @IPSJexlParam(name="body", description="the string to truncate"),
            @IPSJexlParam(name="maxWords", description="The maximum number of words")
