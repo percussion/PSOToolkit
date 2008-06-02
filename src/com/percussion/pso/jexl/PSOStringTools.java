@@ -10,13 +10,20 @@
  */
 package com.percussion.pso.jexl;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.Locale;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 import com.percussion.extension.IPSJexlExpression;
 import com.percussion.extension.IPSJexlMethod;
 import com.percussion.extension.IPSJexlParam;
 import com.percussion.extension.PSJexlUtilBase;
 import com.percussion.i18n.PSI18nUtils;
+import com.percussion.xml.PSXmlDocumentBuilder;
 
 /**
  * Tools for String manipulation. Just basics for now
@@ -72,5 +79,43 @@ public class PSOStringTools extends PSJexlUtilBase implements IPSJexlExpression
    public Locale getLocale(String locString)
    {
       return PSI18nUtils.getLocaleFromString(locString); 
+   }
+   
+   
+   @IPSJexlMethod(description="Removes XML markup from a string.",
+           params={@IPSJexlParam(name="body", description="A string with xml markup.")})
+   public String removeXml(String body) throws IOException, SAXException {
+       String wrapper = "<wrapper>" + body + "</wrapper>";
+       StringReader reader = new StringReader(wrapper);
+       Document doc = PSXmlDocumentBuilder.createXmlDocument(reader, false);
+       Element root = doc.getDocumentElement();
+       if (root == null) return "";
+       return root.getTextContent();
+   }
+
+   @IPSJexlMethod(description="Truncates a string by words.",
+           params={
+           @IPSJexlParam(name="body", description="the string to truncate"),
+           @IPSJexlParam(name="maxWords", description="The maximum number of words")
+           })
+   public String truncateByWords(String body, int maxWords) {
+       int size = body.length();
+       int words = 0;
+       boolean inWord = false;
+       StringBuffer parse = new StringBuffer(body);
+       for(int i = 0; i < size; i++) {
+           int code = parse.codePointAt(i);
+           if (Character.isWhitespace(code) || code == 0x00a0) {
+               inWord = false;
+               if (words == maxWords) {
+                   return parse.substring(0, i);
+               }
+           }
+           else if ( ! inWord ){
+               inWord = true;
+               ++words;
+           }
+       }
+       return body;
    }
 }
