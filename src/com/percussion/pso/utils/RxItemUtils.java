@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.activation.DataSource;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -162,7 +165,8 @@ public class RxItemUtils
       log.debug("setting field " + fieldName + " value " + dateValue); 
       IPSFieldValue val = new PSDateValue(dateValue);
       setFieldValue(item, fieldName, val);
-   }
+   }  
+ 
    
    public static void setFieldValue(IPSItemAccessor item, String fieldName, Number numbValue)
    {
@@ -171,6 +175,20 @@ public class RxItemUtils
       IPSFieldValue val = new PSTextValue(textValue); 
       setFieldValue(item, fieldName, val); 
    }
+   
+   public static void setFieldValue(IPSItemAccessor item, String fieldName, DataSource data) 
+   {
+      log.debug("setting binary field " + fieldName); 
+      try
+      {
+         setFieldValue(item, fieldName, data.getInputStream());
+      }catch (IOException ex)
+      {
+         //should never happen
+         log.error("Unexpected IO Exception " + ex.getLocalizedMessage(), ex); 
+      }
+   }
+   
    public static void setFieldValue(IPSItemAccessor item, String fieldName, InputStream streamValue)
    {
       IPSFieldValue val;
