@@ -9,10 +9,16 @@
  *
  */
 package com.percussion.pso.jexl;
+import java.util.Collections;
 import java.util.List;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.percussion.cms.objectstore.PSComponentSummary;
+import com.percussion.design.objectstore.PSLocator;
 import com.percussion.error.PSException;
 import com.percussion.extension.IPSJexlExpression;
 import com.percussion.extension.IPSJexlMethod;
@@ -22,6 +28,11 @@ import com.percussion.pso.utils.PSOItemSummaryFinder;
 import com.percussion.server.PSRequest;
 import com.percussion.server.PSUserSession;
 import com.percussion.services.content.data.PSContentTypeSummary;
+import com.percussion.services.contentmgr.IPSContentMgr;
+import com.percussion.services.contentmgr.IPSNode;
+import com.percussion.services.contentmgr.PSContentMgrLocator;
+import com.percussion.services.guidmgr.IPSGuidManager;
+import com.percussion.services.guidmgr.PSGuidManagerLocator;
 import com.percussion.util.IPSHtmlParameters;
 import com.percussion.utils.guid.IPSGuid;
 import com.percussion.utils.request.PSRequestInfo;
@@ -50,6 +61,9 @@ public class PSOObjectFinder extends PSJexlUtilBase
     */
    private static IPSContentWs cws = null; 
    
+   private static IPSGuidManager gmgr = null; 
+   
+   private static IPSContentMgr cmgr = null; 
    
    /**
     * 
@@ -68,6 +82,8 @@ public class PSOObjectFinder extends PSJexlUtilBase
    {
       if(cws == null)
       {
+      gmgr = PSGuidManagerLocator.getGuidMgr(); 
+      cmgr = PSContentMgrLocator.getContentMgr(); 
       cws = PSContentWsLocator.getContentWebservice();
       }
    }
@@ -85,6 +101,18 @@ public class PSOObjectFinder extends PSJexlUtilBase
       return PSOItemSummaryFinder.getSummary(guid); 
    }
    
+   /**
+    * Gets the legacy component summary by content id 
+    * @param contentid the content id
+    * @return the Component Summary for the item. Never <code>null</code>
+    * @throws PSException
+    */
+   @IPSJexlMethod(description="get the Legacy Component Summary for an item",
+         params={@IPSJexlParam(name="content",description="the content id")})
+   public PSComponentSummary getComponentSummaryById(String contentid) throws PSException
+   {
+      return PSOItemSummaryFinder.getSummary(contentid); 
+   }
    /**
     * Gets the content type summary for a content type by GUID. 
     * @param guid the Content Type GUID
@@ -125,8 +153,7 @@ public class PSOObjectFinder extends PSJexlUtilBase
    
    /**
     * Gets the PSSessionId for the current session. 
-    * @return the pssessionid. 
-    * @deprecated in 6.5 and later, replaced by PSSessionUtils.getPSSessionId.
+    * @return the pssessionid.
     */
    @IPSJexlMethod(description="Get the PSSESSIONID value for the current request",
          params={})
@@ -186,6 +213,54 @@ public class PSOObjectFinder extends PSJexlUtilBase
    }
    
    /**
+    * Get the GUID for a give content id and revision.
+    * @param contentid the content id
+    * @param revision the revision
+    * @return the GUID. Never <code>null</code>
+    */
+   @IPSJexlMethod(description="get the GUID by Content Id and Revision",
+         params={@IPSJexlParam(name="contentid",description="the content id"),
+                 @IPSJexlParam(name="revision", description="the revision")}) 
+   public IPSGuid getGuidById(String contentid, String revision)
+   {
+      PSLocator loc = new PSLocator(contentid, revision);
+      return gmgr.makeGuid(loc);
+   }
+
+   /**
+    * Gets the GUID for a content id.  The revision independent guid is 
+    * returned. 
+    * @param contentid the content id; 
+    * @return the GUID. Never <code>null</code>
+    */
+   @IPSJexlMethod(description="get the GUID by Content Id",
+         params={@IPSJexlParam(name="contentid",description="the content id")})
+   public IPSGuid getGuidById(String contentid)
+   {
+      PSLocator loc = new PSLocator(contentid);
+      return gmgr.makeGuid(loc);
+   }
+   
+   /**
+    * Gets the Node for a content item by GUID. 
+    * @param guid the content item GUID
+    * @return the Node, or <code>null</code> if the node was not found. 
+    * @throws RepositoryException
+    */
+   @IPSJexlMethod(description="get the node for a particular guid", 
+         params={@IPSJexlParam(name="guid",description="the GUID for the item")})
+   public IPSNode getNodeByGuid(IPSGuid guid) throws RepositoryException
+   {
+      initServices(); 
+      List<Node> nodes = cmgr.findItemsByGUID(Collections.<IPSGuid>singletonList(guid), null);
+      if(nodes.size() > 0)
+      { 
+         return (IPSNode)nodes.get(0); 
+      }
+      return null; 
+   }
+   
+   /**
     * Gets the user session. 
     * @return the user session
     */
@@ -203,6 +278,22 @@ public class PSOObjectFinder extends PSJexlUtilBase
    public static void setCws(IPSContentWs cws)
    {
       PSOObjectFinder.cws = cws;
+   }
+
+   /**
+    * @param gmgr the gmgr to set
+    */
+   public static void setGmgr(IPSGuidManager gmgr)
+   {
+      PSOObjectFinder.gmgr = gmgr;
+   }
+
+   /**
+    * @param cmgr the cmgr to set
+    */
+   public static void setCmgr(IPSContentMgr cmgr)
+   {
+      PSOObjectFinder.cmgr = cmgr;
    }
    
 
