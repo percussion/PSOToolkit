@@ -6,7 +6,10 @@
  */
 package com.percussion.pso.workflow;
 
+import java.util.Collection;
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.percussion.cms.objectstore.PSComponentSummary;
@@ -137,6 +140,12 @@ public class PSOWorkflowInfoFinder
       return findWorkflowState(wfapp, wfst);
    }
    
+   /**
+    * Find the workflow state name
+    * @param contentId the content id
+    * @return the name of the workflow state. Never <code>null</code>
+    * @throws PSException if the state is invalid.
+    */
    public String findWorkflowStateName(String contentId) throws PSException
    {
       PSState state = findWorkflowState(contentId);
@@ -149,6 +158,35 @@ public class PSOWorkflowInfoFinder
       return state.getName();
    }
 
+   /**
+    * Is the workflow state of an item one of the valid ones.  The content item state contains
+    * a single valid flag. The method checks that this flag is one of the listed ones, comparing
+    * with a case insensitive comparison.
+    * @param contentId the content id for the item
+    * @param validFlags the list of valid flags. 
+    * @return <code>true</code> if the content valid value is one of the listed ones. 
+    * @throws PSException
+    */
+   public boolean IsWorkflowValid(String contentId, Collection<String> validFlags) 
+      throws PSException
+   {
+      PSState state = findWorkflowState(contentId); 
+      String cvalid = state.getContentValidValue(); 
+      if(StringUtils.isBlank(cvalid))
+      {
+         String emsg = "Invalid content valid flag for state " + state.getName(); 
+         log.error(emsg);
+         throw new PSException(emsg); 
+      }
+      for(String v : validFlags)
+      {
+         if(cvalid.equalsIgnoreCase(v))
+         {
+            return true;
+         }
+      }
+      return false; 
+   }
 
    /**
     * Sets the system web service.

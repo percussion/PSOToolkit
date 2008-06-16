@@ -168,10 +168,9 @@ public class PSOExtensionParamsHelper {
                     + " value = " + value + " from the extension parameters.");
             return value;
         }
-        else {
-            log.warn("Extension Parameters is null");
-            return null;
-        }
+        log.warn("Extension Parameters is null");
+        return null;
+        
     }
     
     public Number getRequiredParameterAsNumber(String paramName) {
@@ -214,9 +213,7 @@ public class PSOExtensionParamsHelper {
             log.debug("Parameter " + paramName + " was not set. Using default value = " + defaultValue);
             return defaultValue;
         }
-        else {
-            return value;
-        }
+        return value;        
     }
     
     public void errorOnParameter(String paramName, String reason) {
@@ -252,6 +249,7 @@ public class PSOExtensionParamsHelper {
         this.log = log == null ? PSOExtensionParamsHelper.defaultLog : log;
     }
     
+    @SuppressWarnings("unchecked")
     protected void doParameters()
     {  
        extensionParameters = new HashMap<String, String>();
