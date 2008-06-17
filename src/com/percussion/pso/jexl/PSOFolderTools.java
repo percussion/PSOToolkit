@@ -12,7 +12,10 @@
 package com.percussion.pso.jexl;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.jcr.RepositoryException;
 
@@ -23,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 
 import com.percussion.cms.PSCmsException;
 import com.percussion.cms.objectstore.PSFolder;
+import com.percussion.cms.objectstore.PSFolderProperty;
 import com.percussion.design.objectstore.PSLocator;
 import com.percussion.extension.IPSExtensionDef;
 import com.percussion.extension.IPSJexlExpression;
@@ -197,13 +201,37 @@ public class PSOFolderTools extends PSJexlUtilBase implements IPSJexlExpression
         }
         return path;
     }
+   
+   @IPSJexlMethod(description="Gets the folder properties of a folder.", 
+           params={@IPSJexlParam(name="path", description="folder path")},
+           returns="The folder properties (Map)"
+   )
+   @SuppressWarnings("unchecked")
+    public Map<String, String> getFolderProperties(String path) {
+        try {
+            PSFolder folder = getContentWs().loadFolders(new String[] { path })
+                    .get(0);
+            Map<String, String> props = new HashMap<String, String>();
+            Iterator<PSFolderProperty> it = folder.getProperties();
+            while (it.hasNext()) {
+                PSFolderProperty prop = it.next();
+                props.put(prop.getName(), prop.getValue());
+            }
+            return props;
+        } catch (PSErrorResultsException e) {
+            log.error("Could not get folder properties for: " + path, e);
+            throw new RuntimeException(e);
+        }
+    }
 
    @Override
     public void init(IPSExtensionDef def, File codeRoot)
             throws PSExtensionException {
         super.init(def, codeRoot);
-        contentWs = PSContentWsLocator.getContentWebservice();
-        guidManager = PSGuidManagerLocator.getGuidMgr();
+        if (contentWs == null)
+            contentWs = PSContentWsLocator.getContentWebservice();
+        if (guidManager == null)
+            guidManager = PSGuidManagerLocator.getGuidMgr();
     }
 
     public IPSContentWs getContentWs() {
