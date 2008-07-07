@@ -86,11 +86,12 @@ public class PSOItemSummaryFinder
          throw new IllegalArgumentException(emsg);
       }
       PSComponentSummary sum = getSummary(contentId);
-      if(StringUtils.isBlank(sum.getCheckoutUserName()))
+      String uname = sum.getCheckoutUserName();
+      if(StringUtils.isBlank(uname))
       {
          return CHECKOUT_NONE;
       }
-      if(userName.equalsIgnoreCase(sum.getCheckoutUserName()))
+      if(userName.equalsIgnoreCase(uname))
       {
          return CHECKOUT_BY_ME; 
       }
@@ -142,7 +143,7 @@ public class PSOItemSummaryFinder
     * Should be used only in unit tests. 
     * @param sumservice The sumsvc to set.
     */
-   public void setSumsvc(IPSCmsContentSummaries sumservice)
+   public static void setSumsvc(IPSCmsContentSummaries sumservice)
    {
       sumsvc = sumservice;
    }
