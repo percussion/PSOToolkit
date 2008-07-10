@@ -223,6 +223,7 @@ public class PSOObjectFinder extends PSJexlUtilBase
                  @IPSJexlParam(name="revision", description="the revision")}) 
    public IPSGuid getGuidById(String contentid, String revision)
    {
+      initServices();
       PSLocator loc = new PSLocator(contentid, revision);
       return gmgr.makeGuid(loc);
    }
@@ -237,6 +238,7 @@ public class PSOObjectFinder extends PSJexlUtilBase
          params={@IPSJexlParam(name="contentid",description="the content id")})
    public IPSGuid getGuidById(String contentid)
    {
+      initServices();
       PSLocator loc = new PSLocator(contentid);
       return gmgr.makeGuid(loc);
    }
