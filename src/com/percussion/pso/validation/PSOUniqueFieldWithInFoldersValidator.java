@@ -1,3 +1,13 @@
+/**************************************
+ * com.precussion.pso.validation PSOUniqueFieldWithInFoldersValidator
+ *  
+ * COPYRIGHT (c) 1999 - 2008 by Percussion Software, Inc., Woburn, MA USA.
+ * All rights reserved. This material contains unpublished, copyrighted
+ * work including confidential and proprietary information of Percussion.
+ *
+ * @author agent
+ *
+ */
 package com.percussion.pso.validation;
 
 import static java.text.MessageFormat.*;
@@ -67,18 +77,19 @@ public class PSOUniqueFieldWithInFoldersValidator implements IPSFieldValidator {
             return true;
         }
         try {
+            boolean rvalue = true;
             if (actionType.equals("UPDATE")) {
                 Number contentId = h.getRequiredParameterAsNumber("sys_contentid");
-                return isFieldValueUniqueInFolderForExistingItem(contentId.intValue(), fieldName, fieldValue);
+                rvalue = isFieldValueUniqueInFolderForExistingItem(contentId.intValue(), fieldName, fieldValue);
             }
             else {
                 Number folderId = getFolderId(request);
                 if (folderId != null)
-                    return isFieldValueUniqueInFolder(folderId.intValue(), fieldName, fieldValue);
+                    rvalue = isFieldValueUniqueInFolder(folderId.intValue(), fieldName, fieldValue);
                 else
-                    return false;
+                    rvalue = false;
             }
-            
+            return rvalue;
         } catch (Exception e) {
             log.error(format("An error happend while checking if " +
             		"fieldName: {0} was unique for " +
