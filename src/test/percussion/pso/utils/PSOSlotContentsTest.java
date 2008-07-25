@@ -77,9 +77,6 @@ public class PSOSlotContentsTest extends MockObjectTestCase
       PSOSlotContents contents = new PSOSlotContents(); 
                 
       final PSLocator parent = new PSLocator(1,1); 
-      final PSLocator depend2 = new PSLocator(2,1); 
-      final PSLocator depend3 = new PSLocator(3,1);
-      final PSLocator depend4 = new PSLocator(4,1);
 
       final IPSGuid slot1 = new PSLegacyGuid(1L); 
       final IPSGuid slot2 = new PSLegacyGuid(2L);

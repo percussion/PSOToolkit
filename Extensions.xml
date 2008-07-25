@@ -369,7 +369,25 @@
 			<description>comma-separated list of allowed Mime types, e.g., text/html, image/jpeg, etc.</description>
 		</PSXExtensionParamDef>
 	</Extension>
-		<Extension name="PSFolderFollowerEffect" categorystring="relationship" context="user/" deprecated="no" handler="Java" restoreRequestParamsOnError="no">
+	<Extension name="PSOUniqueFieldWithInFolders" categorystring="contenteditor" context="user/" deprecated="no" handler="Java" restoreRequestParamsOnError="no">
+	     <initParam name="com.percussion.user.description">Determines whether a field is unique for an item within the folders it resides.</initParam>
+	     <initParam name="com.percussion.extension.version">1</initParam>
+	     <initParam name="com.percussion.extension.reentrant">yes</initParam>
+	     <initParam name="className">com.percussion.pso.validation.PSOUniqueFieldWithInFoldersValidator</initParam>
+	  <interface name="com.percussion.extension.IPSFieldValidator" />
+	  <PSXExtensionParamDef id="0">
+	        <name>value</name>
+	        <dataType>java.lang.String</dataType>
+	        <description>Value</description>
+	     </PSXExtensionParamDef>
+	     <PSXExtensionParamDef id="0">
+	        <name>fieldName</name>
+	        <dataType>java.lang.String</dataType>
+	        <description>(Optional, default = fieldname) The name of the field providing the segment ids.</description>
+	     </PSXExtensionParamDef>
+	     <suppliedResources />
+	</Extension>
+	<Extension name="PSFolderFollowerEffect" categorystring="relationship" context="user/" deprecated="no" handler="Java" restoreRequestParamsOnError="no">
 		<initParam name="com.percussion.user.description">Moves the dependent item to the owners folders.</initParam>
 		<initParam name="com.percussion.extension.version">1</initParam>
 		<initParam name="com.percussion.extension.reentrant">yes</initParam>

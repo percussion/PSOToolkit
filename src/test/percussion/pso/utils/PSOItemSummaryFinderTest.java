@@ -16,10 +16,7 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
 
-import sun.security.krb5.internal.ccache.at;
-
 import com.percussion.cms.objectstore.PSComponentSummary;
-import com.percussion.error.PSException;
 import com.percussion.pso.utils.PSOItemSummaryFinder;
 import com.percussion.services.legacy.IPSCmsContentSummaries;
 
