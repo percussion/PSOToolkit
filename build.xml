@@ -208,7 +208,7 @@
 		<zip destfile="${testdistfile}">						
 			<zipfileset dir="${lib}" includes="${jarname}" prefix="lib" />
 			<fileset dir="." includes="readme.txt, build.number, deploy.xml" />
-			<fileset dir="." includes="license.txt, Extensions.xml" />
+			<fileset dir="." includes="license.txt, Extensions.xml, install.sh" />
 			<zipfileset dir="WEB-INF" prefix="WEB-INF" />
 		</zip>
 
@@ -219,7 +219,7 @@
 		<antcall target="jarbuilder"/>	
 		<zip destfile="${distfile}">						
 			<zipfileset dir="${lib}" includes="${jarname}" prefix="lib" />
-			<fileset dir="." includes="readme.txt, deploy.xml" />
+			<fileset dir="." includes="readme.txt, deploy.xml, install.sh" />
 			<fileset dir="." includes="license.txt, Extensions.xml" />
 		    <fileset dir="${bin}" includes="build.properties" />  			
 			<zipfileset dir="WEB-INF" prefix="WEB-INF" />

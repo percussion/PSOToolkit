@@ -34,6 +34,7 @@ import com.percussion.extension.IPSExtensionDef;
 import com.percussion.extension.IPSFieldValidator;
 import com.percussion.extension.PSExtensionException;
 import com.percussion.pso.utils.PSOExtensionParamsHelper;
+import com.percussion.pso.utils.PSONodeCataloger;
 import com.percussion.server.IPSRequestContext;
 import com.percussion.services.contentmgr.IPSContentMgr;
 import com.percussion.services.contentmgr.PSContentMgrLocator;
@@ -60,6 +61,7 @@ public class PSOUniqueFieldWithInFoldersValidator implements IPSFieldValidator {
     private IPSContentWs contentWs;
     private IPSGuidManager guidManager;
     private IPSContentMgr contentManager;
+    private PSONodeCataloger nodeCataloger;
     
     public Boolean processUdf(Object[] params, IPSRequestContext request)
             throws PSConversionException {
@@ -77,15 +79,16 @@ public class PSOUniqueFieldWithInFoldersValidator implements IPSFieldValidator {
             return true;
         }
         try {
+            String typeList = this.makeTypeList(fieldName);
             boolean rvalue = true;
             if (actionType.equals("UPDATE")) {
                 Number contentId = h.getRequiredParameterAsNumber("sys_contentid");
-                rvalue = isFieldValueUniqueInFolderForExistingItem(contentId.intValue(), fieldName, fieldValue);
+                rvalue = isFieldValueUniqueInFolderForExistingItem(contentId.intValue(), fieldName, fieldValue, typeList);
             }
             else {
                 Number folderId = getFolderId(request);
                 if (folderId != null)
-                    rvalue = isFieldValueUniqueInFolder(folderId.intValue(), fieldName, fieldValue);
+                    rvalue = isFieldValueUniqueInFolder(folderId.intValue(), fieldName, fieldValue, typeList);
                 else
                     rvalue = false;
             }
@@ -110,7 +113,7 @@ public class PSOUniqueFieldWithInFoldersValidator implements IPSFieldValidator {
      * @throws InvalidQueryException
      * @throws RepositoryException
      */
-    public boolean isFieldValueUniqueInFolderForExistingItem(int contentId, String fieldName, String fieldValue) 
+    public boolean isFieldValueUniqueInFolderForExistingItem(int contentId, String fieldName, String fieldValue, String typeList) 
         throws PSErrorException, InvalidQueryException, RepositoryException {
         
         boolean unique = true;
@@ -118,7 +121,7 @@ public class PSOUniqueFieldWithInFoldersValidator implements IPSFieldValidator {
         String[] paths = contentWs.findFolderPaths(guid);
 
         if (paths != null && paths.length != 0) {
-            String jcrQuery = getQueryForValueInFolders(contentId, fieldName, fieldValue, paths);
+            String jcrQuery = getQueryForValueInFolders(contentId, fieldName, fieldValue, paths, typeList);
             log.trace(jcrQuery);
             Query q = contentManager.createQuery(jcrQuery, Query.SQL);
             QueryResult results = contentManager.executeQuery(q, -1, null, null);
@@ -145,14 +148,14 @@ public class PSOUniqueFieldWithInFoldersValidator implements IPSFieldValidator {
      * @throws RepositoryException
      * @throws PSErrorResultsException
      */
-    public boolean isFieldValueUniqueInFolder(int folderId, String fieldName, String fieldValue)
+    public boolean isFieldValueUniqueInFolder(int folderId, String fieldName, String fieldValue, String typeList)
         throws PSErrorException, InvalidQueryException, RepositoryException, PSErrorResultsException {
         boolean unique = true;
         IPSGuid guid = guidManager.makeGuid(new PSLocator(folderId, -1));
         List<PSFolder> folders = contentWs.loadFolders(asList(guid));
         String path = ! folders.isEmpty() ? folders.get(0).getFolderPath() : null;
         if (path != null) {
-            String jcrQuery = getQueryForValueInFolder(fieldName, fieldValue, path);
+            String jcrQuery = getQueryForValueInFolder(fieldName, fieldValue, path, typeList);
             log.trace(jcrQuery);
             Query q = contentManager.createQuery(jcrQuery, Query.SQL);
             QueryResult results = contentManager.executeQuery(q, -1, null, null);
@@ -171,12 +174,13 @@ public class PSOUniqueFieldWithInFoldersValidator implements IPSFieldValidator {
             int contentId, 
             String fieldName, 
             String fieldValue, 
-            String[] paths) {
+            String[] paths,
+            String typeList) {
         ArrayList<String> jcrPaths = new ArrayList<String>();
         for (String p : paths) { jcrPaths.add("jcr:path = '" + p + "'"); };
         String jcrQuery = format(
                 "select rx:sys_contentid, rx:{0} " +
-                "from nt:base " +
+                "from {4} " +
                 "where " +
                 "rx:sys_contentid != {1} " +
                 "and " +
@@ -184,19 +188,19 @@ public class PSOUniqueFieldWithInFoldersValidator implements IPSFieldValidator {
                 "and " +
                 "({3})", 
                 fieldName, ""+contentId, 
-                fieldValue, StringUtils.join(jcrPaths.iterator(), " or "));
+                fieldValue, StringUtils.join(jcrPaths.iterator(), " or "), typeList);
         return jcrQuery;
     }
     
-    public String getQueryForValueInFolder(String fieldName, String fieldValue, String path) {
+    public String getQueryForValueInFolder(String fieldName, String fieldValue, String path, String typeList) {
         return format(
                 "select rx:sys_contentid, rx:{0} " +
-                "from nt:base " +
+                "from {3} " +
                 "where " +
                 "rx:{0} = ''{1}'' " +
                 "and " +
                 "jcr:path = ''{2}''", 
-                fieldName, fieldValue, path);
+                fieldName, fieldValue, path, typeList);
     }
     
     protected Integer getFolderId(IPSRequestContext request) {
@@ -225,12 +229,31 @@ public class PSOUniqueFieldWithInFoldersValidator implements IPSFieldValidator {
         return rvalue;
     }
 
+    protected String makeTypeList(String fieldname) throws RepositoryException
+    {
+       List<String> types = nodeCataloger.getContentTypeNamesWithField(fieldname);
+       StringBuilder sb = new StringBuilder();
+       boolean first = true;
+       for(String t : types)
+       {
+          if(first)
+          {
+             sb.append(",");
+          }
+          sb.append("rx:");
+          sb.append(t);
+          first = false;
+       }
+       return sb.toString();
+    }
+    
     public void init(IPSExtensionDef extensionDef, File arg1)
             throws PSExtensionException {
         setExtensionDef(extensionDef);
         if (contentManager == null) setContentManager(PSContentMgrLocator.getContentMgr());
         if (contentWs == null) setContentWs(PSContentWsLocator.getContentWebservice());
         if (guidManager == null) setGuidManager(PSGuidManagerLocator.getGuidMgr());
+        if (nodeCataloger == null) setNodeCataloger(new PSONodeCataloger());
     }
 
     public IPSExtensionDef getExtensionDef() {
@@ -259,4 +282,12 @@ public class PSOUniqueFieldWithInFoldersValidator implements IPSFieldValidator {
     public void setContentManager(IPSContentMgr contentManager) {
         this.contentManager = contentManager;
     }
+
+   /**
+    * @param nodeCataloger the nodeCataloger to set
+    */
+   public void setNodeCataloger(PSONodeCataloger nodeCataloger)
+   {
+      this.nodeCataloger = nodeCataloger;
+   }
 }

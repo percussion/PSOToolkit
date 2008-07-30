@@ -23,7 +23,7 @@ public class PSOUniqueFieldWithInFoldersValidatorTest {
         "rx:filename = \'test\' " +
         "and " +
         "jcr:path = \'//Sites/Blah\'"; 
-        String actual = validator.getQueryForValueInFolder("filename", "test", "//Sites/Blah");
+        String actual = validator.getQueryForValueInFolder("filename", "test", "//Sites/Blah", "nt:base");
         assertEquals(expected, actual);
     }
     
@@ -39,7 +39,7 @@ public class PSOUniqueFieldWithInFoldersValidatorTest {
             "and " +
             "(jcr:path = '//Sites/A' or jcr:path = '//Sites/B')";
             String actual = validator.getQueryForValueInFolders(
-                    2000,"filename", "test", new String[] {"//Sites/A","//Sites/B"});
+                    2000,"filename", "test", new String[] {"//Sites/A","//Sites/B"}, "nt:base");
         assertEquals(expected, actual);
     }
 

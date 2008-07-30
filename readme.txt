@@ -24,6 +24,19 @@ directory. It can be accessed from the server at:
 
 http://<server>:<port>/Rhythmyx/Docs/Rhythmyx/PSOToolkit/index.html 
 
+If you use 6.5.1 or later and have the patch installer loaded in Linux, add
+these lines to your .profile  
+
+export RHYTHMYX_HOME=$HOME/Rhythmyx  ##or where ever it is installed
+export JAVA_HOME=$RHYTHMYX_HOME/JRE/
+export ANT_HOME=$RHYTHMYX_HOME/Patch/InstallToolkit/
+
+you can then run Ant: 
+
+$ANT_HOME/bin/ant -f deploy.xml 
+
+
+
 
 ******************************
 To use the Workflow Dispatcher
