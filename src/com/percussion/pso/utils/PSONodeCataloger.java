@@ -12,18 +12,21 @@ import java.util.List;
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeType;
-import javax.jcr.nodetype.NodeTypeIterator;
 import javax.jcr.nodetype.PropertyDefinition;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.percussion.services.contentmgr.IPSContentMgr;
+import com.percussion.services.contentmgr.IPSNodeDefinition;
 import com.percussion.services.contentmgr.PSContentMgrLocator;
 
 /**
- * Finds Property Definitions for a given NodeType.
- * This can be used to catalog node types;   
+ * Finds Property Definitions for a given Node Definition.
+ * This can be used to catalog node types (or content types). 
+ * <p>
+ * Note that the names of all Node Definitions and Property Definitions
+ * begin with "rx:".  This is how they are returned from the server.  
  *
  * @author DavidBenua
  *
@@ -64,11 +67,10 @@ public class PSONodeCataloger
       log.trace("getting content type names"); 
       List<String> names = new ArrayList<String>(); 
       
-      NodeTypeIterator nodeTypes = cmgr.getAllNodeTypes();
-      while(nodeTypes.hasNext())
+      List<IPSNodeDefinition> nodeDefs = cmgr.findAllItemNodeDefinitions();
+      for(IPSNodeDefinition nodeDef : nodeDefs)
       {
-         NodeType nt = nodeTypes.nextNodeType();
-         names.add(nt.getName());
+         names.add(nodeDef.getName());
       }
       log.debug("content type names " + names); 
       return names;
@@ -86,14 +88,20 @@ public class PSONodeCataloger
    {
       init();
       List<String> names = new ArrayList<String>(); 
-      
-      NodeTypeIterator nodeTypes = cmgr.getAllNodeTypes();
-      while(nodeTypes.hasNext())
+      if(!fieldName.startsWith("rx:"))
       {
-         NodeType nt = nodeTypes.nextNodeType(); 
-         PropertyDefinition[] props = nt.getDeclaredPropertyDefinitions();
+         fieldName = "rx:" + fieldName;
+      }
+      List<IPSNodeDefinition> nodeTypes = cmgr.findAllItemNodeDefinitions();
+      for(IPSNodeDefinition nd : nodeTypes)
+      {
+         log.trace("examining node type " + nd.getName());
+         NodeType nt = nd.getDeclaringNodeType();
+         
+         PropertyDefinition[] props = nt.getDeclaredPropertyDefinitions(); 
          for(PropertyDefinition p : props)
          {
+             log.trace("examining field named " + p.getName());
              if(p.getName().equals(fieldName) )
              {
                 names.add(nt.getName());
@@ -107,8 +115,8 @@ public class PSONodeCataloger
    }
 
    /**
-    * Gets the field names for a given content type
-    * @param typeName the type name
+    * Gets the field names for a given content type.  
+    * @param typeName the type name.  If the typename does not begive with "rx:", it will be added. 
     * @return the list of field names. Never <code>null</code> but may be 
     * <code>empty</code>
     * @throws NoSuchNodeTypeException
@@ -117,8 +125,13 @@ public class PSONodeCataloger
    public List<String> getFieldNamesForContentType(String typeName) throws NoSuchNodeTypeException, RepositoryException
    {
       init();
-      List<String> names = new ArrayList<String>(); 
-      NodeType nt = cmgr.getNodeType(typeName); 
+      if(!typeName.startsWith("rx:"))
+      {
+         typeName = "rx:" + typeName ;
+      }
+      List<String> names = new ArrayList<String>();
+      IPSNodeDefinition nodeDef = cmgr.findNodeDefinitionByName(typeName);
+      NodeType nt = nodeDef.getDeclaringNodeType(); 
       PropertyDefinition[] props = nt.getDeclaredPropertyDefinitions();
       for(PropertyDefinition p : props)
       {

@@ -8,6 +8,7 @@ package test.percussion.pso.utils;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.jcr.nodetype.NodeType;
@@ -24,6 +25,7 @@ import org.junit.Test;
 
 import com.percussion.pso.utils.PSONodeCataloger;
 import com.percussion.services.contentmgr.IPSContentMgr;
+import com.percussion.services.contentmgr.IPSNodeDefinition;
 
 public class PSONodeCatalogerTest
 {
@@ -46,27 +48,16 @@ public class PSONodeCatalogerTest
    public final void testGetContentTypeNames()
    {
       log.info("Getting content type names");
-      final Sequence ctypes = context.sequence("ctypes"); 
-      final NodeTypeIterator nodes = context.mock(NodeTypeIterator.class);
-      final NodeType t1 = context.mock(NodeType.class); 
-      final NodeType t2 = context.mock(NodeType.class); 
       
+      final IPSNodeDefinition t1 = context.mock(IPSNodeDefinition.class); 
+      final IPSNodeDefinition t2 = context.mock(IPSNodeDefinition.class); 
+      final List<IPSNodeDefinition> nodes = Arrays.<IPSNodeDefinition>asList(new IPSNodeDefinition[]{t1,t2});
       try
       {
          context.checking(new Expectations()
          {{
-               one(cmgr).getAllNodeTypes(); inSequence(ctypes);
+               one(cmgr).findAllItemNodeDefinitions(); 
                will(returnValue(nodes)); 
-               one(nodes).hasNext(); inSequence(ctypes);
-               will(returnValue(true)); 
-               one(nodes).nextNodeType(); inSequence(ctypes); 
-               will(returnValue(t1));
-               one(nodes).hasNext(); inSequence(ctypes);
-               will(returnValue(true));
-               one(nodes).nextNodeType(); inSequence(ctypes); 
-               will(returnValue(t2));
-               one(nodes).hasNext(); inSequence(ctypes);
-               will(returnValue(false));
                allowing(t1).getName(); 
                will(returnValue("type1"));
                allowing(t2).getName(); 
@@ -78,6 +69,7 @@ public class PSONodeCatalogerTest
          assertEquals(2,names.size()); 
          assertEquals("type1", names.get(0));
          assertEquals("type2", names.get(1));
+         context.assertIsSatisfied(); 
          
          
       } catch (Exception e)
@@ -93,7 +85,10 @@ public class PSONodeCatalogerTest
    {
       log.info("Getting content type names with field");
       final Sequence ctypes = context.sequence("ctypes"); 
-      final NodeTypeIterator nodes = context.mock(NodeTypeIterator.class);
+      final IPSNodeDefinition nd1 = context.mock(IPSNodeDefinition.class);
+      final IPSNodeDefinition nd2 = context.mock(IPSNodeDefinition.class);
+      final List<IPSNodeDefinition> nodes = Arrays.asList(new IPSNodeDefinition[]{nd1,nd2});
+
       final NodeType t1 = context.mock(NodeType.class); 
       final NodeType t2 = context.mock(NodeType.class); 
       final PropertyDefinition p1 = context.mock(PropertyDefinition.class); 
@@ -107,40 +102,38 @@ public class PSONodeCatalogerTest
       {
          context.checking(new Expectations()
          {{
-               one(cmgr).getAllNodeTypes(); inSequence(ctypes);
-               will(returnValue(nodes)); 
-               one(nodes).hasNext(); inSequence(ctypes);
-               will(returnValue(true)); 
-               one(nodes).nextNodeType(); inSequence(ctypes); 
+               one(cmgr).findAllItemNodeDefinitions(); 
+               will(returnValue(nodes));
+               one(nd1).getDeclaringNodeType();
                will(returnValue(t1));
-               one(nodes).hasNext(); inSequence(ctypes);
-               will(returnValue(true));
-               one(nodes).nextNodeType(); inSequence(ctypes); 
-               will(returnValue(t2));
-               one(nodes).hasNext(); inSequence(ctypes);
-               will(returnValue(false));
+               one(nd1).getName();
+               will(returnValue("rx:node1"));
+               one(nd2).getName();
+               will(returnValue("rx:node2"));               
+               one(nd2).getDeclaringNodeType();
+               will(returnValue(t2)); 
                allowing(t1).getName(); 
-               will(returnValue("type1"));
+               will(returnValue("rx:type1"));
                allowing(t2).getName(); 
-               will(returnValue("type2"));
+               will(returnValue("rx:type2"));
                one(t1).getDeclaredPropertyDefinitions();
                will(returnValue(t1p));
                one(t2).getDeclaredPropertyDefinitions();
                will(returnValue(t2p));
                allowing(p1).getName();
-               will(returnValue("prop1"));
+               will(returnValue("rx:prop1"));
                allowing(p2).getName();
-               will(returnValue("prop2"));
+               will(returnValue("rx:prop2"));
                allowing(p3).getName();
-               will(returnValue("prop3"));
+               will(returnValue("rx:prop3"));
                
          }});
          
          List<String> names = cut.getContentTypeNamesWithField("prop2"); 
          assertNotNull(names);
          assertEquals(1,names.size()); 
-         assertEquals("type1", names.get(0));
-         
+         assertEquals("rx:type1", names.get(0));
+         context.assertIsSatisfied();
          
       } catch (Exception e)
       {
@@ -155,6 +148,7 @@ public class PSONodeCatalogerTest
       log.info("Getting content type names with field");
   
       final NodeTypeIterator nodes = context.mock(NodeTypeIterator.class);
+      final IPSNodeDefinition nodeDef = context.mock(IPSNodeDefinition.class); 
       final NodeType t1 = context.mock(NodeType.class); 
       final PropertyDefinition p1 = context.mock(PropertyDefinition.class); 
       final PropertyDefinition p2 = context.mock(PropertyDefinition.class); 
@@ -166,26 +160,28 @@ public class PSONodeCatalogerTest
       {
          context.checking(new Expectations()
          {{
-               one(cmgr).getNodeType("type1"); 
-               will(returnValue(t1));
+               one(cmgr).findNodeDefinitionByName("rx:type1"); 
+               will(returnValue(nodeDef));
+               one(nodeDef).getDeclaringNodeType();
+               will(returnValue(t1)); 
                allowing(t1).getName(); 
-               will(returnValue("type1"));
+               will(returnValue("rx:type1"));
                one(t1).getDeclaredPropertyDefinitions();
                will(returnValue(t1p));
                allowing(p1).getName();
-               will(returnValue("prop1"));
+               will(returnValue("rx:prop1"));
                allowing(p2).getName();
-               will(returnValue("prop2"));
+               will(returnValue("rx:prop2"));
                allowing(p3).getName();
-               will(returnValue("prop3"));
+               will(returnValue("rx:prop3"));
                
          }});
          
          List<String> names = cut.getFieldNamesForContentType("type1"); 
          assertNotNull(names);
          assertEquals(3,names.size()); 
-         assertEquals("prop1", names.get(0));
-         
+         assertEquals("rx:prop1", names.get(0));
+         context.assertIsSatisfied();
          
       } catch (Exception e)
       {

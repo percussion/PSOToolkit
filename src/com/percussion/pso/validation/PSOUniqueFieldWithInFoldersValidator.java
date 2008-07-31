@@ -236,11 +236,10 @@ public class PSOUniqueFieldWithInFoldersValidator implements IPSFieldValidator {
        boolean first = true;
        for(String t : types)
        {
-          if(first)
+          if(!first)
           {
-             sb.append(",");
+             sb.append(", ");
           }
-          sb.append("rx:");
           sb.append(t);
           first = false;
        }
