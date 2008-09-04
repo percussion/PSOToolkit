@@ -26,7 +26,6 @@ import com.percussion.server.IPSRequestContext;
 import com.percussion.services.contentmgr.IPSContentMgr;
 import com.percussion.services.guidmgr.IPSGuidManager;
 import com.percussion.utils.guid.IPSGuid;
-import com.percussion.webservices.PSErrorException;
 import com.percussion.webservices.content.IPSContentWs;
 
 public class PSOUniqueFieldWithInFoldersValidatorTest {

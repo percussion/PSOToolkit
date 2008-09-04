@@ -27,6 +27,7 @@ import com.percussion.extension.PSJexlUtilBase;
 import com.percussion.pso.utils.PSOItemSummaryFinder;
 import com.percussion.server.PSRequest;
 import com.percussion.server.PSUserSession;
+import com.percussion.services.catalog.PSTypeEnum;
 import com.percussion.services.content.data.PSContentTypeSummary;
 import com.percussion.services.contentmgr.IPSContentMgr;
 import com.percussion.services.contentmgr.IPSNode;
@@ -262,6 +263,35 @@ public class PSOObjectFinder extends PSJexlUtilBase
       return null; 
    }
    
+   /**
+    * Gets the guid for a site by id. 
+    * @param siteid the site id
+    * @return the guid. Never <code>null</code>
+    */
+   @IPSJexlMethod(description="get the site guid for a given id", 
+         params={@IPSJexlParam(name="siteid",description="the id for the site")})
+   public IPSGuid getSiteGuid(int siteid)
+   {
+      initServices();
+      IPSGuid guid = gmgr.makeGuid(siteid, PSTypeEnum.SITE); 
+      log.debug("Site guid is " + guid);
+      return guid;
+   }
+   
+   /**
+    * Get the template guid for given id
+    * @param templateid the template id
+    * @return the template guid. 
+    */
+   @IPSJexlMethod(description="get the template guid for a given id", 
+         params={@IPSJexlParam(name="template",description="the id for the template")})
+   public IPSGuid getTemplateGuid(int templateid)
+   {
+      initServices();
+      IPSGuid guid = gmgr.makeGuid(templateid, PSTypeEnum.TEMPLATE); 
+      log.debug("Template guid is " + guid);
+      return guid;
+   }
    /**
     * Gets the user session. 
     * @return the user session
