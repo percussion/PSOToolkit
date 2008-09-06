@@ -24,6 +24,7 @@ import com.percussion.cms.objectstore.IPSItemAccessor;
 import com.percussion.cms.objectstore.PSBinaryValue;
 import com.percussion.cms.objectstore.PSDateValue;
 import com.percussion.cms.objectstore.PSItemField;
+import com.percussion.cms.objectstore.PSItemFieldMeta;
 import com.percussion.cms.objectstore.PSTextValue;
 
 /**
@@ -72,6 +73,39 @@ public class RxItemUtils
       return value.getValueAsString(); 
    }
    
+   /**
+    * Gets the raw value of a field
+    * @param item the item or child to get the field from.
+    * @param fieldName the field name
+    * @return the value as an <code>Object</code>. Will be <code>null</code> if the field 
+    * does not exist or has no values.
+    * @throws PSCmsException
+    */
+   public static Object getFieldValueRaw(IPSItemAccessor item, String fieldName) throws PSCmsException
+   {
+      PSItemField fld = item.getFieldByName(fieldName);
+      if(fld == null)
+      {
+         log.debug("no such field " + fieldName); 
+         return null; 
+      }
+      IPSFieldValue value = fld.getValue(); 
+      if(value == null)
+      { 
+         log.debug("field has no values " + fieldName); 
+         return null;
+      }
+      return value.getValue(); 
+   }
+   
+   /**
+    * Gets a numeric field 
+    * @param item the item or child to get the field from
+    * @param fieldName the field name
+    * @return the field value as a number. Will be <code>ZERO</code> if the field does not exist,
+    * has no values, or is not a number.  
+    * @throws PSCmsException when an error occurs 
+    */
    public static Number getFieldNumeric(IPSItemAccessor item, String fieldName) throws PSCmsException
    {
       PSItemField fld = item.getFieldByName(fieldName);
@@ -99,6 +133,44 @@ public class RxItemUtils
       return ZERO;
    }
    
+   /**
+    * Determines if a given field is a binary field. 
+    * @param item the item 
+    * @param fieldName the field name
+    * @return <code>true</code> if this is a binary field.  
+    */
+   public static boolean isBinaryField(IPSItemAccessor item, String fieldName)
+   {
+      String emsg; 
+      if(StringUtils.isBlank(fieldName))
+      {
+         emsg = "field name must not be blank";
+         log.debug(emsg);
+         return false; 
+      }
+      PSItemField field = item.getFieldByName(fieldName);
+      if(field == null)
+      {
+         emsg = "no such field " + fieldName; 
+         log.debug(emsg); 
+         return false;  
+      }
+      PSItemFieldMeta meta = field.getItemFieldMeta();         
+      if(meta.getFieldValueType() == PSItemFieldMeta.DATATYPE_BINARY)
+      {
+         return true;
+      }
+      return false; 
+   }
+   
+   /**
+    * Gets the value of a Date Field.
+    * @param item the item or child to get the value from
+    * @param fieldName the field name
+    * @return the date value.  Will be <code>null</code> if the field does not exist, has no values or 
+    * is not a date. 
+    * @throws PSCmsException
+    */
    public static Date getFieldDate(IPSItemAccessor item, String fieldName) throws PSCmsException
    {
       PSItemField fld = item.getFieldByName(fieldName);
@@ -118,6 +190,28 @@ public class RxItemUtils
          return (Date)value.getValue(); 
       }
       log.warn("Date field is not a date " + fieldName + " - " + value.getValueAsString());
+      return null;
+   }
+   
+   public static byte[] getFieldBinary(IPSItemAccessor item, String fieldName) throws PSCmsException
+   {
+      PSItemField fld = item.getFieldByName(fieldName);
+      if(fld == null)
+      {
+         log.debug("no such field " + fieldName); 
+         return null; 
+      }
+      IPSFieldValue value = fld.getValue(); 
+      if(value == null)
+      { 
+         log.debug("field has no values " + fieldName); 
+         return null;
+      }
+      if(value instanceof PSBinaryValue)
+      {
+         return (byte[])value.getValue(); 
+      }
+      log.warn("Binary field is not binary " + fieldName + " - " + value.getValueAsString());
       return null;
    }
    
