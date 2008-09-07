@@ -155,8 +155,8 @@ public class RxItemUtils
          log.debug(emsg); 
          return false;  
       }
-      PSItemFieldMeta meta = field.getItemFieldMeta();         
-      if(meta.getFieldValueType() == PSItemFieldMeta.DATATYPE_BINARY)
+      PSItemFieldMeta meta = field.getItemFieldMeta();
+      if(meta.getBackendDataType() == PSItemFieldMeta.DATATYPE_BINARY)
       {
          return true;
       }

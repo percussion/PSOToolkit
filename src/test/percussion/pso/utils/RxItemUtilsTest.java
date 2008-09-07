@@ -49,7 +49,7 @@ public class RxItemUtilsTest
          will(returnValue(fld));
          one(fld).getItemFieldMeta();
          will(returnValue(meta));
-         one(meta).getFieldValueType();
+         allowing(meta).getBackendDataType();
          will(returnValue(PSItemFieldMeta.DATATYPE_BINARY));
       }});
       boolean result = RxItemUtils.isBinaryField(item, "a");
@@ -69,7 +69,7 @@ public class RxItemUtilsTest
          will(returnValue(fld));
          one(fld).getItemFieldMeta();
          will(returnValue(meta));
-         one(meta).getFieldValueType();
+         allowing(meta).getBackendDataType();
          will(returnValue(PSItemFieldMeta.DATATYPE_TEXT));
       }});
       boolean result = RxItemUtils.isBinaryField(item, "a");
