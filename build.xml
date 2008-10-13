@@ -220,7 +220,7 @@
 		<zip destfile="${distfile}">						
 			<zipfileset dir="${lib}" includes="${jarname}" prefix="lib" />
 			<fileset dir="." includes="readme.txt, deploy.xml, install.sh" />
-			<fileset dir="." includes="license.txt, Extensions.xml" />
+			<fileset dir="." includes="license.txt, Extensions.xml, Install.bat" />
 		    <fileset dir="${bin}" includes="build.properties" />  			
 			<zipfileset dir="WEB-INF" prefix="WEB-INF" />
 			<zipfileset dir="${apidoc}" prefix="javadoc"/>			

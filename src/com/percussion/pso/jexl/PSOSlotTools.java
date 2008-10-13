@@ -67,7 +67,6 @@ public class PSOSlotTools extends PSJexlUtilBase implements IPSJexlExpression
     * @throws Throwable
     * @deprecated use PSAssemblerUtils.getSlotItems() instead. 
     */
-   @Deprecated
    @IPSJexlMethod(description = "Get the contents of a slot as a list of assembly items", params =
    {
          @IPSJexlParam(name = "item", description = "the parent assembly item"),
