@@ -1,5 +1,9 @@
 /*
- * com.percussion.pso.mlb.photogallery.workflow PSOWorkflowInfoFinder.java
+ * COPYRIGHT (c) 1999 - 2008 by Percussion Software, Inc., Woburn, MA USA.
+ * All rights reserved. This material contains unpublished, copyrighted
+ * work including confidential and proprietary information of Percussion.
+ *
+ * com.percussion.pso.workflow PSOWorkflowInfoFinder.java
  *  
  * @author DavidBenua
  *
@@ -15,8 +19,13 @@ import org.apache.commons.logging.LogFactory;
 import com.percussion.cms.objectstore.PSComponentSummary;
 import com.percussion.error.PSException;
 import com.percussion.pso.utils.PSOItemSummaryFinder;
+import com.percussion.services.catalog.PSTypeEnum;
+import com.percussion.services.guidmgr.IPSGuidManager;
+import com.percussion.services.guidmgr.PSGuidManagerLocator;
 import com.percussion.services.workflow.data.PSState;
+import com.percussion.services.workflow.data.PSTransition;
 import com.percussion.services.workflow.data.PSWorkflow;
+import com.percussion.utils.guid.IPSGuid;
 import com.percussion.webservices.system.IPSSystemWs;
 import com.percussion.webservices.system.PSSystemWsLocator;
 
@@ -37,7 +46,8 @@ public class PSOWorkflowInfoFinder
     */
    private static final Log log = LogFactory.getLog(PSOWorkflowInfoFinder.class);
 
-   private IPSSystemWs sws = null;    
+   private IPSSystemWs sws = null;
+   private IPSGuidManager gmgr = null; 
    private List<PSWorkflow> workflows = null;
  
    
@@ -58,6 +68,10 @@ public class PSOWorkflowInfoFinder
       if(sws == null)
       {
          sws = PSSystemWsLocator.getSystemWebservice();
+      }
+      if(gmgr == null)
+      {
+         gmgr = PSGuidManagerLocator.getGuidMgr(); 
       }
       if(workflows == null)
       {
@@ -188,6 +202,62 @@ public class PSOWorkflowInfoFinder
       return false; 
    }
 
+   /**
+    * Find the destination state for a particular workflow transition.
+    * Convenience method for findDestinationState(String, String). 
+    * @param contentId the content id. 
+    * @param transitionId the transition id
+    * @return the state where the transition goes. May be <code>null</code> if the transition is not found. 
+    * @throws PSException
+    */
+   public PSState findDestinationState(String contentId, String transitionId) throws PSException
+   {
+      PSState state = findWorkflowState(contentId);
+      return findDestinationState(state, transitionId); 
+   }
+   
+   /**
+    * Find the destination statie for a workflow transtion. 
+    * @param state the current workflow state
+    * @param transitionId the transition id
+    * @return the destination state. May be <code>null</code> if the transition id is not found. 
+    * @throws PSException 
+    */
+   public PSState findDestinationState(PSState state, String transitionId) throws PSException
+   {
+      String emsg;
+      if(state == null)
+      {
+         emsg = "State must not be null";
+         log.error(emsg);
+         throw new PSException(emsg); 
+      }
+      if(StringUtils.isBlank(transitionId))
+      {
+         emsg = "Transition id must not be null"; 
+         log.error(emsg); 
+         throw new PSException(emsg); 
+      }
+      IPSGuid tguid = gmgr.makeGuid(transitionId, PSTypeEnum.WORKFLOW_TRANSITION); 
+      for(PSTransition tr : state.getTransitions())
+      {
+         if(tguid.equals(tr.getGUID()))
+         {   //found our transition
+             PSState dest = findWorkflowState((int)state.getWorkflowId(), (int)tr.getToState());
+             if(dest == null)
+             {   //stateid is invalid for this workflow. 
+                emsg = "no such state " + state.getWorkflowId() + " - " + tr.getToState();
+                log.error(emsg); 
+                throw new PSException(emsg); 
+             }
+             log.debug("found destination state " + dest.getName()); 
+             return dest; 
+         }
+      }
+      //no transition found
+      return null;
+   }
+   
    /**
     * Sets the system web service.
     * Should be used only in unit tests.
