@@ -1,5 +1,5 @@
 /*
- * com.percussion.pso.mlb.photogallery.impl PSOItemSummaryFinder.java
+ * com.percussion.pso.util PSOItemSummaryFinder.java
  *  
  * @author DavidBenua
  *

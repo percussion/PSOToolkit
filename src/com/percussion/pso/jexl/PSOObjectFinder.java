@@ -50,7 +50,7 @@ import com.percussion.webservices.content.PSContentWsLocator;
  */
 public class PSOObjectFinder extends PSJexlUtilBase
       implements
-         IPSJexlExpression
+         IPSJexlExpression, IPSOObjectFinder
 {
    /**
     * Logger for this class
@@ -90,10 +90,7 @@ public class PSOObjectFinder extends PSJexlUtilBase
    }
    
    /**
-    * Gets the Legacy Component Summary for an item by GUID. 
-    * @param guid the item GUID.
-    * @return the Component Summary for the item. Never <code>null</code>
-    * @throws PSException when the item is not found. 
+    * @see com.percussion.pso.jexl.IPSOObjectFinder#getComponentSummary(com.percussion.utils.guid.IPSGuid)
     */
    @IPSJexlMethod(description="get the Legacy Component Summary for an item",
          params={@IPSJexlParam(name="guid",description="the item GUID")})
@@ -103,10 +100,7 @@ public class PSOObjectFinder extends PSJexlUtilBase
    }
    
    /**
-    * Gets the legacy component summary by content id 
-    * @param contentid the content id
-    * @return the Component Summary for the item. Never <code>null</code>
-    * @throws PSException
+    * @see com.percussion.pso.jexl.IPSOObjectFinder#getComponentSummaryById(java.lang.String)
     */
    @IPSJexlMethod(description="get the Legacy Component Summary for an item",
          params={@IPSJexlParam(name="content",description="the content id")})
@@ -115,10 +109,7 @@ public class PSOObjectFinder extends PSJexlUtilBase
       return PSOItemSummaryFinder.getSummary(contentid); 
    }
    /**
-    * Gets the content type summary for a content type by GUID. 
-    * @param guid the Content Type GUID
-    * @return the content type summary or <code>null</code> if the 
-    * content type is not found. 
+    * @see com.percussion.pso.jexl.IPSOObjectFinder#getContentTypeSummary(com.percussion.utils.guid.IPSGuid)
     */
    @IPSJexlMethod(description="get the content type summary for a specified type",
          params={@IPSJexlParam(name="guid",description="the content type GUID")}) 
@@ -138,9 +129,7 @@ public class PSOObjectFinder extends PSJexlUtilBase
    }
  
    /**
-    * Gets the JSESSIONID value for the current session.
-    * @return the jsessionid
-    * @deprecated in 6.5 and later, replaced by PSSessionUtils.getJSessionId(). 
+    * @see com.percussion.pso.jexl.IPSOObjectFinder#getJSessionId()
     */
    @IPSJexlMethod(description="Get the JSESSIONID value for the current request",
       params={})
@@ -153,8 +142,7 @@ public class PSOObjectFinder extends PSJexlUtilBase
    }
    
    /**
-    * Gets the PSSessionId for the current session. 
-    * @return the pssessionid.
+    * @see com.percussion.pso.jexl.IPSOObjectFinder#getPSSessionId()
     */
    @IPSJexlMethod(description="Get the PSSESSIONID value for the current request",
          params={})
@@ -167,8 +155,7 @@ public class PSOObjectFinder extends PSJexlUtilBase
    }
    
    /**
-    * Gets the users current locale.
-    * @return the users current locale, or <code>null</code> if none is defined. 
+    * @see com.percussion.pso.jexl.IPSOObjectFinder#getUserLocale()
     */
    @IPSJexlMethod(description="get the users current locale",
          params={})
@@ -184,9 +171,7 @@ public class PSOObjectFinder extends PSJexlUtilBase
    }
    
    /**
-    * Gets the name of the current user community.
-    * @return the user community name, or <code>null</code> if none
-    * is defined. 
+    * @see com.percussion.pso.jexl.IPSOObjectFinder#getUserCommunity()
     */
    @IPSJexlMethod(description="get the users current community name",
          params={})
@@ -197,8 +182,7 @@ public class PSOObjectFinder extends PSJexlUtilBase
    }
 
    /**
-    * Gets the users current community id. 
-    * @return the community id, or <code>null</code> if none is defined. 
+    * @see com.percussion.pso.jexl.IPSOObjectFinder#getUserCommunityId()
     */
    @IPSJexlMethod(description="get the users current community id",
          params={})
@@ -214,10 +198,7 @@ public class PSOObjectFinder extends PSJexlUtilBase
    }
    
    /**
-    * Get the GUID for a give content id and revision.
-    * @param contentid the content id
-    * @param revision the revision
-    * @return the GUID. Never <code>null</code>
+    * @see com.percussion.pso.jexl.IPSOObjectFinder#getGuidById(java.lang.String, java.lang.String)
     */
    @IPSJexlMethod(description="get the GUID by Content Id and Revision",
          params={@IPSJexlParam(name="contentid",description="the content id"),
@@ -230,10 +211,7 @@ public class PSOObjectFinder extends PSJexlUtilBase
    }
 
    /**
-    * Gets the GUID for a content id.  The revision independent guid is 
-    * returned. 
-    * @param contentid the content id; 
-    * @return the GUID. Never <code>null</code>
+    * @see com.percussion.pso.jexl.IPSOObjectFinder#getGuidById(java.lang.String)
     */
    @IPSJexlMethod(description="get the GUID by Content Id",
          params={@IPSJexlParam(name="contentid",description="the content id")})
@@ -245,10 +223,7 @@ public class PSOObjectFinder extends PSJexlUtilBase
    }
    
    /**
-    * Gets the Node for a content item by GUID. 
-    * @param guid the content item GUID
-    * @return the Node, or <code>null</code> if the node was not found. 
-    * @throws RepositoryException
+    * @see com.percussion.pso.jexl.IPSOObjectFinder#getNodeByGuid(com.percussion.utils.guid.IPSGuid)
     */
    @IPSJexlMethod(description="get the node for a particular guid", 
          params={@IPSJexlParam(name="guid",description="the GUID for the item")})
@@ -264,9 +239,7 @@ public class PSOObjectFinder extends PSJexlUtilBase
    }
    
    /**
-    * Gets the guid for a site by id. 
-    * @param siteid the site id
-    * @return the guid. Never <code>null</code>
+    * @see com.percussion.pso.jexl.IPSOObjectFinder#getSiteGuid(int)
     */
    @IPSJexlMethod(description="get the site guid for a given id", 
          params={@IPSJexlParam(name="siteid",description="the id for the site")})
@@ -279,9 +252,7 @@ public class PSOObjectFinder extends PSJexlUtilBase
    }
    
    /**
-    * Get the template guid for given id
-    * @param templateid the template id
-    * @return the template guid. 
+    * @see com.percussion.pso.jexl.IPSOObjectFinder#getTemplateGuid(int)
     */
    @IPSJexlMethod(description="get the template guid for a given id", 
          params={@IPSJexlParam(name="template",description="the id for the template")})

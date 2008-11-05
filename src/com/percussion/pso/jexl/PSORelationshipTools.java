@@ -27,6 +27,7 @@ import com.percussion.extension.PSJexlUtilBase;
 import com.percussion.utils.guid.IPSGuid;
 import com.percussion.webservices.PSErrorException;
 import com.percussion.webservices.content.IPSContentWs;
+import com.percussion.pso.relationships.IPSOParentFinder;
 import com.percussion.pso.relationships.PSOParentFinder;
 import com.percussion.pso.utils.SimplifyParameters;
 import com.percussion.services.assembly.impl.nav.PSNavConfig;
@@ -148,7 +149,7 @@ public class PSORelationshipTools extends PSJexlUtilBase implements IPSJexlExpre
    {
       initServices();
      
-      PSOParentFinder relFinder = new PSOParentFinder();
+      IPSOParentFinder relFinder = new PSOParentFinder();
       Set<PSLocator> parentLocs = relFinder.findAllParents(contentid, slotName);
       List<IPSGuid> guids = new ArrayList<IPSGuid>(parentLocs.size()); 
       for(PSLocator loc : parentLocs)
@@ -172,7 +173,7 @@ public class PSORelationshipTools extends PSJexlUtilBase implements IPSJexlExpre
          params={@IPSJexlParam(name="contentid", description="the content id of the current page")})
    public boolean isLandingPage(String contentid) throws Exception
    {
-      PSOParentFinder relFinder = new PSOParentFinder();
+      IPSOParentFinder relFinder = new PSOParentFinder();
       PSNavConfig nc = PSNavConfig.getInstance(); 
       String landingSlot = nc.getLandingPageRelationship(); 
       Set<PSLocator> parents = relFinder.findParents(contentid, landingSlot, true);
@@ -238,7 +239,7 @@ public class PSORelationshipTools extends PSJexlUtilBase implements IPSJexlExpre
          validFlags = "y,i"; 
       }
       List<String> vfList = SimplifyParameters.getValueAsList(validFlags);
-      PSOParentFinder relFinder = new PSOParentFinder();
+      IPSOParentFinder relFinder = new PSOParentFinder();
 
       return relFinder.hasOnlyPublicAncestors(contentId, slotName, vfList);
       

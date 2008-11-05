@@ -34,6 +34,7 @@ import com.percussion.extension.IPSJexlMethod;
 import com.percussion.extension.IPSJexlParam;
 import com.percussion.extension.PSExtensionProcessingException;
 import com.percussion.extension.PSJexlUtilBase;
+import com.percussion.pso.relationships.IPSOParentFinder;
 import com.percussion.pso.relationships.PSOParentFinder;
 import com.percussion.pso.utils.PSORequestContext;
 import com.percussion.server.IPSRequestContext;
@@ -61,8 +62,8 @@ public class PSONavTools extends PSJexlUtilBase implements IPSJexlExpression
   
    private static IPSGuidManager gmgr = null; 
    private static PSNavConfig  navConfig = null; 
-   private static PSOObjectFinder objFinder = null;
-   private static PSOParentFinder parFinder = null; 
+   private static IPSOObjectFinder objFinder = null;
+   private static IPSOParentFinder parFinder = null; 
    private static PSRelationshipProcessorProxy proxy = null;
    /**
     * 
@@ -324,7 +325,7 @@ public class PSONavTools extends PSJexlUtilBase implements IPSJexlExpression
    /**
     * @param objFinder the objFinder to set
     */
-   public static void setObjFinder(PSOObjectFinder objFinder)
+   public static void setObjFinder(IPSOObjectFinder objFinder)
    {
       PSONavTools.objFinder = objFinder;
    }
@@ -333,7 +334,7 @@ public class PSONavTools extends PSJexlUtilBase implements IPSJexlExpression
    /**
     * @param parFinder the parFinder to set
     */
-   public static void setParFinder(PSOParentFinder parFinder)
+   public static void setParFinder(IPSOParentFinder parFinder)
    {
       PSONavTools.parFinder = parFinder;
    }
