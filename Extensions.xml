@@ -169,7 +169,27 @@
 			<description/>
 		</PSXExtensionParamDef>
 		<suppliedResources/>
-	</Extension>
+	</Extension>	
+	<Extension name="PSORequiredFieldsItemValidation" context="user/" handler="Java" categorystring="itemvalidation" deprecated="no" restoreRequestParamsOnError="no">
+		<initParam name="com.percussion.user.description">Item Validation exit for required fields</initParam>
+		<initParam name="com.percussion.extension.version">1</initParam>
+		<initParam name="className">com.percussion.pso.validation.PSORequiredFieldsItemValidation</initParam>
+		<initParam name="com.percussion.extension.reentrant">yes</initParam>
+		<interface name="com.percussion.extension.IPSItemValidator"/>
+		<interface name="com.percussion.extension.IPSResultDocumentProcessor" />
+		<PSXExtensionParamDef id="0">
+			<name>FieldList</name>
+			<dataType>java.lang.String</dataType>
+			<description>Fields to require, comma separated.</description>
+		</PSXExtensionParamDef>
+		<PSXExtensionParamDef id="0">
+			<name>DestinationStates</name>
+			<dataType>java.lang.String</dataType>
+			<description>Destination States, comma separated.</description>
+		</PSXExtensionParamDef>
+        <suppliedResources/>
+     </Extension>
+		
 		<Extension name="PSOValidateRelatedItems" context="user/" handler="Java" categorystring="itemvalidation" deprecated="no" restoreRequestParamsOnError="no">
 		<initParam name="com.percussion.user.description">Item Validation exit for related content</initParam>
 		<initParam name="com.percussion.extension.version">1</initParam>

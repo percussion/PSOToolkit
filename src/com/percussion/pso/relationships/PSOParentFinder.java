@@ -21,6 +21,7 @@ import com.percussion.design.objectstore.PSRelationshipSet;
 import com.percussion.error.PSException;
 import com.percussion.pso.utils.PSORequestContext;
 import com.percussion.pso.utils.UniqueIdLocatorSet;
+import com.percussion.pso.workflow.IPSOWorkflowInfoFinder;
 import com.percussion.pso.workflow.PSOWorkflowInfoFinder;
 import com.percussion.server.IPSRequestContext;
 import com.percussion.services.assembly.IPSAssemblyService;
@@ -44,7 +45,7 @@ public class PSOParentFinder implements IPSOParentFinder
    private PSRelationshipProcessorProxy proxy = null;
    private IPSGuidManager gmgr = null; 
    private IPSAssemblyService asm = null;
-   private PSOWorkflowInfoFinder workflow;   
+   private IPSOWorkflowInfoFinder workflow;   
 
    private static Log log = LogFactory.getLog(PSOParentFinder.class); 
 
