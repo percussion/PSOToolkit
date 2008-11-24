@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.beanutils.ConversionException;
+import org.apache.commons.beanutils.Converter;
+import org.apache.commons.beanutils.converters.BooleanConverter;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -177,6 +180,10 @@ public class PSOExtensionParamsHelper {
         return paramToNumber(paramName, getRequiredParameter(paramName));
     }
     
+    public Boolean getRequiredParameterAsBoolean(String paramName)
+    {
+       return paramToBoolean(paramName, getRequiredParameter(paramName));
+    }
     /**
      * Gets a parameter and if its null or an empty String then an
      * IllegalArgumentException is thrown.
@@ -199,6 +206,11 @@ public class PSOExtensionParamsHelper {
         return paramToNumber(paramName, getOptionalParameter(paramName, defaultValue));
     }
     
+    public Boolean getOptionalParameterAsBoolean(String paramName, Boolean defaultValue)
+    {
+       String b = (defaultValue.booleanValue()) ? "true" : "false" ;
+       return paramToBoolean(paramName, getOptionalParameter(paramName, b));
+    }
     
     /**
      * Gets a parameter and if its null or empty returns the provided default value.
@@ -232,6 +244,22 @@ public class PSOExtensionParamsHelper {
             log.error(message,e);
             throw new IllegalArgumentException(message,e);
         }
+    }
+    
+    public Boolean paramToBoolean(String paramName, String param)
+    {
+        Converter cvt = new BooleanConverter();
+        try
+      {
+         Boolean val = (Boolean) cvt.convert(Boolean.class, param);
+           return val;
+      } catch (ConversionException ex)
+      {
+         String message = "Parameter " + paramName + " is not a boolean. " +
+         "Param value=" + param;
+         log.error(message,ex);
+         throw new IllegalArgumentException(message,ex);
+      }
     }
     /**
      * Get the parameters passed to the extension as a map.

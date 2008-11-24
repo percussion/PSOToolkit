@@ -3,6 +3,7 @@ package test.percussion.pso.validation;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.jcr.RepositoryException;
@@ -14,19 +15,24 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
+import org.jmock.Sequence;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.percussion.cms.objectstore.PSFolder;
+import com.percussion.cms.objectstore.PSRelationshipFilter;
 import com.percussion.design.objectstore.PSLocator;
+import com.percussion.design.objectstore.PSRelationship;
 import com.percussion.pso.utils.PSONodeCataloger;
 import com.percussion.pso.validation.PSOUniqueFieldWithInFoldersValidator;
 import com.percussion.server.IPSRequestContext;
 import com.percussion.services.contentmgr.IPSContentMgr;
 import com.percussion.services.guidmgr.IPSGuidManager;
 import com.percussion.utils.guid.IPSGuid;
+import com.percussion.webservices.PSErrorException;
 import com.percussion.webservices.content.IPSContentWs;
+import com.percussion.webservices.system.IPSSystemWs;
 
 public class PSOUniqueFieldWithInFoldersValidatorTest {
 
@@ -204,6 +210,50 @@ public class PSOUniqueFieldWithInFoldersValidatorTest {
          fail("Exception");
       }
     }
+    
+    @Test
+    @SuppressWarnings("unchecked")
+    public void testIsPromotable()
+    {
+       final IPSSystemWs systemWs = context.mock(IPSSystemWs.class); 
+       validator.setSystemWs(systemWs); 
+       final List<PSRelationship> emptyRels = Collections.EMPTY_LIST;
+       final PSRelationship rel1 = context.mock(PSRelationship.class);
+       final List<PSRelationship> oneRels = Collections.<PSRelationship>singletonList(rel1);
+       
+       boolean result;
+       
+       try
+      {
+         final Sequence filterSeq = context.sequence("filter");   
+         
+         context.checking(new Expectations(){{
+            one(systemWs).loadRelationships(with(any(PSRelationshipFilter.class)));
+            inSequence(filterSeq);
+            will(returnValue(emptyRels));
+            one(systemWs).loadRelationships(with(any(PSRelationshipFilter.class)));
+            inSequence(filterSeq);
+            will(returnValue(oneRels)); 
+         }});
+         
+         result = validator.isPromotable(0);
+         assertFalse(result);
+         
+         result = validator.isPromotable(42); 
+         assertFalse(result); 
+         
+         result = validator.isPromotable(43);
+         assertTrue(result);
+         
+         context.assertIsSatisfied();
+         
+      } catch (Exception ex)
+      {
+        log.error("Unexpected Exception " + ex,ex);
+        fail("Exception caught");
+      }
+       
+    }
     /**
      * Test class to expose protected methods. 
      * 
@@ -231,6 +281,15 @@ public class PSOUniqueFieldWithInFoldersValidatorTest {
       public Integer getFolderId(IPSRequestContext request)
       {
          return super.getFolderId(request);
+      }
+
+      /**
+       * @see com.percussion.pso.validation.PSOUniqueFieldWithInFoldersValidator#isPromotable(int)
+       */
+      @Override
+      public boolean isPromotable(int contentid) throws PSErrorException
+      {        
+         return super.isPromotable(contentid);
       }
        
     }

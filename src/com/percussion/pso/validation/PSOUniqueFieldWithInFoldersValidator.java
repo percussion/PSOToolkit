@@ -28,8 +28,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.percussion.cms.objectstore.PSFolder;
+import com.percussion.cms.objectstore.PSRelationshipFilter;
 import com.percussion.data.PSConversionException;
 import com.percussion.design.objectstore.PSLocator;
+import com.percussion.design.objectstore.PSRelationship;
 import com.percussion.extension.IPSExtensionDef;
 import com.percussion.extension.IPSFieldValidator;
 import com.percussion.extension.PSExtensionException;
@@ -46,6 +48,8 @@ import com.percussion.webservices.PSErrorException;
 import com.percussion.webservices.PSErrorResultsException;
 import com.percussion.webservices.content.IPSContentWs;
 import com.percussion.webservices.content.PSContentWsLocator;
+import com.percussion.webservices.system.IPSSystemWs;
+import com.percussion.webservices.system.PSSystemWsLocator;
 
 /**
  * This is a field validator that checks whether or not a 
@@ -57,14 +61,16 @@ import com.percussion.webservices.content.PSContentWsLocator;
  */
 public class PSOUniqueFieldWithInFoldersValidator implements IPSFieldValidator {
 
-    private IPSExtensionDef extensionDef;
-    private IPSContentWs contentWs;
-    private IPSGuidManager guidManager;
-    private IPSContentMgr contentManager;
-    private PSONodeCataloger nodeCataloger;
+    private IPSExtensionDef extensionDef = null;
+    private IPSContentWs contentWs = null;
+    private IPSGuidManager guidManager = null;
+    private IPSContentMgr contentManager = null;
+    private PSONodeCataloger nodeCataloger = null;
+    private IPSSystemWs systemWs = null; 
     
     public Boolean processUdf(Object[] params, IPSRequestContext request)
             throws PSConversionException {
+        String cmd = request.getParameter(IPSHtmlParameters.SYS_COMMAND);
         String actionType = request.getParameter("DBActionType");
         if(actionType == null || 
            !(actionType.equals("INSERT") || actionType.equals("UPDATE")))
@@ -78,28 +84,51 @@ public class PSOUniqueFieldWithInFoldersValidator implements IPSFieldValidator {
             log.debug("Field value was null for field: " + fieldName);
             return true;
         }
+        boolean xpv = h.getOptionalParameterAsBoolean("excludePromotableVersions", false);
+        Number contentId = new Integer(0);
         try {
-            String typeList = this.makeTypeList(fieldName);
-            boolean rvalue = true;
-            if (actionType.equals("UPDATE")) {
-                Number contentId = h.getRequiredParameterAsNumber("sys_contentid");
-                rvalue = isFieldValueUniqueInFolderForExistingItem(contentId.intValue(), fieldName, fieldValue, typeList);
-            }
-            else {
-                Number folderId = getFolderId(request);
-                if (folderId != null)
-                    rvalue = isFieldValueUniqueInFolder(folderId.intValue(), fieldName, fieldValue, typeList);
-                else
-                    rvalue = false;
-            }
-            return rvalue;
+           if (actionType.equals("UPDATE")) {
+               contentId = h.getRequiredParameterAsNumber("sys_contentid");
+           }
+           if(xpv)
+           {
+              log.debug("excluding promotable versions");
+             
+              //sys_command is modify if this is a user update, not a clone, new copy
+              //or new version.
+              if(StringUtils.isNotBlank(cmd) && !cmd.equalsIgnoreCase("modify"))
+              {
+                 log.debug("command is not modify - " + cmd); 
+                 return true;
+              }
+                 
+              if(isPromotable(contentId.intValue()))
+              {
+                 return true; 
+              }
+           }
+
+
+           String typeList = this.makeTypeList(fieldName);
+           boolean rvalue = true;
+           if (actionType.equals("UPDATE")) {
+              rvalue = isFieldValueUniqueInFolderForExistingItem(contentId.intValue(), fieldName, fieldValue, typeList);
+           }
+           else {
+              Number folderId = getFolderId(request);
+              if (folderId != null)
+                 rvalue = isFieldValueUniqueInFolder(folderId.intValue(), fieldName, fieldValue, typeList);
+              else
+                 rvalue = false;
+           }
+           return rvalue;
         } catch (Exception e) {
-            log.error(format("An error happend while checking if " +
-            		"fieldName: {0} was unique for " +
-            		"contentId: {1} with " +
-            		"fieldValue: {2}",
-            		fieldName, request.getParameter("sys_contentid"), fieldValue), e);
-            return false;
+           log.error(format("An error happend while checking if " +
+                 "fieldName: {0} was unique for " +
+                 "contentId: {1} with " +
+                 "fieldValue: {2}",
+                 fieldName, request.getParameter("sys_contentid"), fieldValue), e);
+           return false;
         }
     }
     
@@ -246,6 +275,31 @@ public class PSOUniqueFieldWithInFoldersValidator implements IPSFieldValidator {
        return sb.toString();
     }
     
+    /**
+     * Is this item a promotable version.  Examines the relationships to determine if this item is a 
+     * promotable version or not. 
+     * @param contentid the content id for the item 
+     * @return <code>true</code> if a PV relationship is found. 
+     * @throws PSErrorException
+     */
+    protected boolean isPromotable(int contentid) throws PSErrorException
+    {
+       if(contentid == 0)
+       {
+          log.debug("no PV for content id 0");
+          return false; 
+       }
+       PSLocator loc = new PSLocator(contentid);
+       PSRelationshipFilter filter = new PSRelationshipFilter();
+       filter.setCategory(PSRelationshipFilter.FILTER_CATEGORY_PROMOTABLE); 
+       filter.setDependent(loc); 
+      
+       List<PSRelationship> rels = systemWs.loadRelationships(filter);
+       log.debug("there are " + rels.size() + " PV relationships");
+       
+       return (rels.size() > 0) ? true : false; 
+    }
+    
     public void init(IPSExtensionDef extensionDef, File arg1)
             throws PSExtensionException {
         setExtensionDef(extensionDef);
@@ -253,6 +307,7 @@ public class PSOUniqueFieldWithInFoldersValidator implements IPSFieldValidator {
         if (contentWs == null) setContentWs(PSContentWsLocator.getContentWebservice());
         if (guidManager == null) setGuidManager(PSGuidManagerLocator.getGuidMgr());
         if (nodeCataloger == null) setNodeCataloger(new PSONodeCataloger());
+        if (systemWs == null) setSystemWs(PSSystemWsLocator.getSystemWebservice()); 
     }
 
     public IPSExtensionDef getExtensionDef() {
@@ -288,5 +343,13 @@ public class PSOUniqueFieldWithInFoldersValidator implements IPSFieldValidator {
    public void setNodeCataloger(PSONodeCataloger nodeCataloger)
    {
       this.nodeCataloger = nodeCataloger;
+   }
+
+   /**
+    * @param systemWs the systemWs to set
+    */
+   public void setSystemWs(IPSSystemWs systemWs)
+   {
+      this.systemWs = systemWs;
    }
 }

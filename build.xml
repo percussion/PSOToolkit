@@ -138,7 +138,6 @@
 	</target>
 	
 	<target name="jarbuilder" depends="compile" description="just build the jar, no server">
-	    <delete file="${bin}/log4j.properties" />
 		<propertyfile file="${bin}/build.properties">
 			<entry key="build.number" value="${build.number}"/>
 			<entry key="build.date" type="date" pattern="EEEE MMM dd yyyy" value="now"/>

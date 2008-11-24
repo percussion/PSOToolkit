@@ -403,7 +403,13 @@
 	     <PSXExtensionParamDef id="0">
 	        <name>fieldName</name>
 	        <dataType>java.lang.String</dataType>
-	        <description>(Optional, default = fieldname) The name of the field providing the segment ids.</description>
+	        <description>(Optional, default = fieldname) The name of the field providing the value.</description>
+	     </PSXExtensionParamDef> 
+	     <PSXExtensionParamDef id="0">
+	        <name>excludePromotableVersions</name>
+	        <dataType>java.lang.String</dataType>
+	        <description>(Optional, default = false) If True, suppress this validation for items that are promotable
+	        versions of another item.</description>
 	     </PSXExtensionParamDef>
 	     <suppliedResources />
 	</Extension>

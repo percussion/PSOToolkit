@@ -15,7 +15,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -64,8 +68,7 @@ public class PSOSlotTools extends PSJexlUtilBase implements IPSJexlExpression
     * @param params the combined map of parameters to pass to the slot finder.  
     * Never <code>null</code> may be <code>empty</code>
     * @return a list of results
-    * @throws Throwable
-    * @deprecated use PSAssemblerUtils.getSlotItems() instead. 
+    * @throws Throwable 
     */
    @IPSJexlMethod(description = "Get the contents of a slot as a list of assembly items", params =
    {
@@ -134,4 +137,32 @@ public class PSOSlotTools extends PSJexlUtilBase implements IPSJexlExpression
       }
    }
 
+   /**
+    * Gets all values for a named property across the contents of a slot.  For each item in the 
+    * slot, the property is fetched, and if it exists on that item, its String value is appended to 
+    * the result. 
+    * @param slotcontents the contents of the desired slot. 
+    * @param propertyName the name of the desired property. Must not be <code>null</code> or 
+    * <code>blank</code>
+    * @return a list of String values. Never <code>null</code> but may be <code>empty</code>
+    * @throws RepositoryException
+    */
+   @IPSJexlMethod(description="gets all property values across the contents of a slot", 
+         params={@IPSJexlParam(name="slotcontent", description="contents of the slot"),
+         @IPSJexlParam(name="propertyName", description="name of the property to fetch")})
+   public List<String> getSlotPropertyValues(List<IPSAssemblyItem> slotcontents, String propertyName) 
+      throws RepositoryException
+   {
+      Validate.notEmpty(propertyName,"the property name must be specified."); 
+      List<String> result = new ArrayList<String>(slotcontents.size()); 
+      for(IPSAssemblyItem item : slotcontents)
+      {
+          Node node = item.getNode();
+          if(node.hasProperty(propertyName))
+          {
+             result.add(node.getProperty(propertyName).getString());    
+          }
+      }
+      return result; 
+   }
 }

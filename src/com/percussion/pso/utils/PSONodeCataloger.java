@@ -95,18 +95,20 @@ public class PSONodeCataloger
       List<IPSNodeDefinition> nodeTypes = cmgr.findAllItemNodeDefinitions();
       for(IPSNodeDefinition nd : nodeTypes)
       {
-         log.trace("examining node type " + nd.getName());
+         //log.trace("examining node type " + nd.getName());
          NodeType nt = nd.getDeclaringNodeType();
-         
-         PropertyDefinition[] props = nt.getDeclaredPropertyDefinitions(); 
-         for(PropertyDefinition p : props)
+         if(nt != null)
          {
-             log.trace("examining field named " + p.getName());
-             if(p.getName().equals(fieldName) )
-             {
-                names.add(nt.getName());
-                break; 
-             }
+            PropertyDefinition[] props = nt.getDeclaredPropertyDefinitions(); 
+            for(PropertyDefinition p : props)
+            {
+               //log.trace("examining field named " + p.getName());
+               if(p.getName().equals(fieldName) )
+               {
+                  names.add(nt.getName());
+                  break; 
+               }
+            }
          }
       }
       log.debug("content type names for field " + fieldName + " -- " + names); 
