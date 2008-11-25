@@ -64,12 +64,29 @@ public class PSOFolderTools extends PSJexlUtilBase implements IPSJexlExpression
    private IPSContentWs contentWs;
    private IPSGuidManager guidManager;
    
+
    /**
-    * 
+    * Extensions manager will use this constructor.
     */
    public PSOFolderTools()
    {
       super();
+   }
+   
+   
+   /**
+    * Preferred Constructor for programatic use outside jexl.
+    * @param contentWs Content web service.
+    * @param guidManager Guid Manager.
+    */
+   public PSOFolderTools(IPSContentWs contentWs, IPSGuidManager guidManager) {
+       super();
+       init(contentWs, guidManager);
+   }
+   
+   protected void init(IPSContentWs contentWs, IPSGuidManager guidManager) {
+       this.contentWs = contentWs;
+       this.guidManager = guidManager;
    }
    
    /**
@@ -228,10 +245,9 @@ public class PSOFolderTools extends PSJexlUtilBase implements IPSJexlExpression
     public void init(IPSExtensionDef def, File codeRoot)
             throws PSExtensionException {
         super.init(def, codeRoot);
-        if (contentWs == null)
-            contentWs = PSContentWsLocator.getContentWebservice();
-        if (guidManager == null)
-            guidManager = PSGuidManagerLocator.getGuidMgr();
+        IPSContentWs contentWs = PSContentWsLocator.getContentWebservice();
+        IPSGuidManager guidManager = PSGuidManagerLocator.getGuidMgr();
+        init(contentWs, guidManager);
     }
 
     public IPSContentWs getContentWs() {

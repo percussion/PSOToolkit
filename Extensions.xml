@@ -289,6 +289,24 @@
 		</PSXExtensionParamDef>
 		<suppliedResources/>
 	</Extension>
+	<Extension categorystring="SlotContentFinder" context="global/percussion/slotcontentfinder/" deprecated="no" handler="Java" name="PSOAncestorFolderSlotContentFinder" restoreRequestParamsOnError="no">
+		<initParam name="com.percussion.user.description"/>
+		<initParam name="com.percussion.extension.version">1</initParam>
+		<initParam name="com.percussion.extension.reentrant">yes</initParam>
+		<initParam name="className">com.percussion.pso.finder.PSOAncestorFolderSlotContentFinder</initParam>
+		<interface name="com.percussion.services.assembly.IPSSlotContentFinder"/>
+		<PSXExtensionParamDef id="0">
+			<name>template</name>
+			<dataType>java.lang.String</dataType>
+			<description>(required) The template to use to format the ancestor item in the folder tree. If you don't provide it will use the current assembly items template.</description>
+		</PSXExtensionParamDef>
+		<PSXExtensionParamDef id="1">
+			<name>contenttype</name>
+			<dataType>java.lang.String</dataType>
+			<description>(required) The contenttype of the ancestor item.</description>
+		</PSXExtensionParamDef>
+		<suppliedResources/>
+	</Extension>
 	<Extension categorystring="SlotContentFinder" context="global/percussion/slotcontentfinder/" deprecated="no" handler="Java" name="PSOReverseSlotContentFinder" restoreRequestParamsOnError="no">
 		<initParam name="com.percussion.user.description"/>
 		<initParam name="com.percussion.extension.version">1</initParam>

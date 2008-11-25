@@ -62,7 +62,6 @@ public class PSOProxyQueryResourceTest {
     throws Exception {
         Map<String,String> params = makeRequestParams(null, null, null);
         params.put("output", "atom");
-        params.put("test", "");
         IPSRequestContext request = makeRequest(params);
         Object[] eParams = makeParams("http://news.google.com/");
         Document doc = proxy.processResultDocument(eParams, request, null);
