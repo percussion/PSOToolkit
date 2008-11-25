@@ -4,6 +4,7 @@ import static java.text.MessageFormat.*;
 import static java.util.Collections.*;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,11 +32,13 @@ import com.percussion.webservices.content.IPSContentWs;
 import com.percussion.webservices.content.PSContentWsLocator;
 
 /**
- * Finds a single content item of a given content type in an the current folder of the assembly item
+ * Finds a single content item of a given content type in the current folder of the assembly item
  * or an ancestor folder. 
  * 
  * The finder first looks in the current folder and if not found then proceeds up the folder tree until an
- * item with the given content type is found or the root node of the folder tree is reached.
+ * item with the given content type is found. If no item is found the slot will be empty.
+ * 
+ * The slot will always have either one or zero items.
  * 
  * @author adamgent
  *
@@ -53,6 +56,12 @@ public class PSOAncestorFolderSlotContentFinder extends PSBaseSlotContentFinder 
     private static final Log log = LogFactory
             .getLog(PSOAncestorFolderSlotContentFinder.class);
     
+    /**
+     * Constructor for Extensions Manager.
+     */
+    public PSOAncestorFolderSlotContentFinder() {
+    
+    }
     
     /**
      * Preferred Constructor for programatic use outside jexl.
@@ -90,14 +99,16 @@ public class PSOAncestorFolderSlotContentFinder extends PSBaseSlotContentFinder 
         if (sum == null) {
             log.warn(format("Did not find an ancestor item of type: {0}  for item: {1}", 
                     contentType, assemblyItem.getId()));
-            return emptySet();
+            return new HashSet<SlotItem>();
         }
         else if (log.isDebugEnabled()) {
             log.debug(format("Found ancestor item of type: {0} with id: {1} for item: {2}",
                     contentType, sum.getGUID(), assemblyItem.getId()));
         }
         
-        return singleton(new SlotItem(sum.getGUID(),null, 0));
+        HashSet<SlotItem> rvalue = new HashSet<SlotItem>();
+        rvalue.add(new SlotItem(sum.getGUID(),null, 0));
+        return rvalue;
         
     }
     

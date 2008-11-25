@@ -56,7 +56,7 @@ public class PSOAncestorFolderSlotContentFinderTest {
     
     Map<String, Object> params;
     
-    public class StubFolderTools extends PSOFolderTools {
+    protected static class StubFolderTools extends PSOFolderTools {
 
         String expectedFolderPath = "//path";
         public String getExpectedFolderPath() {
@@ -86,9 +86,6 @@ public class PSOAncestorFolderSlotContentFinderTest {
         finder = new PSOAncestorFolderSlotContentFinder(contentWs, folderTools);
         params = new HashMap<String,Object>();
 
-//        final IPSGuid assemblyItemGuid = context.mock(IPSGuid.class, "assemblyItemGuid");
-//        final IPSGuid folderGuid = context.mock(IPSGuid.class, "folderGuid");
-        
         context.checking(new Expectations() {{
             allowing(slot).getFinderArguments();
             will(returnValue(new HashMap<String, String>()));
@@ -97,32 +94,19 @@ public class PSOAncestorFolderSlotContentFinderTest {
     }
 
     
-//    public void expectGetFolderPath() {
-//        final IPSGuid assemblyItemGuid = context.mock(IPSGuid.class, "assemblyItemGuid");
-//        final IPSGuid folderGuid = context.mock(IPSGuid.class, "folderGuid");
-//        context.checking(new Expectations() {{
-//            allowing(slot).getFinderArguments();
-//            will(returnValue(new HashMap<String, String>()));
-//            
-//            allowing(assemblyItem).getId();
-//            will(returnValue(assemblyItemGuid));
-//            
-//            allowing(assemblyItem).getFolderId();
-//            will(returnValue(10));
-//            
-//            one(guidManager).makeGuid(new PSLocator(10, -1));
-//            will(returnValue(folderGuid));
-//        }});
-//    }
     
     @Test
     public void shouldGetSlotItemOfContentTypeInParentFolder() throws Exception {
         /*
          * Given: we pass in the content type name of generic.
+         * The assembly item is in folder path below.
+         * The desired item slot item of type generic is in folder b.
+         * 
          */
         
         params.put(PSOAncestorFolderSlotContentFinder.PARAM_CONTENTTYPE, "generic");
-
+        final String path = "//a/b/c";
+        
         /* 
          * Expect: 
          *  To get the folder path of the assembly item.
@@ -141,19 +125,29 @@ public class PSOAncestorFolderSlotContentFinderTest {
             IPSGuid c = context.mock(IPSGuid.class, "c");
             
             //PSOFolderTools expect.
-            String path = "//a/b/c";
+            
             folderTools.setExpectedFolderPath(path);
             one(contentWs).findPathIds(path);
             will(returnValue(asList(a,b,c)));
             
+            /*
+             * c has no children.
+             */
             one(contentWs).findFolderChildren(c, false, "admin");
             one(contentWs).findFolderChildren(b, false, "admin");
             
+            /*
+             * b has two children.
+             */
             PSItemSummary sumYes = new PSItemSummary(1, 1, "yes", 300, "generic");
             PSItemSummary sumNo = new PSItemSummary(2, 1, "yes", 302, "blah");
             will(returnValue(asList(sumNo, sumYes)));
             
-            //never(contentWs).findFolderChildren(a, false, "admin");
+            /*
+             * We should not need to load folder a's children since 
+             * b already has an item that is generic.
+             */
+            never(contentWs).findFolderChildren(a, false, "admin");
             
             
             
@@ -170,11 +164,74 @@ public class PSOAncestorFolderSlotContentFinderTest {
         
         assertEquals(1, slotItems.size());
     }
-
-    public void expect() {
+    
+    
+    @Test
+    public void shouldGetZeroSlotItemsFromAncestorFoldersIfNoItemOfDesiredTypeExistInAncestorFolders() throws Exception {
+        /*
+         * Given: we pass in the content type name of generic.
+         * The assembly item is in folder path below.
+         * The desired item slot item of type generic is in folder b.
+         * 
+         */
+        
+        params.put(PSOAncestorFolderSlotContentFinder.PARAM_CONTENTTYPE, "generic");
+        final String path = "//a/b/c";
+        
+        /* 
+         * Expect: findFolderChildren to happen on 
+         * ALL ancestor folders since none of the folders have
+         * an item with the desired content type.
+         */
+        
         context.checking(new Expectations() {{
             
+            allowing(assemblyItem).getId();
+            
+            IPSGuid a = context.mock(IPSGuid.class, "a");
+            IPSGuid b = context.mock(IPSGuid.class, "b");
+            IPSGuid c = context.mock(IPSGuid.class, "c");
+            
+            //PSOFolderTools expect.
+            
+            folderTools.setExpectedFolderPath(path);
+            one(contentWs).findPathIds(path);
+            will(returnValue(asList(a,b,c)));
+            
+            /*
+             * c has no children.
+             */
+            one(contentWs).findFolderChildren(c, false, "admin");
+            one(contentWs).findFolderChildren(b, false, "admin");
+            
+            /*
+             * b has two children.
+             */
+            PSItemSummary sumNotGeneric = new PSItemSummary(1, 1, "yes", 300, "NOT_GENERIC");
+            PSItemSummary sumNo = new PSItemSummary(2, 1, "yes", 302, "blah");
+            will(returnValue(asList(sumNo, sumNotGeneric)));
+            
+            /*
+             * folder a has no children.
+             */
+            one(contentWs).findFolderChildren(a, false, "admin");
+            
+            
+            
         }});
+
+        /*
+         * When: we call getSlotItems from the finder.
+         */
+
+        Set<SlotItem> slotItems = finder.getSlotItems(assemblyItem, slot, params);
+        /*
+         * Then: We should have zero items
+         */
+        
+        assertEquals(0, slotItems.size());
     }
+
+
 }
 
