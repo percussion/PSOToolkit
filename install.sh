@@ -14,11 +14,11 @@ then
    echo
    echo "You must specify a valid Rhythmyx root directory"
    Help
-   exit 1
+#   exit 1
 elif [ "$1" = "-help" ]
 then
    Help
-   exit 2
+#   exit 2
 elif [ -d $1 ]
 then
    export RHYTHMYX_HOME=$1
@@ -31,6 +31,6 @@ then
 else
   echo "$1 is not a Directory"
   Help
-  exit 3
+ # exit 3
 fi
 

@@ -106,9 +106,9 @@ public class PSONodeCatalogerTest
                will(returnValue(nodes));
                one(nd1).getDeclaringNodeType();
                will(returnValue(t1));
-               one(nd1).getName();
+               allowing(nd1).getName();
                will(returnValue("rx:node1"));
-               one(nd2).getName();
+               allowing(nd2).getName();
                will(returnValue("rx:node2"));               
                one(nd2).getDeclaringNodeType();
                will(returnValue(t2)); 
