@@ -112,6 +112,49 @@ public class PSOWorkflowInfoFinder implements IPSOWorkflowInfoFinder
    }
    
    /**
+    * 
+    * @see com.percussion.pso.workflow.IPSOWorkflowInfoFinder#findWorkflowTransition(int, int)
+    */
+   public PSTransition findWorkflowTransition(int workflow, int transid)
+   {
+      PSWorkflow wf = findWorkflow(workflow);
+      if(wf == null)
+      {
+         String emsg = "Workflow id " + workflow + " not found";
+         log.error(emsg); 
+         throw new IllegalArgumentException(emsg);
+      }      
+      return findWorkflowTransition(wf, transid);       
+   }
+   
+   /**
+    * 
+    * @see com.percussion.pso.workflow.IPSOWorkflowInfoFinder#findWorkflowTransition(com.percussion.services.workflow.data.PSWorkflow, int)
+    */
+   public PSTransition findWorkflowTransition(PSWorkflow wf, int transid)
+   {
+      for(PSState st : wf.getStates())
+      {
+         for(PSTransition trans : st.getTransitions())
+         {
+            long tid = trans.getGUID().longValue();
+            if(tid == transid)
+            {
+               return trans;
+            }
+         }
+//         for(PSTransition trans : st.getAgingTransitions())
+//         {
+//            long tid = trans.getGUID().longValue();
+//            if(tid == transid)
+//            {
+//               return trans;
+//            }
+//         }
+      }
+      return null; 
+   }
+   /**
     * @see com.percussion.pso.workflow.IPSOWorkflowInfoFinder#findWorkflowState(int, int)
     */
    public PSState findWorkflowState(int workflow, int state)

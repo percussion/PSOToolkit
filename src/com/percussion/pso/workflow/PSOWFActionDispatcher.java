@@ -1,8 +1,11 @@
-// Decompiled by DJ v3.2.2.67 Copyright 2002 Atanas Neshkov  Date: 4/2/2003 12:57:02 PM
-// Home Page : http://members.fortunecity.com/neshkov/dj.html  - Check often for new version!
-// Decompiler options: packimports(3)
-// Source File Name:   WFActionDispatcher.java
-
+/*
+ * COPYRIGHT (c) 1999 - 2008 by Percussion Software, Inc., Woburn, MA USA.
+ * All rights reserved. This material contains unpublished, copyrighted
+ * work including confidential and proprietary information of Percussion.
+ *
+ * com.percussion.pso.workflow PSOWorkflowActionDispatcher.java
+ *  
+ */
 package com.percussion.pso.workflow;
 
 import java.io.File;
@@ -29,6 +32,36 @@ import com.percussion.extension.PSExtensionRef;
 import com.percussion.server.IPSRequestContext;
 import com.percussion.server.PSServer;
 
+/**
+ * This is the legacy version of the PSOWFActionDispatcher. 
+ * <p>
+ * For new implementations consider the 
+ * {@link com.percussion.pso.workflow.PSOSpringWorkflowActionDispatcher} 
+ * instead. 
+ * <p>
+ * To use this version.
+ * <ul>
+ * <li>Log into the Content Explorer.</li> 
+ * <li>Go to the Workflow tab</li>
+ * <li>Select the Workflow that will use the dispatcher (note the workflow ID)
+ * <li>Select the State that will contain the transition with the dispatcher
+ * <li>Select the Transition to apply the dispatcher to (note the transition ID)
+ * <li>Save the Transition</li>
+ * </ul>
+ * <p>
+ *In the file system:
+ * <ul>
+ * <li>Go to rxconfig/Workflow and open dispatcher.properties
+ * <li>Create a new line for each transition that uses the dispatcher: 
+ * <pre>
+ *  Sample: 5|4:psoSampleWFAction,sys_TouchParentItems
+ *  WFID|TRID:wfAction, wfAction
+ * </pre>
+ * </ul>
+ *
+ * @author DavidBenua
+ *
+ */
 public class PSOWFActionDispatcher extends PSDefaultExtension
     implements IPSWorkflowAction 
 {

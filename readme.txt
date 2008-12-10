@@ -8,8 +8,16 @@ If you are using 6.0 or 6.1  see the Rhino and 6.1 branches in the PSO Code Libr
 
 To deploy the toolkit, unzip the distribution into a new subdirectory. 
 
-You must have Java 1.5 and Apache Ant properly intstalled. The RHYTHMYX_HOME
-environment variable must point at your Rhythmyx 6.5 installation.  
+If you have the Rhythmyx Patch Toolkit installed, you can use the 
+Install.bat or install.sh scripts: 
+
+>Install.bat c:\Rhythmyx
+>sh install.sh ~/Rhythmyx
+
+Where the argument is the home directory where Rhythmyx is installed. 
+
+Otherwise, to manually install, you must have Java 1.5 and Apache Ant properly installed. 
+The RHYTHMYX_HOME environment variable must point at your Rhythmyx 6.5 installation.  
 
 Manually remove (and backup) any previous PSOToolkit6 JARS from the 
 /Rhythmyx/AppServer/Server/rx/deploy/rxapp.ear/rxapp.war/WEB-INF/lib folder
@@ -35,23 +43,7 @@ you can then run Ant:
 
 $ANT_HOME/bin/ant -f deploy.xml 
 
+This version ships with a new Workflow Action dispatcher. For instructions
+see the JavaDoc for IPSOWFActionService. 
 
 
-
-******************************
-To use the Workflow Dispatcher
-******************************
-- Install the Dispatcher by running ant -f deploy.xml
-- Restart the server
-- Log into the Content Explorer. 
-- Go to the Workflow tab
-- Select the Workflow that will use the dispatcher (note the workflow ID)
-- Select the State that will contain the transition with the dispatcher
-- Select the Transition to apply the dispatcher to (note the transition ID)
-- Save the Transition
-
-In the file system:
-- Go to rxconfig/Workflow and open dispatcher.properties
-- Create a new line for each transition that uses the dispatcher:
-	Sample: 5|4:psoSampleWFAction,sys_TouchParentItems
-	WFID|TRID:wfAction, wfAction

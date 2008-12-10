@@ -11,6 +11,7 @@ import java.util.Collection;
 
 import com.percussion.error.PSException;
 import com.percussion.services.workflow.data.PSState;
+import com.percussion.services.workflow.data.PSTransition;
 import com.percussion.services.workflow.data.PSWorkflow;
 public interface IPSOWorkflowInfoFinder
 {
@@ -54,6 +55,24 @@ public interface IPSOWorkflowInfoFinder
     * @throws PSException if the state is invalid.
     */
    public String findWorkflowStateName(String contentId) throws PSException;
+   
+   /**
+    * Finds a workflow transition from the workflow id and transition id. 
+    * Convenience method for {@link #findWorkflowTransition(PSWorkflow, int)}.
+    * @param workflow the workflow id. Must be a valid workflow.
+    * @param transid the transition id. 
+    * @return  the transition or <code>null</code> if no transition for this id.
+    * @throws IllegalArgumentException if the workflow id does not match a known workflow.  
+    */
+   public PSTransition findWorkflowTransition(int workflow, int transid);
+   
+   /**
+    * Finds a workflow transition by id. 
+    * @param wf the workflow
+    * @param transid the transition id. 
+    * @return the transition or <code>null</code> if no transition for this id.
+    */
+   public PSTransition findWorkflowTransition(PSWorkflow wf, int transid);
    /**
     * Is the workflow state of an item one of the valid ones.  The content item state contains
     * a single valid flag. The method checks that this flag is one of the listed ones, comparing

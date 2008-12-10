@@ -81,10 +81,18 @@
 		<suppliedResources/>
 	</Extension>
 	<Extension categorystring="" context="global/percussion/workflow/" deprecated="no" handler="Java" name="psoWorkflowActionDispatcher" restoreRequestParamsOnError="no">
-      <initParam name="com.percussion.user.description">This dispatches multiple Workflow Actions on a single transition</initParam>
+      <initParam name="com.percussion.user.description">This dispatches multiple Workflow Actions on a single transition. The configuration is in a properties file.</initParam>
       <initParam name="com.percussion.extension.version">1</initParam>
       <initParam name="com.percussion.extension.reentrant">yes</initParam>
       <initParam name="className">com.percussion.pso.workflow.PSOWFActionDispatcher</initParam>
+      <interface name="com.percussion.extension.IPSWorkflowAction"/>
+      <suppliedResources/>
+   </Extension> 
+   <Extension categorystring="" context="global/percussion/workflow/" deprecated="no" handler="Java" name="psoSpringWorkflowActionDispatcher" restoreRequestParamsOnError="no">
+      <initParam name="com.percussion.user.description">This dispatches multiple Workflow Actions on a single transition. The configuration is in a Spring bean.</initParam>
+      <initParam name="com.percussion.extension.version">1</initParam>
+      <initParam name="com.percussion.extension.reentrant">yes</initParam>
+      <initParam name="className">com.percussion.pso.workflow.PSOSpringWorkflowActionDispatcher</initParam>
       <interface name="com.percussion.extension.IPSWorkflowAction"/>
       <suppliedResources/>
    </Extension> 
