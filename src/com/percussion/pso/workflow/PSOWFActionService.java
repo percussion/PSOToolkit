@@ -135,8 +135,10 @@ public class PSOWFActionService implements IPSOWFActionService
             }
           }
         };
-      log.debug("Starting init thread..."); 
-      t.start(); 
+        
+//  THIS DOES NOT WORK ON LINUX, so will be temporarily disabled. 
+//      log.debug("Starting init thread..."); 
+//      t.start(); 
    }
    
    /**
@@ -161,6 +163,7 @@ public class PSOWFActionService implements IPSOWFActionService
     */
    public List<IPSWorkflowAction> getActions(int workflowid, int transitionid) throws Exception
    {
+      initServices(); 
       List<IPSWorkflowAction> actions = new ArrayList<IPSWorkflowAction>();
       PSWorkflow  workflow = wfFinder.findWorkflow(workflowid);
       Validate.notNull(workflow,"Workflow not found for id " + workflowid); 
@@ -197,6 +200,7 @@ public class PSOWFActionService implements IPSOWFActionService
    public IPSWorkflowAction getWorkflowAction(String workflowActionName) 
       throws PSExtensionException, PSNotFoundException
    {
+      initServices();
       IPSWorkflowAction ext = null; 
       Iterator<PSExtensionRef> itr =  extMgr.getExtensionNames("Java",null,IPSWorkflowAction.class.getName(),
             workflowActionName);

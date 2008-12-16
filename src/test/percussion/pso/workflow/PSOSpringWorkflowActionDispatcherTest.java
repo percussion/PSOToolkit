@@ -22,7 +22,6 @@ import org.junit.Test;
 
 import com.percussion.extension.IPSWorkFlowContext;
 import com.percussion.extension.IPSWorkflowAction;
-import com.percussion.extension.PSExtensionProcessingException;
 import com.percussion.pso.workflow.IPSOWFActionService;
 import com.percussion.pso.workflow.PSOSpringWorkflowActionDispatcher;
 import com.percussion.server.IPSRequestContext;

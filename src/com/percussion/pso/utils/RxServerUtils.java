@@ -43,6 +43,9 @@ public class RxServerUtils
     * <p>
     * This routine should be called from a new thread only, it should
     * not block the server initialization thread. 
+    * <p>
+    * <em>WARNING:</em> This method works only on Windows, and should not be 
+    * relied upon in cross platform code. 
     * 
     * @throws InterruptedException
     */
