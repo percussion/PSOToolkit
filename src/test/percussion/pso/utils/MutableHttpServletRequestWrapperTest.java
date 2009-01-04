@@ -10,8 +10,10 @@ package test.percussion.pso.utils;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -33,6 +35,9 @@ public class MutableHttpServletRequestWrapperTest
       request.setParameter("foo", "foo");
       request.setParameter("bar", "bar");
       request.setParameter("baz", new String[]{"baz","baz"});
+      request.addHeader("foo", "bar");
+      
+      
       cut = new MutableHttpServletRequestWrapper(request);
    }
    @Test
@@ -71,5 +76,69 @@ public class MutableHttpServletRequestWrapperTest
          i++; 
       }
       assertEquals(4,i); 
+   }
+   
+   @Test
+   public final void testGetHeader() 
+   {
+      cut.setHeader("baz", "bat");
+      String h1 = cut.getHeader("FOO");
+      assertNotNull(h1);
+      assertEquals("bar",h1);
+      
+      h1 = cut.getHeader("baz");
+      assertNotNull(h1);
+      assertEquals("bat",h1);
+      
+      h1 = cut.getHeader("xyzzy");
+      assertNull(h1); 
+   }
+   
+   @Test
+   @SuppressWarnings("unchecked")
+   public final void testGetHeaders()
+   {
+      cut.setHeader("baz", new String[]{"bat","ball"});
+      String h1 = cut.getHeader("BAZ"); 
+      assertNotNull(h1);
+      assertEquals("bat",h1); 
+      
+      Enumeration e = cut.getHeaders("baz");
+      List<String> s = new ArrayList<String>();
+      while(e.hasMoreElements())
+      {
+         s.add((String)e.nextElement());
+      }
+      assertEquals(2,s.size());
+      assertTrue(s.contains("bat"));
+      assertTrue(s.contains("ball")); 
+      
+      
+      e = cut.getHeaders("foo");
+      s = new ArrayList<String>(); 
+      while(e.hasMoreElements())
+      {
+         s.add((String)e.nextElement());
+      }
+      assertEquals(1,s.size());
+      assertTrue(s.contains("bar")); 
+      
+   }
+   
+   @Test
+   @SuppressWarnings("unchecked")
+   public final void testGetHeaderNames()
+   {
+      cut.setHeader("baz", "bat");
+      
+      Enumeration e = cut.getHeaderNames();
+      List<String> s = new ArrayList<String>();
+      while(e.hasMoreElements())
+      {
+         s.add((String)e.nextElement());
+      }
+      assertEquals(2,s.size());
+      assertTrue(s.contains("foo"));
+      assertTrue(s.contains("baz")); 
    }
 }
