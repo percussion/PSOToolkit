@@ -8,7 +8,6 @@
  */
 package com.percussion.pso.utils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -106,7 +105,7 @@ public class MutableHttpServletRequestWrapper extends HttpServletRequestWrapper
    public void setHeader(String name, String[] values)
    {
       Validate.notEmpty(name); 
-      String key = name.toLowerCase(); //header names are case insensitive. 
+      String key = name.toUpperCase(); //header names are case insensitive. 
       localHeaders.put(key, values); 
    }
 
@@ -161,7 +160,7 @@ public class MutableHttpServletRequestWrapper extends HttpServletRequestWrapper
    public String getHeader(String name)
    {
       Validate.notEmpty(name); 
-      String key = name.toLowerCase();
+      String key = name.toUpperCase();
       if(localHeaders.containsKey(key))
       {
          String[] values = localHeaders.get(key); 
@@ -203,7 +202,7 @@ public class MutableHttpServletRequestWrapper extends HttpServletRequestWrapper
    public Enumeration getHeaders(String name)
    {
       Validate.notEmpty(name); 
-      String key = name.toLowerCase();
+      String key = name.toUpperCase();
       if(localHeaders.containsKey(key))
       {
          List<String> values = Arrays.asList(localHeaders.get(key));
@@ -219,7 +218,7 @@ public class MutableHttpServletRequestWrapper extends HttpServletRequestWrapper
    public int getIntHeader(String name)
    {
       Validate.notEmpty(name);
-      String key = name.toLowerCase();
+      String key = name.toUpperCase();
       if(localHeaders.containsKey(key))
       {
          String value = getHeader(name);
@@ -235,7 +234,7 @@ public class MutableHttpServletRequestWrapper extends HttpServletRequestWrapper
    public long getDateHeader(String name)
    {
       Validate.notEmpty(name);
-      String key = name.toLowerCase();
+      String key = name.toUpperCase();
       if(localHeaders.containsKey(key))
       {
          String value = getHeader(name);

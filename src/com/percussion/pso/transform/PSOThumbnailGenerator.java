@@ -260,34 +260,7 @@ public class PSOThumbnailGenerator extends PSFileInfo
       }
    }
 
-
-   /**
-    * Returns the filename portion of the provided fully qualified path.
-    *
-    * @param fullPathname The full path of the file, assumed not
-    * <code>null</code> or empty.
-    *
-    * @param pathSep The path separator to use, assumed not <code>null
-    * </code>.
-    *
-    * @return The filename portion of the full path, based on the pathSep, or
-    * the fullPathname if the provided pathSep is not found in the provided
-    * fullPathname.  Never <code>null</code>, may be emtpy if the fullPathname
-    * ends in the pathSep.
-    */
-   private String getFilename(String fullPathname, String pathSep)
-   {
-      String fileName = "";
-
-      // add 1 to the index so that we do not include the separator in the
-      // filename string
-      int startOfFilename = fullPathname.lastIndexOf(pathSep) + 1;
-      if (startOfFilename < fullPathname.length())
-         fileName = fullPathname.substring(startOfFilename);
-
-      return fileName;
-   }
-
+ 
    private void logMessage(String msg, IPSRequestContext req){
       log.info(msg);
       if(req != null)
