@@ -9,7 +9,7 @@
 package test.percussion.pso.utils;
 
 import static org.junit.Assert.*;
-
+import static org.apache.commons.collections.CollectionUtils.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 
+import org.apache.commons.collections.Predicate;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -133,12 +134,26 @@ public class MutableHttpServletRequestWrapperTest
       
       Enumeration e = cut.getHeaderNames();
       List<String> s = new ArrayList<String>();
-      while(e.hasMoreElements())
-      {
-         s.add((String)e.nextElement());
-      }
+      addAll(s, e);
       assertEquals(2,s.size());
-      assertTrue(s.contains("foo"));
-      assertTrue(s.contains("baz")); 
+      /*
+       * We have to ignore the case for headers (AMG).
+       */
+      assertTrue(exists(s, new IgnoreCase("foo")));
+      assertTrue(exists(s, new IgnoreCase("baz"))); 
+   }
+   
+   
+   private static class IgnoreCase implements Predicate {
+       private Object find;
+
+       public IgnoreCase(Object find) {
+           super();
+           this.find = find;
+       }
+
+       public boolean evaluate(Object item) {
+           return find.toString().equalsIgnoreCase(item.toString());
+       }
    }
 }
