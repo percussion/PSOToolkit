@@ -1,5 +1,7 @@
 package com.percussion.pso.jexl;
 
+import static java.util.Arrays.*;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +25,25 @@ public class PSOMapTools extends PSJexlUtilBase {
             m.putAll(customOptions);
         return m;
     }
+    
+    public Object get(Map<String,Object> m, String key, Object d) {
+        Object rvalue = m.get(key);
+        return rvalue == null ? d : rvalue;
+    }
+    
+    public Object getFirstDefined(Map<String,Object> m, List<String> keys, Object d) {
+        for(String k : keys) {
+            Object rvalue = m.get(k);
+            if (rvalue != null) return rvalue;
+        }
+        return d;
+    }
+    
+    public Object getFirstDefined(Map<String,Object> m, String keys, Object d) {
+        return getFirstDefined(m, asList(keys.split(",")), d);
+    }
+    
+    
     
     @IPSJexlMethod(description = "creates a map from a list of keys and list of values", params =
     {

@@ -76,4 +76,10 @@ public class PSOMapToolsTest {
     public void shouldCreateMap() {
         assertNotNull(mapTools.create());
     }
+    
+    @Test
+    public void shouldGetFirstDefined() {
+        Object actual = mapTools.getFirstDefined(customM, "d,r,e,b", null);
+        assertEquals(5L, actual);
+    }
 }
