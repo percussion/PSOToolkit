@@ -2,15 +2,26 @@ package com.percussion.pso.jexl;
 
 import static java.util.Arrays.*;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.percussion.extension.IPSJexlMethod;
 import com.percussion.extension.IPSJexlParam;
 import com.percussion.extension.PSJexlUtilBase;
 
 public class PSOMapTools extends PSJexlUtilBase {
+    
+
+    
 
     @IPSJexlMethod(description = "creates a map from a default map with a custom map overlayed", params =
     {
@@ -44,6 +55,17 @@ public class PSOMapTools extends PSJexlUtilBase {
     }
     
     
+    @IPSJexlMethod(description = "loads properties from a properties file.", params =
+    {
+          @IPSJexlParam(name = "file", description = "location of properties file.")
+    }, returns = "java.util.properties")
+    public Properties loadPropertiesFile(String file) throws FileNotFoundException, IOException {
+        File f = new File(file);
+        log.debug("Trying to load properties file: " + f.toURI().toString());
+        Properties prop = new Properties();
+        prop.load(new FileInputStream(f));
+        return prop;
+    }
     
     @IPSJexlMethod(description = "creates a map from a list of keys and list of values", params =
     {
@@ -67,4 +89,10 @@ public class PSOMapTools extends PSJexlUtilBase {
     public Map<String,Object> create() {
         return new HashMap<String, Object>();
     }
+    
+    
+    /**
+     * The log instance to use for this class, never <code>null</code>.
+     */
+    private static final Log log = LogFactory.getLog(PSOMapTools.class);
 }

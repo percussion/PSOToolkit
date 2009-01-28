@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -35,6 +36,12 @@ public class PSOMapToolsTest {
         defaultM.put("b", 2L);
         defaultM.put("c", 3L);
         defaultM.put("d", 4L);
+    }
+    
+    @Test
+    public void shouldLoadPropertiesFile() throws Exception {
+        Properties p = mapTools.loadPropertiesFile("src/test/percussion/pso/jexl/test.properties");
+        assertEquals("1", p.get("b"));
     }
     
     @Test
