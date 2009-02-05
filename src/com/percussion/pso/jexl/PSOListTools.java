@@ -27,6 +27,7 @@ import com.percussion.extension.IPSJexlExpression;
 import com.percussion.extension.IPSJexlMethod;
 import com.percussion.extension.IPSJexlParam;
 import com.percussion.extension.PSJexlUtilBase;
+import com.percussion.utils.types.PSPair;
 
 /**
  * This class is a utility class to help create and manipulate 
@@ -298,6 +299,24 @@ public class PSOListTools extends PSJexlUtilBase implements IPSJexlExpression
            rvalue.add(value);
        }
        return rvalue;
+   }
+
+   /**
+    * Creates a PSPair Object this simply has two properties First and Second.
+    * This can be used with $tools.sorter.sort to sort items 
+    * @param <A,B>
+    * @param first the first object.
+    * @param second the second object.
+    * @return a PSPair Object, Never <code>null</code>. 
+    */
+   @SuppressWarnings("unchecked")
+   @IPSJexlMethod(description = "Creates a PSPair has properties First and Second ", params =
+   {
+         @IPSJexlParam(name = "first", description = "first object"),
+         @IPSJexlParam(name = "second", description = "second object")}, returns = "a list")
+   public <A,B> PSPair<A, B> asPair(A first, B second) {
+	   PSPair<A,B> pair = new PSPair<A,B>(first,second);
+       return pair;
    }
 
    /**
