@@ -55,6 +55,14 @@ import com.percussion.webservices.system.PSSystemWsLocator;
  * This is a field validator that checks whether or not a 
  * field is unique for all the folders that the item resides
  * (or to be created) in.
+ * <p>
+ * There are 3 parameters:
+ * <ul>
+ * <li>The field value - defaults to the current value of the field.</li>
+ * <li>The field name - defaults to the name of the current field.</li>
+ * <li>Exclude Promotable Versions flag -- specify <code>true</code> or <code>false</code></li>
+ * </ul> 
+ * 
  * See the <code>Extensions.xml</code> for more information.
  * @author adamgent
  *

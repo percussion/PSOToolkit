@@ -18,8 +18,6 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import com.percussion.error.PSException;
 import com.percussion.pso.validation.PSOAbstractItemValidationExit;
 import com.percussion.pso.workflow.IPSOWorkflowInfoFinder;
@@ -33,7 +31,7 @@ public class PSOAbstractItemValidationExitTest
    private static Log log = LogFactory.getLog(PSOAbstractItemValidationExitTest.class); 
 
    TestableItemValidationExit cut;
-   Document sample; 
+   
    Mockery context; 
    @Before
    public void setUp() throws Exception
@@ -41,41 +39,6 @@ public class PSOAbstractItemValidationExitTest
       context = new Mockery(){{setImposteriser(ClassImposteriser.INSTANCE);}};
       
       cut = new TestableItemValidationExit();
-      sample = PSXmlDocumentBuilder.createXmlDocument(this.getClass().getResourceAsStream("editorsample.xml"), false);
-   }
-   @Test
-   public final void testGetFieldElement()
-   {
-      Element el = cut.getFieldElement(sample, "sys_title"); 
-      assertNotNull(el);
-      String rep = PSXmlDocumentBuilder.toString(el);
-      log.info("sys_title element is " +rep);
-      assertTrue(rep.contains("paramName=\"sys_title\""));
-   }
-   public final void testGetFieldElementNotFound()
-   {
-      Element el = cut.getFieldElement(sample, "xyzzy"); 
-      assertNull(el);
-   }
-   
-   
-   @Test
-   public final void testGetFieldValue()
-   {
-      Element el = cut.getFieldElement(sample, "sys_title"); 
-      assertNotNull(el);
-      String val = cut.getFieldValue(el);      
-      assertNotNull(val); 
-      log.info("value is " + val);
-      assertTrue(val.length() > 0); 
-   }
-   @Test
-   public final void testGetFieldValueNoValue()
-   {
-      Element el = cut.getFieldElement(sample, "keywords"); 
-      assertNotNull(el);
-      String val = cut.getFieldValue(el);
-      assertNull(val); 
    }
    
    @Test
@@ -135,36 +98,12 @@ public class PSOAbstractItemValidationExitTest
    private class TestableItemValidationExit extends PSOAbstractItemValidationExit
    {
 
-      /**
-       * @see com.percussion.pso.validation.PSOAbstractItemValidationExit#getFieldElement(org.w3c.dom.Document, java.lang.String)
-       */
-      @Override
-      public Element getFieldElement(Document inputDoc, String fieldName)
-      {
-         return super.getFieldElement(inputDoc, fieldName);
-      }
-
-      /**
-       * @see com.percussion.pso.validation.PSOAbstractItemValidationExit#getFieldValue(org.w3c.dom.Element)
-       */
-      @Override
-      public String getFieldValue(Element field)
-      {
-         return super.getFieldValue(field);
-      }
-
-      /**
-       * @see com.percussion.pso.validation.PSOAbstractItemValidationExit#hasErrors(org.w3c.dom.Document)
-       */
       @Override
       public boolean hasErrors(Document errorDoc)
       {
          return super.hasErrors(errorDoc);
       }
 
-      /**
-       * @see com.percussion.pso.validation.PSOAbstractItemValidationExit#validateDocs(org.w3c.dom.Document, org.w3c.dom.Document, com.percussion.server.IPSRequestContext, java.lang.Object[])
-       */
       @Override
       public void validateDocs(Document inputDoc, Document errorDoc,
             IPSRequestContext req, Object[] params)
@@ -172,9 +111,6 @@ public class PSOAbstractItemValidationExitTest
          
       }
 
-      /**
-       * @see com.percussion.pso.validation.PSOAbstractItemValidationExit#matchDestinationState(java.lang.String, java.lang.String, java.lang.String)
-       */
       @Override
       public boolean matchDestinationState(String contentid,
             String transitionid, String allowedStates) throws PSException
@@ -182,9 +118,6 @@ public class PSOAbstractItemValidationExitTest
          return super.matchDestinationState(contentid, transitionid, allowedStates);
       }
 
-      /**
-       * @see com.percussion.pso.validation.PSOAbstractItemValidationExit#setFinder(com.percussion.pso.workflow.IPSOWorkflowInfoFinder)
-       */
       @Override
       public void setFinder(IPSOWorkflowInfoFinder finder)
       {         

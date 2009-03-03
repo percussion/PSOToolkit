@@ -25,8 +25,16 @@ import com.percussion.util.PSItemErrorDoc;
 
 /**
  * An item validation exit that checks for required fields.
- * There are 2 required parameters: a list of required fields, and a list of destination states.
- * If the item is transitioning into one of the listed states, then the fields will be checked. 
+ * There are 2 required parameters: 
+ * <ul>
+ * <li>The required fields. </li>
+ * <li>Destination workflow states. </li>
+ * </ul>
+ * Both of these parameters are comma separated lists of values.  
+ * If the item is transitioning into one of the listed states, then the required fields will be checked.
+ * <p>
+ * Note that some field types (particularly rich text fields) may appear to be blank when they actually 
+ * contain data.  This extension will treat these fields as if they are <b>not</b> empty.  
  *
  * @author DavidBenua
  *
@@ -72,13 +80,29 @@ public class PSORequiredFieldsItemValidation
                PSItemErrorDoc.addError(errorDoc, f, f, "Required field not found ", new Object[]{f});
                continue;
             }
-            String val = super.getFieldValue(e);
-            log.debug("found value " + val);
-            if(StringUtils.isBlank(val))
+            if (isMultiValue(e))
             {
-               log.debug("field blank - " + f);
-               PSItemErrorDoc.addError(errorDoc, f, f, "Required field is blank ", new Object[]{f});
-            }            
+               List<String> vals = getFieldValues(e);
+               if (vals == null || vals.size() == 0)
+               {
+                  log.debug("multivalue field is empty - " + f);
+                  String label = getFieldLabel(e);
+                  PSItemErrorDoc.addError(errorDoc, f, label,
+                        "Required field {0} has no values ",
+                        new Object[]{label});
+               }
+            } else
+            { // single value field
+               String val = getFieldValue(e);
+               log.debug("found value " + val);
+               if (StringUtils.isBlank(val))
+               {
+                  log.debug("field blank - " + f);
+                  String label = getFieldLabel(e);
+                  PSItemErrorDoc.addError(errorDoc, f, label,
+                        "Required field is blank ", new Object[]{label});
+               }
+            }
          }
          log.debug("validation complete "); 
       }

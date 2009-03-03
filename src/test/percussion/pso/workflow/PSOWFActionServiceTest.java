@@ -102,7 +102,7 @@ public class PSOWFActionServiceTest
             will(returnValue(wf));
             one(wf).getName();
             will(returnValue("wf1"));
-            one(wfFinder).findWorkflowTransition(wf, 1);
+            one(wfFinder).findWorkflowAnyTransition(wf, 1);
             will(returnValue(trans)); 
             one(trans).getLabel();
             will(returnValue("trans1")); 

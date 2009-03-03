@@ -12,6 +12,7 @@ import java.util.Collection;
 import com.percussion.error.PSException;
 import com.percussion.services.workflow.data.PSState;
 import com.percussion.services.workflow.data.PSTransition;
+import com.percussion.services.workflow.data.PSTransitionBase;
 import com.percussion.services.workflow.data.PSWorkflow;
 public interface IPSOWorkflowInfoFinder
 {
@@ -57,7 +58,8 @@ public interface IPSOWorkflowInfoFinder
    public String findWorkflowStateName(String contentId) throws PSException;
    
    /**
-    * Finds a workflow transition from the workflow id and transition id. 
+    * Finds a workflow transition from the workflow id and transition id.
+    * This does NOT including aging transitions.  
     * Convenience method for {@link #findWorkflowTransition(PSWorkflow, int)}.
     * @param workflow the workflow id. Must be a valid workflow.
     * @param transid the transition id. 
@@ -67,12 +69,31 @@ public interface IPSOWorkflowInfoFinder
    public PSTransition findWorkflowTransition(int workflow, int transid);
    
    /**
-    * Finds a workflow transition by id. 
+    * Finds any workflow transition from the workflow id and transition id. 
+    * This includes aging transitions. 
+    * Convenience method for {@link #findWorkflowAnyTransition(PSWorkflow, int)}.
+    * @param workflow the workflow id. Must be a valid workflow.
+    * @param transid the transition id. 
+    * @return  the transition or <code>null</code> if no transition for this id.
+    */
+   public PSTransitionBase findWorkflowAnyTransition(int workflow, int transid);
+   
+   /**
+    * Finds a workflow transition by id. This method finds only regular transitions.
     * @param wf the workflow
     * @param transid the transition id. 
     * @return the transition or <code>null</code> if no transition for this id.
     */
    public PSTransition findWorkflowTransition(PSWorkflow wf, int transid);
+   
+   /**
+    * Finds a workflow transition by id. This method finds both regular and aging transitions. 
+    * @param wf the workflow
+    * @param transid the transition id. 
+    * @return the transition or <code>null</code> if no transition for this id.
+    */
+   public PSTransitionBase findWorkflowAnyTransition(PSWorkflow wf, int transid);
+   
    /**
     * Is the workflow state of an item one of the valid ones.  The content item state contains
     * a single valid flag. The method checks that this flag is one of the listed ones, comparing
@@ -95,7 +116,8 @@ public interface IPSOWorkflowInfoFinder
    public PSState findDestinationState(String contentId, String transitionId)
          throws PSException;
    /**
-    * Find the destination state for a workflow transition. 
+    * Find the destination state for a workflow transition. This method supports aging transitions as 
+    * well as regular transitions.  
     * @param state the current workflow state
     * @param transitionId the transition id
     * @return the destination state. May be <code>null</code> if the transition id is not found. 

@@ -42,6 +42,7 @@ import com.percussion.xml.PSXmlTreeWalker;
  *
  */
 public abstract class PSOAbstractItemValidationExit
+      extends PSOItemXMLSupport
       implements
          IPSItemValidator,
          IPSResultDocumentProcessor
@@ -107,59 +108,6 @@ public abstract class PSOAbstractItemValidationExit
    protected abstract void validateDocs(Document inputDoc, Document errorDoc, IPSRequestContext req, Object[] params)
      throws Exception;
    
-   
-   /**
-    * Finds the field element for a given field
-    * @param inputDoc the XML document from the content editor
-    * @param fieldName the field name
-    * @return the XML element that represents the field. Will be <code>null</code> if the 
-    * field does not exist.
-    */
-   protected Element getFieldElement(Document inputDoc, String fieldName)
-   {
-      PSXmlTreeWalker fieldWalker = new PSXmlTreeWalker(inputDoc.getDocumentElement());
-      fieldWalker.getNextElement("ItemContent",PSXmlTreeWalker.GET_NEXT_ALLOW_CHILDREN); 
-      Element field = fieldWalker.getNextElement("DisplayField", PSXmlTreeWalker.GET_NEXT_ALLOW_CHILDREN); 
-      while(field != null)
-      {
-         PSXmlTreeWalker fw = new PSXmlTreeWalker(field); 
-         Element control = fw.getNextElement("Control", PSXmlTreeWalker.GET_NEXT_ALLOW_CHILDREN);
-         if(control != null)
-         {
-            String fld = control.getAttribute("paramName");
-            if(StringUtils.isNotBlank(fld) && fld.equals(fieldName))
-            {  //the field name matches
-               return field; 
-            }
-         }
-         field = fieldWalker.getNextElement("DisplayField", PSXmlTreeWalker.GET_NEXT_ALLOW_SIBLINGS); 
-      }
-      return null; 
-   }
-   
-   /**
-    * Finds the String value for a field element.  
-    * @param field the field element 
-    * @return the value. Will be <code>null</code> if there is no &lt;Value&gt; node in the 
-    * field element. 
-    * @see #getFieldElement(Document, String)
-    */
-   protected String getFieldValue(Element field)
-   {
-      PSXmlTreeWalker w = new PSXmlTreeWalker(field);
-      Element c = w.getNextElement("Control", PSXmlTreeWalker.GET_NEXT_ALLOW_CHILDREN);
-      if(c != null)
-      {
-         c = w.getNextElement("Value", PSXmlTreeWalker.GET_NEXT_ALLOW_CHILDREN);
-         if(c == null)
-         {
-            return null;
-         }
-         String val = w.getElementData();
-         return val; 
-      }
-      return null; 
-   }
    
    /**
     * Determines if an error document contains errors. 

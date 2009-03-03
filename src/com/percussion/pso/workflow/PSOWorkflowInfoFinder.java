@@ -16,16 +16,16 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 import com.percussion.cms.objectstore.PSComponentSummary;
 import com.percussion.error.PSException;
 import com.percussion.pso.utils.PSOItemSummaryFinder;
-import com.percussion.services.catalog.PSTypeEnum;
 import com.percussion.services.guidmgr.IPSGuidManager;
 import com.percussion.services.guidmgr.PSGuidManagerLocator;
 import com.percussion.services.workflow.data.PSState;
 import com.percussion.services.workflow.data.PSTransition;
+import com.percussion.services.workflow.data.PSTransitionBase;
 import com.percussion.services.workflow.data.PSWorkflow;
-import com.percussion.utils.guid.IPSGuid;
 import com.percussion.webservices.system.IPSSystemWs;
 import com.percussion.webservices.system.PSSystemWsLocator;
 
@@ -129,31 +129,67 @@ public class PSOWorkflowInfoFinder implements IPSOWorkflowInfoFinder
    
    /**
     * 
+    * @see com.percussion.pso.workflow.IPSOWorkflowInfoFinder#findWorkflowAnyTransition(int, int)
+    */
+   public PSTransitionBase findWorkflowAnyTransition(int workflow, int transid)
+   {
+      PSWorkflow wf = findWorkflow(workflow);
+      if(wf == null)
+      {
+         String emsg = "Workflow id " + workflow + " not found";
+         log.error(emsg); 
+         throw new IllegalArgumentException(emsg);
+      }      
+      return findWorkflowAnyTransition(wf, transid);       
+   }
+  
+   /**
+    * 
     * @see com.percussion.pso.workflow.IPSOWorkflowInfoFinder#findWorkflowTransition(com.percussion.services.workflow.data.PSWorkflow, int)
     */
    public PSTransition findWorkflowTransition(PSWorkflow wf, int transid)
+   { 
+      return (PSTransition) findWorkflowAnyTransitionInternal(wf, transid, false);
+   }
+   
+   public PSTransitionBase findWorkflowAnyTransition(PSWorkflow wf, int transid)
+   { 
+      return findWorkflowAnyTransitionInternal(wf, transid, true);
+   }
+   
+   
+   protected PSTransitionBase findWorkflowAnyTransitionInternal(PSWorkflow wf,
+         int transid, boolean includeAging)
    {
-      for(PSState st : wf.getStates())
+      PSTransitionBase result = null;
+      for (PSState st : wf.getStates())
       {
-         for(PSTransition trans : st.getTransitions())
+         result = findTransitionInternal(st.getTransitions(), transid);
+         if (result != null)
+            return result;
+         if (includeAging)
          {
-            long tid = trans.getGUID().longValue();
-            if(tid == transid)
-            {
-               return trans;
-            }
+            result = findTransitionInternal(st.getAgingTransitions(), transid);
+            if (result != null)
+               return result;
          }
-//         for(PSTransition trans : st.getAgingTransitions())
-//         {
-//            long tid = trans.getGUID().longValue();
-//            if(tid == transid)
-//            {
-//               return trans;
-//            }
-//         }
+      }
+      return null;
+   }
+   
+   private PSTransitionBase findTransitionInternal(List<? extends PSTransitionBase> transList, long transid)
+   {
+      for(PSTransitionBase trans : transList)
+      {
+         long tid = trans.getGUID().longValue();
+         if(tid == transid)
+         {
+            return trans;
+         }
       }
       return null; 
    }
+
    /**
     * @see com.percussion.pso.workflow.IPSOWorkflowInfoFinder#findWorkflowState(int, int)
     */
@@ -246,24 +282,35 @@ public class PSOWorkflowInfoFinder implements IPSOWorkflowInfoFinder
          log.error(emsg); 
          throw new PSException(emsg); 
       }
-      IPSGuid tguid = gmgr.makeGuid(transitionId, PSTypeEnum.WORKFLOW_TRANSITION); 
-      for(PSTransition tr : state.getTransitions())
+      long tid;
+      try
       {
-         if(tguid.equals(tr.getGUID()))
-         {   //found our transition
-             PSState dest = findWorkflowState((int)state.getWorkflowId(), (int)tr.getToState());
-             if(dest == null)
-             {   //stateid is invalid for this workflow. 
-                emsg = "no such state " + state.getWorkflowId() + " - " + tr.getToState();
-                log.error(emsg); 
-                throw new PSException(emsg); 
-             }
-             log.debug("found destination state " + dest.getName()); 
-             return dest; 
-         }
+         tid = Long.parseLong(transitionId);
+      } catch (NumberFormatException ex)
+      {
+         emsg = "Invalid transition id " + transitionId;
+         log.error(emsg);
+         throw new PSException(emsg, ex);
       }
-      //no transition found
-      return null;
+      PSTransitionBase trans = findTransitionInternal(state.getTransitions(), tid); 
+      if(trans == null)
+      {
+         trans = findTransitionInternal(state.getAgingTransitions(), tid); 
+      }
+      if(trans == null)
+      {
+         log.warn("no transition found for " + state.getName() + " " + transitionId); 
+         return null; 
+      }
+      PSState dest = findWorkflowState((int)state.getWorkflowId(), (int)trans.getToState());
+      if(dest == null)
+         {   //stateid is invalid for this workflow. 
+           emsg = "no such state " + state.getWorkflowId() + " - " + trans.getToState();
+           log.error(emsg); 
+           throw new PSException(emsg); 
+         }
+      log.debug("found destination state " + dest.getName()); 
+      return dest; 
    }
    
    /**

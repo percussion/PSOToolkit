@@ -24,7 +24,7 @@ import com.percussion.extension.PSExtensionException;
 import com.percussion.extension.PSExtensionRef;
 import com.percussion.pso.utils.RxServerUtils;
 import com.percussion.server.PSServer;
-import com.percussion.services.workflow.data.PSTransition;
+import com.percussion.services.workflow.data.PSTransitionBase;
 import com.percussion.services.workflow.data.PSWorkflow;
 
 /**
@@ -167,9 +167,7 @@ public class PSOWFActionService implements IPSOWFActionService
       List<IPSWorkflowAction> actions = new ArrayList<IPSWorkflowAction>();
       PSWorkflow  workflow = wfFinder.findWorkflow(workflowid);
       Validate.notNull(workflow,"Workflow not found for id " + workflowid); 
-      PSTransition trans = wfFinder.findWorkflowTransition(workflow, transitionid); 
-      Validate.notNull(trans, "Transition not found for id " + transitionid); 
-      
+     
       String wfName = workflow.getName(); 
       Map<String,List<String>> wActions = transitionActions.get(wfName);
       if(wActions == null || wActions.isEmpty())
@@ -177,6 +175,10 @@ public class PSOWFActionService implements IPSOWFActionService
          log.warn("No actions configured for workflow "  + wfName); 
          return actions;
       }
+      
+      PSTransitionBase trans = wfFinder.findWorkflowAnyTransition(workflow, transitionid); 
+      Validate.notNull(trans, "Transition not found for id " + transitionid); 
+ 
       String tLabel = trans.getLabel(); 
       List<String> aNames =  wActions.get(tLabel);
       if(aNames == null || aNames.isEmpty())

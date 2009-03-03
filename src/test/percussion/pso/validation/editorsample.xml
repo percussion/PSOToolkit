@@ -154,6 +154,45 @@
             </DisplayChoices>
          </Control>
       </DisplayField>
+      <DisplayField displayType="sys_normal">
+         <DisplayLabel sourceType="sys_local">Group:</DisplayLabel>
+         <Control accessKey="" dataType="sys_local" dimension="array" isReadOnly="yes" isRequired="no" name="sys_CheckBoxGroup" paramName="checkgroup">
+            <DisplayChoices>
+               <DisplayEntry selected="yes">
+                  <Value>3</Value>
+                  <DisplayLabel>Documentation</DisplayLabel>
+               </DisplayEntry>
+               <DisplayEntry selected="no">
+                  <Value>2</Value>
+                  <DisplayLabel>Flash</DisplayLabel>
+               </DisplayEntry>
+               <DisplayEntry selected="yes">
+                  <Value>1</Value>
+                  <DisplayLabel>PDF</DisplayLabel>
+               </DisplayEntry>
+            </DisplayChoices>
+         </Control>
+      </DisplayField>
+      <DisplayField displayType="sys_normal">
+         <DisplayLabel sourceType="sys_local">Group:</DisplayLabel>
+         <Control accessKey="" dataType="sys_local" dimension="array" isReadOnly="yes" isRequired="no" name="sys_CheckBoxGroup" paramName="checkgroup2">
+            <DisplayChoices>
+               <DisplayEntry selected="no">
+                  <Value>3</Value>
+                  <DisplayLabel>Documentation</DisplayLabel>
+               </DisplayEntry>
+               <DisplayEntry selected="no">
+                  <Value>2</Value>
+                  <DisplayLabel>Flash</DisplayLabel>
+               </DisplayEntry>
+               <DisplayEntry selected="no">
+                  <Value>1</Value>
+                  <DisplayLabel>PDF</DisplayLabel>
+               </DisplayEntry>
+            </DisplayChoices>
+         </Control>
+      </DisplayField>
+      
    </ItemContent>
    <UserStatus sessionId="2d0df89bea44b1966260ac6899823f6b9e03f89b" xml:lang="en-us">
       <UserName>admin1</UserName>
