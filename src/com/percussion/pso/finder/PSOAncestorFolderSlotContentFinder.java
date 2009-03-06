@@ -119,7 +119,7 @@ public class PSOAncestorFolderSlotContentFinder extends PSBaseSlotContentFinder 
         List<IPSGuid> folderIds =  getContentWs().findPathIds(path);
         reverse(folderIds);
         for(IPSGuid fid : folderIds) {
-            List<PSItemSummary> sums = getContentWs().findFolderChildren(fid, false, "admin");
+            List<PSItemSummary> sums = getContentWs().findFolderChildren(fid, false);
             for(PSItemSummary sum : sums) {
                 if(contentType.equals(sum.getContentTypeName())) {
                     return sum;

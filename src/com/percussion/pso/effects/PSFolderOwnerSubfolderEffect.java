@@ -122,7 +122,7 @@ public class PSFolderOwnerSubfolderEffect extends PSAbstractFolderEffect
       }
       sb.append(subfolderPath);
       log.debug("adding folder path " + sb.toString()); 
-      cws.addFolderTree(sb.toString(), userName); 
+      cws.addFolderTree(sb.toString()); 
 
       return sb.toString(); 
    }

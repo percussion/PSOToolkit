@@ -133,8 +133,8 @@ public class PSOAncestorFolderSlotContentFinderTest {
             /*
              * c has no children.
              */
-            one(contentWs).findFolderChildren(c, false, "admin");
-            one(contentWs).findFolderChildren(b, false, "admin");
+            one(contentWs).findFolderChildren(c, false);
+            one(contentWs).findFolderChildren(b, false);
             
             /*
              * b has two children.
@@ -147,7 +147,7 @@ public class PSOAncestorFolderSlotContentFinderTest {
              * We should not need to load folder a's children since 
              * b already has an item that is generic.
              */
-            never(contentWs).findFolderChildren(a, false, "admin");
+            never(contentWs).findFolderChildren(a, false);
             
             
             
@@ -201,8 +201,8 @@ public class PSOAncestorFolderSlotContentFinderTest {
             /*
              * c has no children.
              */
-            one(contentWs).findFolderChildren(c, false, "admin");
-            one(contentWs).findFolderChildren(b, false, "admin");
+            one(contentWs).findFolderChildren(c, false);
+            one(contentWs).findFolderChildren(b, false);
             
             /*
              * b has two children.
@@ -214,7 +214,7 @@ public class PSOAncestorFolderSlotContentFinderTest {
             /*
              * folder a has no children.
              */
-            one(contentWs).findFolderChildren(a, false, "admin");
+            one(contentWs).findFolderChildren(a, false);
             
             
             

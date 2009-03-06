@@ -114,8 +114,7 @@ public class PSORelationshipTools extends PSJexlUtilBase implements IPSJexlExpre
          dependents = cws.findDependents(
 				itemId, 
 				filter,
-                false,
-                userName);
+                false);
       } catch (Exception e)
       {
         log.error("Unexpected exception " + e.getMessage(), e );
