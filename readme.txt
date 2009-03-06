@@ -1,12 +1,20 @@
-This is the PSOToolkit for Rhythmyx 6.x  Routines will be added here
+This is the PSOToolkit for Rhythmyx 6.6 Routines will be added here
 as we find uses for them.  
 
-THIS VERSION REQUIRES RHYTHMYX 6.5 OR LATER 
+THIS VERSION REQUIRES RHYTHMYX 6.6 OR LATER 
 
 
-If you are using 6.0 or 6.1  see the Rhino and 6.1 branches in the PSO Code Library.  
+If you are using 6.0, 6.1  or 6.5.x, see the other branches in the PSO Code Library.  
 
-To deploy the toolkit, unzip the distribution into a new subdirectory. 
+	NOTE: The Rhythmyx 6.5 toolkit will continue to run on 6.6, but it will not install on 6.6.  
+	If you have a 6.5 system with the toolkit installed, you may upgrade it without modifying the Toolkit.
+	However, if you do re-install toolkit on an upgraded server, you MUST manually delete the PSOToolkit-6.5.jar
+	from the /Rhythmyx/AppServer/server/rx/deploy/rxapp.ear/rxapp.war/WEB-INF/lib directory.  
+	The PSCToolkit5.jar may be left in place if your installation uses it. 
+	
+To deploy the toolkit, unzip the distribution into a new directory.
+   
+    NOTE: This version now unzips into the PSOToolkit6.6 subdirectory. 
 
 If you have the Rhythmyx Patch Toolkit installed, you can use the 
 Install.bat or install.sh scripts: 
@@ -19,9 +27,7 @@ Where the argument is the home directory where Rhythmyx is installed.
 Otherwise, to manually install, you must have Java 1.5 and Apache Ant properly installed. 
 The RHYTHMYX_HOME environment variable must point at your Rhythmyx 6.5 installation.  
 
-Manually remove (and backup) any previous PSOToolkit6 JARS from the 
-/Rhythmyx/AppServer/Server/rx/deploy/rxapp.ear/rxapp.war/WEB-INF/lib folder
-PSCToolkit5.jar may be left in place if your installation uses it. 
+
 
 Type the command: 
 
@@ -32,8 +38,7 @@ directory. It can be accessed from the server at:
 
 http://<server>:<port>/Rhythmyx/Docs/Rhythmyx/PSOToolkit/index.html 
 
-If you use 6.5.1 or later and have the patch installer loaded in Linux, add
-these lines to your .profile  
+To use the patch installer to install on Linux, add these lines to your .profile  
 
 export RHYTHMYX_HOME=$HOME/Rhythmyx  ##or where ever it is installed
 export JAVA_HOME=$RHYTHMYX_HOME/JRE/

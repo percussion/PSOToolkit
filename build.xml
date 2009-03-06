@@ -29,10 +29,10 @@
 	<property name="rhythmyx.service" value="${env.RHYTHMYX_SERVICE}"/>
 
 	<!-- name of our output jar --> 
-	<property name="jarname" value="PSOToolkit-6.5.jar" />	
+	<property name="jarname" value="PSOToolkit-6.6.jar" />	
 	<!-- name of our distribution zip -->
-	<property name="distfile" value="PSOToolkit6.zip" />	
-	<property name="testdistfile" value="PSOToolkit6-test.zip" /> 
+	<property name="distfile" value="PSOToolkit6.6.zip" />	
+	<property name="testdistfile" value="PSOToolkit6.6-test.zip" /> 
 	
 	<property name="rhythmyx.deploy" value="${rhythmyx.home}/AppServer/server/rx/deploy" /> 
 	<property name="rhythmyx.rxapp"  value="${rhythmyx.deploy}/rxapp.ear/rxapp.war" /> 
@@ -49,6 +49,9 @@
 	<property name="bin" location="bin"/>
 	<property name="ivylib" location="ivylib" /> 
 	<property name="apidoc" location="apidoc" />
+	
+	<property name="zipprefix" value="PSOToolkit6.6" /> 
+	
 	<!-- used for running Windows commands --> 
 	<property name="comspec" location="${env.ComSpec}"/>
 	<property name="cdrive" location="${env.USERPROFILE}"/> 
@@ -82,16 +85,21 @@
     </target>
 
 	<target name="ivy-resolve" depends="ivy-configure" >
-	   <ivy:resolve conf="test"/> 
+	   <ivy:resolve conf="test,optional"/> 
 	</target>
 	
 	<target name="ivy-retrieve" depends="ivy-resolve">
-	   <ivy:retrieve pattern="${ivylib}/[artifact].[ext]" />   	
+	   <ivy:retrieve pattern="${ivylib}/[artifact].[ext]" type="jar" conf="test" />   	
+	</target>
+	
+	<!-- report on dependencies -->
+	<target name="ivy-report" depends="ivy-resolve">
+	  <ivy:report conf="test,optional"  graph="false" /> 
 	</target>
 	
 	<target name="ivy-publish" depends="ivy-resolve"  >
 		<ivy:publish resolver="foo-shared-sftp" forcedeliver="true"  
-			pubrevision="6.5" overwrite="true" 
+			pubrevision="6.6" overwrite="true" 
 			conf="default" status="release" >
 			<artifacts pattern="${lib}/[artifact]-[revision].[ext]" /> 
 		</ivy:publish>
@@ -165,7 +173,9 @@
 			    	<include name="rxclient.jar"/> 
 			    	<include name="rxutils.jar" />
 			    	<include name="rxservices.jar" />
+			    	<include name="rxbusiness.jar" /> 
 			    	<include name="commons-lang*.jar"/> 
+			    	<include name="commons-jexl*.jar"/>
 			    	<include name="jcr*.jar" /> 
 			    	<include name="commons-logging*.jar" /> 
 			    	<include name="commons-collections*.jar" /> 
@@ -209,10 +219,10 @@
 		<property name="build.number" value="test build" /> 
 		<antcall target="jarbuilder"/>
 		<zip destfile="${testdistfile}">						
-			<zipfileset dir="${lib}" includes="${jarname}" prefix="lib" />
-			<fileset dir="." includes="readme.txt, build.number, deploy.xml" />
-			<fileset dir="." includes="license.txt, Extensions.xml, install.sh" />
-			<zipfileset dir="WEB-INF" prefix="WEB-INF" />
+			<zipfileset dir="${lib}" includes="${jarname}" prefix="${zipprefix}/lib" />
+			<zipfileset dir="." includes="readme.txt, build.number, deploy.xml" prefix="${zipprefix}" />
+			<zipfileset dir="." includes="license.txt, Extensions.xml, install.sh, Install.bat" prefix="${zipprefix}" />
+			<zipfileset dir="WEB-INF" prefix="${zipprefix}/WEB-INF" />
 		</zip>
 
 	</target>
@@ -221,12 +231,12 @@
 		<buildnumber/>
 		<antcall target="jarbuilder"/>	
 		<zip destfile="${distfile}">						
-			<zipfileset dir="${lib}" includes="${jarname}" prefix="lib" />
-			<fileset dir="." includes="readme.txt, deploy.xml, install.sh" />
-			<fileset dir="." includes="license.txt, Extensions.xml, Install.bat" />
-		    <fileset dir="${bin}" includes="build.properties" />  			
-			<zipfileset dir="WEB-INF" prefix="WEB-INF" />
-			<zipfileset dir="${apidoc}" prefix="javadoc"/>			
+			<zipfileset dir="${lib}" includes="${jarname}" prefix="${zipprefix}/lib" />
+			<zipfileset dir="." includes="readme.txt, deploy.xml, install.sh" prefix="${zipprefix}" />
+			<zipfileset dir="." includes="license.txt, Extensions.xml, Install.bat"  prefix="${zipprefix}" />
+		    <zipfileset dir="${bin}" includes="build.properties"  prefix="${zipprefix}" />  			
+			<zipfileset dir="WEB-INF" prefix="${zipprefix}/WEB-INF" />
+			<zipfileset dir="${apidoc}" prefix="${zipprefix}/javadoc"/>			
 		</zip>
 			
 	</target>	

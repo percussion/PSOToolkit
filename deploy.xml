@@ -36,9 +36,11 @@
 			    <fileset dir="${rhythmyx.lib}">
 			    	<include name="rxserver.jar"/>
 			    	<include name="rxclient.jar"/> 
+			    	<include name="rxbusiness.jar"/> 
 			    	<include name="rxutils.jar" />
 			    	<include name="rxservices.jar" />
-			    	<include name="commons-lang*.jar"/> 
+			    	<include name="commons-lang*.jar"/>
+			    	<include name="commons-jexl*.jar"/> 
 			    	<include name="jcr*.jar" /> 
 			    	<include name="commons-logging*.jar" /> 
 			    	<include name="commons-collections*.jar" /> 
