@@ -69,9 +69,7 @@ public class PSOPublishContent extends PSDefaultExtension
        
        int editionId = svc.findEdition(workflowId, transitionId, communityid); 
        log.debug("found edition " + editionId);
+       svc.runEdition(String.valueOf(editionId));
        
-       QueuedEdition qed = svc.makeQueuedEdition(String.valueOf(editionId), request.getUserSessionId());
-       
-       svc.runQueuedEdition(qed);
    }
 }

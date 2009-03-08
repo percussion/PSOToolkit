@@ -5,16 +5,24 @@
  *
  */
 package test.percussion.pso.workflow;
+
+import static org.junit.Assert.*;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jmock.Mockery;
+import org.junit.Before;
+import org.junit.Test;
 
-import org.springframework.beans.factory.xml.XmlBeanFactory;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 import com.percussion.pso.workflow.PublishEditionService;
-import junit.framework.TestCase;
+import com.percussion.rx.publisher.IPSRxPublisherService;
+import com.percussion.services.guidmgr.IPSGuidManager;
 
-public class PublishEditionServiceTest extends TestCase
+
+public class PublishEditionServiceTest
 {
    /**
     * Logger for this class
@@ -22,29 +30,48 @@ public class PublishEditionServiceTest extends TestCase
    private static final Log log = LogFactory
          .getLog(PublishEditionServiceTest.class);
 
-   PublishEditionService svc = null; 
-   public static void main(String[] args)
+   Mockery context; 
+   IPSGuidManager gmgr;
+   IPSRxPublisherService rps; 
+   
+   TestablePublishEditionService svc = null; 
+
+   @Before
+   public void setUp() throws Exception
    {
-      junit.textui.TestRunner.run(PublishEditionServiceTest.class);
-   }
-   protected void setUp() throws Exception
-   {
-      super.setUp();
+    
+      context = new Mockery(); 
+      gmgr = context.mock(IPSGuidManager.class);
+      rps = context.mock(IPSRxPublisherService.class);
       
-      Resource res = new FileSystemResource("WEB-INF/config/user/spring/PSOPublishEdition-beans.xml");
-      XmlBeanFactory factory = new XmlBeanFactory(res);
+      svc = new TestablePublishEditionService(); 
+      svc.setGmgr(gmgr);
+      svc.setRps(rps); 
       
-      svc = (PublishEditionService) factory.getBean("PSOPublishEditionService");
    }
    
-   public void testService()
+   @Test
+   public final void testFindEdition()
    {
-      assertNotNull(svc);
-      assertEquals("9962", svc.getListenerPort());
-   }
-   
-   public void testFindEdition()
-   {
+      /*
+       * Map of workflows
+       *    Map of transitions
+       *       Map of communities
+       *          Value is edition
+       */
+      final Map<String,Map<String,Map<String,String>>> workflows 
+         = new HashMap<String,Map<String,Map<String,String>>>(){{
+            put("5", new HashMap<String, Map<String,String>>(){{
+                put("301", new HashMap<String,String>(){{
+                   put("1001","314");
+                   put("1002","315"); 
+                }});   
+            }});             
+           }};
+      
+      svc.setWorkflows(workflows);
+      
+     
       assertEquals(314, svc.findEdition(5, 301, 1001));
       assertEquals(315, svc.findEdition(5, 301, 1002));
       
@@ -70,5 +97,22 @@ public class PublishEditionServiceTest extends TestCase
       {
          //this is expected         
       }
+   }
+   
+   private class TestablePublishEditionService extends PublishEditionService
+   {
+
+      @Override
+      public void setGmgr(IPSGuidManager gmgr)
+      {
+         super.setGmgr(gmgr);
+      }
+
+      @Override
+      public void setRps(IPSRxPublisherService rps)
+      {
+         super.setRps(rps);
+      }
+      
    }
 }

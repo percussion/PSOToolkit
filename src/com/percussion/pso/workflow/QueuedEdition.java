@@ -9,9 +9,11 @@ package com.percussion.pso.workflow;
 
 /**
  * A Data Object describing an edition to be run in the future. 
+ * As of 6.6, this is no longer needed. It is kept for compatibility 
+ * purposes only. 
  *
  * @author DavidBenua
- *
+ * @deprecated use the IPSRxPublisherService classes directly instead. 
  */
 public class QueuedEdition 
 {

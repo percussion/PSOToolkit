@@ -6,19 +6,27 @@
  */
 package com.percussion.pso.workflow;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
-import com.percussion.services.general.IPSRhythmyxInfo;
-import com.percussion.services.general.PSRhythmyxInfoLocator;
+
+import com.percussion.rx.publisher.IPSRxPublisherService;
+import com.percussion.rx.publisher.PSRxPublisherServiceLocator;
+import com.percussion.services.catalog.PSTypeEnum;
+import com.percussion.services.guidmgr.IPSGuidManager;
+import com.percussion.services.guidmgr.PSGuidManagerLocator;
+import com.percussion.utils.guid.IPSGuid;
 
 /**
- * 
+ * The PublishEdition service starts an edition. 
+ * This class used to start the remote publisher via HTTP, but 
+ * in 6.6 we use the IPSRxPublisherService. 
+ * The <code>baseUrl, cmsUser, cmsPassword, listenerPort</code> and
+ * <code>retryCount</code> parameters are no longer used.  The getters
+ * and setters remain in place for backwards compatibility. 
  *
  * @author DavidBenua
  *
@@ -38,9 +46,9 @@ public class PublishEditionService implements InitializingBean
    private String cmsPassword = null; 
    private int retryCount = 10;
    
-   private ScheduledThreadPoolExecutor execr = new ScheduledThreadPoolExecutor(1);
-   
-   private static IPSRhythmyxInfo rxinfo = null; 
+      
+   private IPSRxPublisherService rps = null; 
+   private IPSGuidManager gmgr = null; 
    
    /*
     * Map of workflows
@@ -52,18 +60,22 @@ public class PublishEditionService implements InitializingBean
       = new HashMap<String,Map<String,Map<String,String>>>();
    
    /**
-    * 
+    * Default constructor. 
     */
    public PublishEditionService()
    {
       
    }
    
-   private static void initServices()
+   private void initServices()
    {
-      if(rxinfo == null)
-      { 
-         rxinfo = PSRhythmyxInfoLocator.getRhythmyxInfo();
+      if(gmgr == null)
+      {
+         gmgr = PSGuidManagerLocator.getGuidMgr();
+      }
+      if(rps == null)
+      {
+         rps = PSRxPublisherServiceLocator.getRxPublisherService(); 
       }
    }
    /**
@@ -71,35 +83,31 @@ public class PublishEditionService implements InitializingBean
     */
    public void afterPropertiesSet() throws Exception
    {
-      log.debug("Base URL is " + baseUrl); 
-      log.debug("listener port is " + listenerPort); 
-      if(listenerPort == null)
-     {
-         initServices();
-         listenerPort = rxinfo.getProperty(IPSRhythmyxInfo.Key.LISTENER_PORT).toString();
-      }
-      log.debug("CMS User is " + this.cmsUser);
-      log.debug("CMS Password is " + this.cmsPassword); 
-      log.debug("Local is " + this.local);
+      initServices();
    }
 
+   @SuppressWarnings("deprecation")
    public void runQueuedEdition(QueuedEdition ed)
    {
-      execr.execute(new EditionInitiator(ed));   
+      runEdition(ed.getEditionId());   
+   }
+
+   /**
+    * Runs an edition. 
+    * This launches a new job asynchronously via the RxPublisherService. 
+    * @param editionId the edition id as a simple number.  
+    * @since 6.6
+    */
+   public void runEdition(String editionId)
+   {
+      IPSGuid guid = gmgr.makeGuid(editionId, PSTypeEnum.EDITION); 
+      rps.startPublishingJob(guid, null); 
    }
    
+   @SuppressWarnings("deprecation")
    public void retryQueuedEdition(QueuedEdition ed)
    {
-      if(ed.decrementAndTestRetries())
-      {
-         long delay = Math.round(Math.random()*10); //sleep 0 to 10 seconds
-         log.debug("Edition delayed " + delay + " seconds"); 
-         execr.schedule(new EditionInitiator(ed), delay, TimeUnit.SECONDS); 
-      }
-      else
-      {
-         log.debug("out of retries " + ed); 
-      }
+       log.info("retryQueuedEdition is no longer used"); 
    }
    
    public int findEdition(int workflow, int transition, int community)
@@ -132,46 +140,54 @@ public class PublishEditionService implements InitializingBean
       return Integer.parseInt(edition);
    }
    
+   /**
+    * Makes a Queued Edition.  This is no longer necessary, but supported for backwards compatibility
+    * @param editionId
+    * @param sessionId
+    * @return
+    * @deprecated
+    */
+   @SuppressWarnings("deprecation")
    protected QueuedEdition makeQueuedEdition(String editionId, String sessionId)
    {
       
       QueuedEdition result = new QueuedEdition(baseUrl,listenerPort,editionId,this.isLocal(), retryCount); 
-      if(isLocal())
-      {
-         result.setSessionId(sessionId); 
-      }
-      else
-      {
-         result.setCmsUser(this.cmsUser);
-         result.setCmsPassword(this.cmsPassword); 
-      }    
+      
       return result; 
    }
    
    
    /**
+    * Gets the baseUrl.  No longer used in 6.6. 
     * @return Returns the baseUrl.
+    * @deprecated
     */
    public String getBaseUrl()
    {
       return baseUrl;
    }
    /**
+    * No longer used in 6.6.
     * @param baseUrl The baseUrl to set.
+    * @deprecated
     */
    public void setBaseUrl(String baseUrl)
    {
       this.baseUrl = baseUrl;
    }
    /**
+    * No longer used in 6.6.
     * @return Returns the listenerPort.
+    * @deprecated
     */
    public String getListenerPort()
    {
       return listenerPort;
    }
    /**
+    * No longer used in 6.6.
     * @param listenerPort The listenerPort to set.
+    * @deprecated
     */
    public void setListenerPort(String listenerPort)
    {
@@ -193,6 +209,7 @@ public class PublishEditionService implements InitializingBean
       this.workflows = workflows;
    }
    /**
+    * No longer used in 6.6.
     * @return Returns the cmsPassword.
     */
    public String getCmsPassword()
@@ -200,6 +217,7 @@ public class PublishEditionService implements InitializingBean
       return cmsPassword;
    }
    /**
+    * No longer used in 6.6.
     * @param cmsPassword The cmsPassword to set.
     */
    public void setCmsPassword(String cmsPassword)
@@ -209,6 +227,7 @@ public class PublishEditionService implements InitializingBean
       this.local = false; 
    }
    /**
+    * No longer used in 6.6.
     * @return Returns the cmsUser.
     */
    public String getCmsUser()
@@ -216,6 +235,7 @@ public class PublishEditionService implements InitializingBean
       return cmsUser;
    }
    /**
+    * No longer used in 6.6.
     * @param cmsUser The cmsUser to set.
     */
    public void setCmsUser(String cmsUser)
@@ -225,6 +245,7 @@ public class PublishEditionService implements InitializingBean
       this.local = false;
    }
    /**
+    * No longer used in 6.6.
     * @return Returns the local.
     */
    public boolean isLocal()
@@ -232,6 +253,7 @@ public class PublishEditionService implements InitializingBean
       return local;
    }
    /**
+    * No longer used in 6.6.
     * @param local The local to set.
     */
    public void setLocal(boolean local)
@@ -241,6 +263,7 @@ public class PublishEditionService implements InitializingBean
 
    /**
     * @return Returns the retryCount.
+    * @deprecated
     */
    public int getRetryCount()
    {
@@ -249,9 +272,28 @@ public class PublishEditionService implements InitializingBean
 
    /**
     * @param retryCount The retryCount to set.
+    * @deprecated
     */
    public void setRetryCount(int retryCount)
    {
       this.retryCount = retryCount;
+   }
+
+   /**
+    * Sets the RxPublisherService in unit test.
+    * @param rps the RxPublisherService to set. 
+    */
+   protected void setRps(IPSRxPublisherService rps)
+   {
+      this.rps = rps;
+   }
+
+   /**
+    * Sets the Guid Manager in unit test.
+    * @param gmgr the guid manager to set. 
+    */
+   protected void setGmgr(IPSGuidManager gmgr)
+   {
+      this.gmgr = gmgr;
    }
 }

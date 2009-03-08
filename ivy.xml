@@ -35,6 +35,7 @@
 	  </dependency>
 	   
 	  <dependency org="javax.activation" name="activation" rev="1.1" conf="default" /> 
+	  <dependency org="stax" name="stax-api" rev="1.0.1" conf="test->default" /> 
 	  
 	  <dependency org="jmock" name="jmock" rev="2.2.0" conf="test->default" /> 
 	  <dependency org="junit" name="junit" rev="4.1"  conf="test->default"/>
