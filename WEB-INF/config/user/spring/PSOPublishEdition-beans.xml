@@ -2,14 +2,7 @@
 <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" 
 "http://www.springframework.org/dtd/spring-beans.dtd">
 <beans>
-   <bean id="PSOPublishEditionService" class="com.percussion.pso.workflow.PublishEditionService" >
-      <property name="baseUrl" value="http://127.0.0.1" />
-      <property name="listenerPort" value="9962" /> 
-      <!-- 
-      Uncomment these lines to use remote mode. 
-      <property name="cmsUser" value="rxpublisher" /> 
-      <property name="cmsPassword" value="demo" /> 
-       -->
+   <bean id="PSOPublishEditionService" class="com.percussion.pso.workflow.PublishEditionService" >      
       <property name="workflows" >
           <map> <!-- map of workflows keyed by workflow id -->
              <entry key="5">
