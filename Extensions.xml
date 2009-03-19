@@ -445,6 +445,11 @@
 	        <description>(Optional, default = false) If True, suppress this validation for items that are promotable
 	        versions of another item.</description>
 	     </PSXExtensionParamDef>
+	      <PSXExtensionParamDef id="0">
+	        <name>checkPaths</name>
+	        <dataType>java.lang.String</dataType>
+	        <description>(Optional) If set will check uniqueness in each comma separated path/Site e.g. //Sites/SiteA/%,//Sites/SiteB/% </description>
+	     </PSXExtensionParamDef>
 	     <suppliedResources />
 	</Extension>
 	<Extension name="PSFolderFollowerEffect" categorystring="relationship" context="user/" deprecated="no" handler="Java" restoreRequestParamsOnError="no">
