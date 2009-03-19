@@ -10,11 +10,12 @@
  */
 package com.percussion.pso.validation;
 
-import static java.text.MessageFormat.*;
-import static java.util.Arrays.*;
+import static java.text.MessageFormat.format;
+import static java.util.Arrays.asList;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.jcr.RepositoryException;
@@ -93,6 +94,8 @@ public class PSOUniqueFieldWithInFoldersValidator implements IPSFieldValidator {
             return true;
         }
         boolean xpv = h.getOptionalParameterAsBoolean("excludePromotableVersions", false);
+        String checkPaths = h.getOptionalParameter("checkPaths", null);
+        
         Number contentId = new Integer(0);
         try {
            if (actionType.equals("UPDATE")) {
@@ -120,12 +123,12 @@ public class PSOUniqueFieldWithInFoldersValidator implements IPSFieldValidator {
            String typeList = this.makeTypeList(fieldName);
            boolean rvalue = true;
            if (actionType.equals("UPDATE")) {
-              rvalue = isFieldValueUniqueInFolderForExistingItem(contentId.intValue(), fieldName, fieldValue, typeList);
+              rvalue = isFieldValueUniqueInFolderForExistingItem(contentId.intValue(), fieldName, fieldValue, typeList, checkPaths);
            }
            else {
               Number folderId = getFolderId(request);
               if (folderId != null)
-                 rvalue = isFieldValueUniqueInFolder(folderId.intValue(), fieldName, fieldValue, typeList);
+                 rvalue = isFieldValueUniqueInFolder(folderId.intValue(), fieldName, fieldValue, typeList, checkPaths);
               else
                  rvalue = false;
            }
@@ -145,26 +148,58 @@ public class PSOUniqueFieldWithInFoldersValidator implements IPSFieldValidator {
      * @param contentId id of the item.
      * @param fieldName field name to check for uniqueness.
      * @param fieldValue the value of the field.
+      * @return true if its unique
+     * @throws PSErrorException
+     * @throws InvalidQueryException
+     * @throws RepositoryException
+     */
+    public boolean isFieldValueUniqueInFolderForExistingItem(int contentId, String fieldName, String fieldValue, String typeList)
+    throws PSErrorException, InvalidQueryException, RepositoryException {
+    	return this.isFieldValueUniqueInFolderForExistingItem(contentId, fieldName, fieldValue, typeList,null);
+    }
+   
+    /**
+     * See if a field value is unique in all the folders that the given existing item resides. 
+     * @param contentId id of the item.
+     * @param fieldName field name to check for uniqueness.
+     * @param fieldValue the value of the field.
+     * @param  path If set will check this path for uniqueness,  can use % to check subfolders
      * @return true if its unique
      * @throws PSErrorException
      * @throws InvalidQueryException
      * @throws RepositoryException
      */
-    public boolean isFieldValueUniqueInFolderForExistingItem(int contentId, String fieldName, String fieldValue, String typeList) 
+    public boolean isFieldValueUniqueInFolderForExistingItem(int contentId, String fieldName, String fieldValue, String typeList, String path) 
         throws PSErrorException, InvalidQueryException, RepositoryException {
-        
+    	List<String> paths = new ArrayList<String>();
         boolean unique = true;
         IPSGuid guid = guidManager.makeGuid(new PSLocator(contentId, -1));
-        String[] paths = contentWs.findFolderPaths(guid);
-
-        if (paths != null && paths.length != 0) {
-            String jcrQuery = getQueryForValueInFolders(contentId, fieldName, fieldValue, paths, typeList);
-            log.trace(jcrQuery);
-            Query q = contentManager.createQuery(jcrQuery, Query.SQL);
-            QueryResult results = contentManager.executeQuery(q, -1, null, null);
-            RowIterator rows = results.getRows();
-            long size = rows.getSize();
-            unique = size > 0 ? false : true;
+        List<String> itemPaths = Arrays.asList(contentWs.findFolderPaths(guid)); 
+        if (path!=null) {
+        	String[] pathSplit = path.split(",");
+        	for(String paramPath : pathSplit) {
+    			for(String itemPath : itemPaths) {
+    				if (itemPath.startsWith(paramPath)) {
+    					paths.add(paramPath+"/%");
+    				}
+    			}
+    		}
+        	
+        } else {
+        	paths = itemPaths; 
+        }
+        if (paths != null && paths.size() != 0) {
+        	for (String pathItem : paths ) {
+        		if (unique) {
+		            String jcrQuery = getQueryForValueInFolders(contentId, fieldName, fieldValue, pathItem, typeList);
+		            log.trace(jcrQuery);
+		            Query q = contentManager.createQuery(jcrQuery, Query.SQL);
+		            QueryResult results = contentManager.executeQuery(q, -1, null, null);
+		            RowIterator rows = results.getRows();
+		            long size = rows.getSize();
+		            unique = size > 0 ? false : true;
+        		}
+        	}
         }
         else {
             log.debug("The item: " + contentId + " is not in any folders");
@@ -186,35 +221,67 @@ public class PSOUniqueFieldWithInFoldersValidator implements IPSFieldValidator {
      * @throws PSErrorResultsException
      */
     public boolean isFieldValueUniqueInFolder(int folderId, String fieldName, String fieldValue, String typeList)
-        throws PSErrorException, InvalidQueryException, RepositoryException, PSErrorResultsException {
-        boolean unique = true;
-        IPSGuid guid = guidManager.makeGuid(new PSLocator(folderId, -1));
-        List<PSFolder> folders = contentWs.loadFolders(asList(guid));
-        String path = ! folders.isEmpty() ? folders.get(0).getFolderPath() : null;
-        if (path != null) {
-            String jcrQuery = getQueryForValueInFolder(fieldName, fieldValue, path, typeList);
-            log.trace(jcrQuery);
-            Query q = contentManager.createQuery(jcrQuery, Query.SQL);
-            QueryResult results = contentManager.executeQuery(q, -1, null, null);
-            RowIterator rows = results.getRows();
-            long size = rows.getSize();
-            unique = size > 0 ? false : true;
-        }
-        else {
-            log.error("The folder id: " + folderId + " did not have a path (BAD)");
-        }
-    
-        return unique;
+    throws PSErrorException, InvalidQueryException, RepositoryException, PSErrorResultsException {
+    	return this.isFieldValueUniqueInFolder(folderId, fieldName, fieldValue, typeList, null);
+	}
+    /**
+     *  See if a field value is unique in the given folder for a new item.
+     * @param folderId id of the folder
+     * @param fieldName name of the field
+     * @param fieldValue the desired value of the field for the new item.
+     * @param  path If set will check this path for uniqueness,  can use % to check subfolders
+     * @return true if its unique.
+     * @throws PSErrorException
+     * @throws InvalidQueryException
+     * @throws RepositoryException
+     * @throws PSErrorResultsException
+     */
+    public boolean isFieldValueUniqueInFolder(int folderId, String fieldName, String fieldValue, String typeList, String path)
+    throws PSErrorException, InvalidQueryException, RepositoryException, PSErrorResultsException {
+    	boolean unique = true;
+    	List<String> paths = new ArrayList<String>();
+    	IPSGuid guid = guidManager.makeGuid(new PSLocator(folderId, -1));
+		List<PSFolder> folders = contentWs.loadFolders(asList(guid));
+    	if (path == null) {
+    		path = ! folders.isEmpty() ? folders.get(0).getFolderPath() : null;
+    		paths.add(path);
+    	} else {
+    		String[] pathSplit = path.split(",");
+    		for(String paramPath : pathSplit) {
+    			for(PSFolder folder : folders) {
+    				if (folder.getFolderPath().startsWith(paramPath)) {
+    					paths.add(paramPath+"/%");
+    				}
+    			}
+    		}
+    	}
+    	if (paths != null  && paths.size() != 0) {
+    		for (String pathItem : paths ) {
+    			if (unique ) {
+    				String jcrQuery = getQueryForValueInFolder(fieldName, fieldValue, pathItem, typeList);
+    				log.trace(jcrQuery);
+    				Query q = contentManager.createQuery(jcrQuery, Query.SQL);
+    				QueryResult results = contentManager.executeQuery(q, -1, null, null);
+    				RowIterator rows = results.getRows();
+    				long size = rows.getSize();
+    				
+    				unique = size > 0 ? false : true;
+    			}
+    		}
+    	}
+    	else {
+    		log.error("The folder id: " + folderId + " did not have a path (BAD)");
+    	}
+
+    	return unique;
     }
-    
+
     public String getQueryForValueInFolders(
             int contentId, 
             String fieldName, 
             String fieldValue, 
-            String[] paths,
+            String path,
             String typeList) {
-        ArrayList<String> jcrPaths = new ArrayList<String>();
-        for (String p : paths) { jcrPaths.add("jcr:path = '" + p + "'"); };
         String jcrQuery = format(
                 "select rx:sys_contentid, rx:{0} " +
                 "from {4} " +
@@ -223,9 +290,9 @@ public class PSOUniqueFieldWithInFoldersValidator implements IPSFieldValidator {
                 "and " +
                 "rx:{0} = ''{2}'' " +
                 "and " +
-                "({3})", 
+                "jcr:path like ''{3}''", 
                 fieldName, ""+contentId, 
-                fieldValue, StringUtils.join(jcrPaths.iterator(), " or "), typeList);
+                fieldValue, path, typeList);
         return jcrQuery;
     }
     
@@ -236,7 +303,7 @@ public class PSOUniqueFieldWithInFoldersValidator implements IPSFieldValidator {
                 "where " +
                 "rx:{0} = ''{1}'' " +
                 "and " +
-                "jcr:path = ''{2}''", 
+                "jcr:path like ''{2}''", 
                 fieldName, fieldValue, path, typeList);
     }
     
