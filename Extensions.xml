@@ -157,11 +157,15 @@
 		<interface name="com.percussion.extension.IPSWorkflowAction"/>
 		<suppliedResources/>
 	</Extension>
-		<Extension name="PSOThumbnailGenerator" context="user/" handler="Java" categorystring="contenteditor" deprecated="no">
+				<Extension name="PSOThumbnailGenerator" context="user/" handler="Java" categorystring="contenteditor" deprecated="no">
 		<initParam name="com.percussion.user.description">Automatically generates the thumbnail for the uploaded full image./</initParam>
 		<initParam name="com.percussion.extension.version">1</initParam>
 		<initParam name="com.percussion.extension.reentrant">yes</initParam>
 		<initParam name="className">com.percussion.pso.transform.PSOThumbnailGenerator</initParam>
+		<initParam name="com.percussion.pso.transform.PSOThumbnailGenerator.compression">0.85</initParam>		
+		<initParam name="com.percussion.pso.transform.PSOThumbnailGenerator.stepFactor">2</initParam>
+		<initParam name="com.percussion.pso.transform.PSOThumbnailGenerator.imageFormat">jpeg</initParam>		
+		<initParam name="com.percussion.pso.transform.PSOThumbnailGenerator.maxInterpolationSize">1000000</initParam>
 		<interface name="com.percussion.extension.IPSRequestPreProcessor"/>
 		<interface name="com.percussion.extension.IPSItemInputTransformer"/>
 		<PSXExtensionParamDef id="0">
@@ -177,13 +181,24 @@
 		<PSXExtensionParamDef id="0">
 			<name>MaxDimension</name>
 			<dataType>java.lang.String</dataType>
-			<description/>
+			<description>Max dimension must be specified unless width or height is specified</description>
 		</PSXExtensionParamDef>
 		<PSXExtensionParamDef id="0">
 			<name>Thumbnail_prefix</name>
 			<dataType>java.lang.String</dataType>
 			<description/>
 		</PSXExtensionParamDef>
+		<PSXExtensionParamDef id="0">
+			<name>Thumbnail_Width</name>
+			<dataType>java.lang.String</dataType>
+			<description>Specified width for thumbnail (optional)</description>
+		</PSXExtensionParamDef>
+				<PSXExtensionParamDef id="0">
+			<name>Thumbnail_Height</name>
+			<dataType>java.lang.String</dataType>
+			<description>Specified height for thumbnail (optional)</description>
+		</PSXExtensionParamDef>
+		
 		<suppliedResources/>
 	</Extension>	
 	<Extension name="PSORequiredFieldsItemValidation" context="user/" handler="Java" categorystring="itemvalidation" deprecated="no" restoreRequestParamsOnError="no">
