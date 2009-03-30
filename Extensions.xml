@@ -117,6 +117,19 @@
 		</PSXExtensionParamDef>
 		<suppliedResources/>
 	</Extension>   
+	<Extension categorystring="" context="global/percussion/generic/" deprecated="no" handler="Java" name="PSOJexlEvaluatorUDF" restoreRequestParamsOnError="no">
+		<initParam name="com.percussion.user.description">Evaluate a JEXL Expression Script</initParam>
+		<initParam name="com.percussion.extension.version">1</initParam>
+		<initParam name="com.percussion.extension.reentrant">yes</initParam>
+		<initParam name="className">com.percussion.pso.legacy.PSOJexlEvaluatorUDF</initParam>
+		<interface name="com.percussion.extension.IPSUdfProcessor"/>
+		<PSXExtensionParamDef id="0">
+			<name>expression</name>
+			<dataType>java.lang.String</dataType>
+			<description>JEXL expression or script to execute.</description>
+		</PSXExtensionParamDef>
+		<suppliedResources/>
+	</Extension>   
 	<Extension name="sys_previewFilter" context="global/percussion/itemfilter" handler="Java" categorystring="itemfilter" deprecated="no">
 		<initParam name="com.percussion.user.description">Items revisions are filtered to select the current or edit revisions of items</initParam>
 		<initParam name="com.percussion.extension.version">1</initParam>
