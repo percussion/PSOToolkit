@@ -158,6 +158,39 @@ public class PSORelationshipTools extends PSJexlUtilBase implements IPSJexlExpre
       return guids; 
    }
 
+   @IPSJexlMethod(description="find parent items", 
+         params={@IPSJexlParam(name="guid",description="the current item guid"),
+          @IPSJexlParam(name="slotName",description="the slot name"),
+          @IPSJexlParam(name="usePublic", description="use last public revision?")},
+          returns="a list of all parent GUIDs")
+   public List<IPSGuid> findParentIds(IPSGuid guid, String slotName, boolean usePublic)
+      throws Exception
+   {
+      initServices();
+      String id = gmgr.makeLocator(guid).getPart(PSLocator.KEY_ID); 
+      return findParentIds(id, slotName, usePublic);
+   }
+
+   
+   @IPSJexlMethod(description="find parent items", 
+         params={@IPSJexlParam(name="contentid",description="the content id of the current item"),
+          @IPSJexlParam(name="slotName",description="the slot name"),
+          @IPSJexlParam(name="usePublic", description="use last public revision?")},
+          returns="a list of all parent GUIDs")
+   public List<IPSGuid> findParentIds(String contentid, String slotName, boolean usePublic)
+      throws Exception
+   {
+      initServices();
+     
+      IPSOParentFinder relFinder = new PSOParentFinder();
+      Set<PSLocator> parentLocs = relFinder.findParents(contentid, slotName, usePublic);
+      List<IPSGuid> guids = new ArrayList<IPSGuid>(parentLocs.size()); 
+      for(PSLocator loc : parentLocs)
+      {
+         guids.add(gmgr.makeGuid(loc)); 
+      }
+      return guids; 
+   }
    /**
     * Is this page referenced in the landing page slot.
     * Will return true if the specified content id is referenced in a landing page slot.
