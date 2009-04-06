@@ -31,7 +31,6 @@ public class PSOFileUploadValidation implements IPSFieldValidator
    private String fieldName = "";
    private String excludedMimeTypes = "";
    private long maxFileSize = 0;
-   
    /**
     * @param extensionDef default extension definition
     * @param codeRoot the 'root' directory for this extension.
@@ -43,7 +42,7 @@ public class PSOFileUploadValidation implements IPSFieldValidator
    public void init(IPSExtensionDef extensionDef, java.io.File codeRoot)
       throws PSExtensionException
    {
-      log.debug( "Initializing " + CLASSNAME + "...." );
+      log.info( "Initializing " + CLASSNAME + "...." );
    }
 
    /**
@@ -225,7 +224,7 @@ public class PSOFileUploadValidation implements IPSFieldValidator
    private boolean doFileMimeValidation(
       IPSRequestContext request ) throws PSConversionException
    {
-      final String METHOD_NAME = "doFileMimeValidation";
+ 	  final String METHOD_NAME = "doFileMimeValidation";
       boolean bFlag = true;
 
       if ( excludedMimeTypes != null && excludedMimeTypes.trim().length() > 0 )
@@ -240,9 +239,14 @@ public class PSOFileUploadValidation implements IPSFieldValidator
          if ( obj instanceof PSPurgableTempFile )
          {
             PSPurgableTempFile tempFile = (PSPurgableTempFile)obj;
-            String mimeType = tempFile.getSourceContentType();
-            if ( excludedMimeTypes.indexOf( mimeType ) >= 0 ) bFlag = false;
-         }
+    		long fileSize = tempFile.length();
+    		log.debug("File size is = " + fileSize);
+    		if ( fileSize != 0 ) 
+			{
+            	String mimeType = tempFile.getSourceContentType(); // <-- NULL POINTER
+            	if ( excludedMimeTypes.indexOf( mimeType ) >= 0 ) bFlag = false;
+			}
+            }
       }
 
       // done
