@@ -241,7 +241,7 @@ public class PSOFileUploadValidation implements IPSFieldValidator
             PSPurgableTempFile tempFile = (PSPurgableTempFile)obj;
     		long fileSize = tempFile.length();
     		log.debug("File size is = " + fileSize);
-    		if ( fileSize != 0 ) 
+    		if ( fileSize > 0 ) 
 			{
             	String mimeType = tempFile.getSourceContentType(); // <-- NULL POINTER
             	if ( excludedMimeTypes.indexOf( mimeType ) >= 0 ) bFlag = false;

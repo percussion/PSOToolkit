@@ -176,22 +176,26 @@ public class PSOThumbnailGenerator extends PSFileInfo
       }
       try
       {
-         Object obj = request.getParameterObject(sourceFieldName);
-         if(obj != null && obj instanceof PSPurgableTempFile){
-            PSPurgableTempFile temp = (PSPurgableTempFile) obj;
-            String parent_mimetype =  temp.getSourceContentType();
-            String source_filename =  temp.getSourceFileName();
-            temp.deleteOnExit();
-            InputStream imageStream = new FileInputStream(temp); 
-            
-            PSPurgableTempFile thumbFile = makeThumbFile(imageStream, source_filename, thumb_prefix, 
-                  parent_mimetype, maxDimension, width, height);            
+    	  Object obj = request.getParameterObject(sourceFieldName);
+    	  if(obj != null && obj instanceof PSPurgableTempFile){
+    		  PSPurgableTempFile temp = (PSPurgableTempFile) obj;
+    		  long fileSize = temp.length();
+    		  if ( fileSize > 0 ) 
+    		  {
+    			  String parent_mimetype =  temp.getSourceContentType();
+    			  String source_filename =  temp.getSourceFileName();
+    			  temp.deleteOnExit();
+    			  InputStream imageStream = new FileInputStream(temp); 
 
-            if(thumbFile != null)
-            {
-                  request.setParameter(thumbFieldName, thumbFile);
-            }
-         }
+    			  PSPurgableTempFile thumbFile = makeThumbFile(imageStream, source_filename, thumb_prefix, 
+    					  parent_mimetype, maxDimension, width, height);            
+
+    			  if(thumbFile != null)
+    			  {
+    				  request.setParameter(thumbFieldName, thumbFile);
+    			  }
+    		  }
+    	  }
          else{
             if (obj!=null && obj instanceof String)
             {
