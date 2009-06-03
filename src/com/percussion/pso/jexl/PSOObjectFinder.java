@@ -34,11 +34,14 @@ import com.percussion.services.contentmgr.IPSNode;
 import com.percussion.services.contentmgr.PSContentMgrLocator;
 import com.percussion.services.guidmgr.IPSGuidManager;
 import com.percussion.services.guidmgr.PSGuidManagerLocator;
+import com.percussion.services.security.data.PSCommunity;
 import com.percussion.util.IPSHtmlParameters;
 import com.percussion.utils.guid.IPSGuid;
 import com.percussion.utils.request.PSRequestInfo;
 import com.percussion.webservices.content.IPSContentWs;
 import com.percussion.webservices.content.PSContentWsLocator;
+import com.percussion.webservices.security.IPSSecurityWs;
+import com.percussion.webservices.security.PSSecurityWsLocator;
 
 /**
  * JEXL function for locating various legacy objects by GUID. 
@@ -66,6 +69,8 @@ public class PSOObjectFinder extends PSJexlUtilBase
    
    private static IPSContentMgr cmgr = null; 
    
+   private static IPSSecurityWs sws = null; 
+   
    /**
     * 
     */
@@ -86,6 +91,7 @@ public class PSOObjectFinder extends PSJexlUtilBase
       gmgr = PSGuidManagerLocator.getGuidMgr(); 
       cmgr = PSContentMgrLocator.getContentMgr(); 
       cws = PSContentWsLocator.getContentWebservice();
+      sws = PSSecurityWsLocator.getSecurityWebservice();
       }
    }
    
@@ -263,6 +269,22 @@ public class PSOObjectFinder extends PSJexlUtilBase
       log.debug("Template guid is " + guid);
       return guid;
    }
+   
+   @IPSJexlMethod(description="get the community name for a  given community id", 
+	         params={@IPSJexlParam(name="communityId",description="the id for the community")})
+ public String getCommunityName(int communityId) {
+	   initServices();
+	   List<PSCommunity> communities = sws.loadCommunities(null);
+	   String communityName = null;
+	   for(PSCommunity comm :  communities) {
+		if (communityId == comm.getGUID().getUUID()) {
+			communityName = comm.getName();
+			break;
+		}
+	   }
+	   return communityName;
+ }
+   
    /**
     * Gets the user session. 
     * @return the user session
