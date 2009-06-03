@@ -17,24 +17,26 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.percussion.cms.objectstore.PSAaRelationship;
 import com.percussion.cms.objectstore.PSRelationshipFilter;
 import com.percussion.design.objectstore.PSLocator;
 import com.percussion.extension.IPSJexlExpression;
 import com.percussion.extension.IPSJexlMethod;
 import com.percussion.extension.IPSJexlParam;
 import com.percussion.extension.PSExtensionProcessingException;
-import com.percussion.extension.PSJexlUtilBase; 
-import com.percussion.utils.guid.IPSGuid;
-import com.percussion.webservices.PSErrorException;
-import com.percussion.webservices.content.IPSContentWs;
+import com.percussion.extension.PSJexlUtilBase;
 import com.percussion.pso.relationships.IPSOParentFinder;
 import com.percussion.pso.relationships.PSOParentFinder;
 import com.percussion.pso.utils.SimplifyParameters;
 import com.percussion.services.assembly.impl.nav.PSNavConfig;
-import com.percussion.services.content.data.PSItemSummary;
 import com.percussion.services.content.data.PSContentTypeSummary;
+import com.percussion.services.content.data.PSItemSummary;
 import com.percussion.services.guidmgr.IPSGuidManager;
 import com.percussion.services.guidmgr.PSGuidManagerLocator;
+import com.percussion.utils.guid.IPSGuid;
+import com.percussion.webservices.PSErrorException;
+import com.percussion.webservices.content.IPSContentWs;
 import com.percussion.webservices.content.PSContentWsLocator;
 
 /**
@@ -66,6 +68,7 @@ public class PSORelationshipTools extends PSJexlUtilBase implements IPSJexlExpre
          gmgr = PSGuidManagerLocator.getGuidMgr(); 
       }
    }
+   
    
    
    @IPSJexlMethod(description="get the dependents of this item of a certain content type", 
@@ -276,7 +279,24 @@ public class PSORelationshipTools extends PSJexlUtilBase implements IPSJexlExpre
       return relFinder.hasOnlyPublicAncestors(contentId, slotName, vfList);
       
    }
-   
+	
+   @IPSJexlMethod(description="Return a list of slots that are populated for this item",
+	         params={@IPSJexlParam(name="owner",description="guid for this item")})
+   public List<String> getItemSlots(IPSGuid owner) 
+   		throws Exception {
+	   PSRelationshipFilter filter = new PSRelationshipFilter();
+	   IPSContentWs cws = PSContentWsLocator.getContentWebservice();
+	   PSLocator ownerLoc = gmgr.makeLocator(owner);
+	   filter.setOwner(ownerLoc);
+	   List<String> slotnames = new ArrayList<String>();
+	   for (PSAaRelationship rel : cws.loadContentRelations(filter,true)) {
+		   if (!slotnames.contains(rel.getSlotName())) {
+			   slotnames.add(rel.getSlotName());
+		   }
+	   }
+	   return slotnames;
+   }
+
    /**
     * @param gmgr the gmgr to set
     */
