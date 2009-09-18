@@ -501,4 +501,75 @@
       </PSXExtensionParamDef>
 		<suppliedResources/>
 	</Extension>
+	 <Extension categorystring="" context="global/percussion/user/" deprecated="no" handler="Java" name="PSODateAdjust" restoreRequestParamsOnError="no">
+      <initParam name="com.percussion.user.description">Adjust date based on a field</initParam>
+      <initParam name="com.percussion.extension.version">1</initParam>
+      <initParam name="com.percussion.extension.reentrant">yes</initParam>
+      <initParam name="className">com.percussion.pso.transform.PSODateAdjust</initParam>
+      <interface name="com.percussion.extension.IPSFieldInputTransformer"/>
+      <PSXExtensionParamDef id="0">
+         <name>sourceFieldName</name>
+         <dataType>java.lang.String</dataType>
+         <description/>
+      </PSXExtensionParamDef>
+      <PSXExtensionParamDef id="0">
+         <name>years</name>
+         <dataType>java.lang.Number</dataType>
+         <description/>
+      </PSXExtensionParamDef>
+      <PSXExtensionParamDef id="0">
+         <name>months</name>
+         <dataType>java.lang.Number</dataType>
+         <description/>
+      </PSXExtensionParamDef>
+      <PSXExtensionParamDef id="0">
+         <name>days</name>
+         <dataType>java.lang.Number</dataType>
+         <description/>
+      </PSXExtensionParamDef>
+      <PSXExtensionParamDef id="0">
+         <name>hours</name>
+         <dataType>java.lang.Number</dataType>
+         <description/>
+      </PSXExtensionParamDef>
+      <PSXExtensionParamDef id="0">
+         <name>minutes</name>
+         <dataType>java.lang.Number</dataType>
+         <description/>
+      </PSXExtensionParamDef>
+      <PSXExtensionParamDef id="0">
+         <name>seconds</name>
+         <dataType>java.lang.Number</dataType>
+         <description/>
+      </PSXExtensionParamDef>
+      <suppliedResources/>
+   </Extension>
+   <Extension categorystring="" context="global/percussion/user/" deprecated="no" handler="Java" name="PSODateRangeFieldValidator" restoreRequestParamsOnError="no">
+      <initParam name="com.percussion.user.description">Validates that a date field is within a range based another date field or the current date. </initParam>
+      <initParam name="com.percussion.extension.version">1</initParam>
+      <initParam name="com.percussion.extension.reentrant">yes</initParam>
+      <initParam name="className">com.percussion.pso.validation.PSODateRangeFieldValidator</initParam>
+      <interface name="com.percussion.extension.IPSFieldValidator"/>
+      <PSXExtensionParamDef id="0">
+         <name>currentField</name>
+         <dataType>java.lang.String</dataType>
+         <description>value of current field to be validated</description>
+      </PSXExtensionParamDef>
+      <PSXExtensionParamDef id="0">
+         <name>sourceFieldName</name>
+         <dataType>java.lang.String</dataType>
+         <description>name of field to validate against. Leave blank to validate against the current date.</description>
+      </PSXExtensionParamDef>
+      <PSXExtensionParamDef id="0">
+         <name>minDays</name>
+         <dataType>java.lang.Number</dataType>
+         <description>minimum days offset. Use -1 for no minimum validation.</description>
+      </PSXExtensionParamDef>
+      <PSXExtensionParamDef id="0">
+         <name>maxDays</name>
+         <dataType>java.lang.Number</dataType>
+         <description>maximum days offset. Use -1 for no maximum validation.</description>
+      </PSXExtensionParamDef>
+      <suppliedResources/>
+   </Extension>
 </PSXExtensionHandlerConfiguration>

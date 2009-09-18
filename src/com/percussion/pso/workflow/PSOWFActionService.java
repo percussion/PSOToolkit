@@ -9,6 +9,7 @@
 package com.percussion.pso.workflow;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -104,7 +105,7 @@ public class PSOWFActionService implements IPSOWFActionService
     */
    public PSOWFActionService()
    {
-      
+      transitionActions = new HashMap<String, Map<String,List<String>>>(); //add empty map.
    }
    
    /**
