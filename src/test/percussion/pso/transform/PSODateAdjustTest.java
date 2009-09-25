@@ -13,10 +13,7 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jmock.Expectations;
@@ -75,7 +72,7 @@ public class PSODateAdjustTest
    {
       final Object[] params = new Object[]{"field1", "0", "0", "0", "0", "0", "0"}; 
       final Date dateNow = new Date(); 
-      final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+      final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
       final String dateString = formatter.format(dateNow); 
       
       context.checking(new Expectations(){{
