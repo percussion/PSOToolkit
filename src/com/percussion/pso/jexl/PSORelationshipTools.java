@@ -32,6 +32,7 @@ import com.percussion.pso.utils.SimplifyParameters;
 import com.percussion.services.assembly.impl.nav.PSNavConfig;
 import com.percussion.services.content.data.PSContentTypeSummary;
 import com.percussion.services.content.data.PSItemSummary;
+import com.percussion.services.contentmgr.IPSNode;
 import com.percussion.services.guidmgr.IPSGuidManager;
 import com.percussion.services.guidmgr.PSGuidManagerLocator;
 import com.percussion.utils.guid.IPSGuid;
@@ -216,6 +217,48 @@ public class PSORelationshipTools extends PSJexlUtilBase implements IPSJexlExpre
    }
    
    /**
+    * Is this page referenced in the landing page slot in the current folder. 
+    * Will return true if the specified content id is referenced in a landing page slot of the
+    * navon in the current folder
+    * @param contentid the content id.
+    * @param folderid the folder id
+    * @return <code>true</code> if this page is the landing page for the specified folder navon. 
+    */
+   @IPSJexlMethod(description="is this page referenced in the landing page slot in the current folder",
+         params={@IPSJexlParam(name="contentid", description="the content id of the current page"),
+          @IPSJexlParam(name="folderid", description="the folder id of the current folder")})
+   public boolean isLandingPageInFolder(String contentid, String folderid) throws Exception
+   {
+      initServices();
+      IPSOParentFinder relFinder = new PSOParentFinder();
+      PSNavConfig nc = PSNavConfig.getInstance(); 
+      String landingSlot = nc.getLandingPageRelationship();
+      Set<PSLocator> parents = relFinder.findParents(contentid, landingSlot, true);
+      
+      if(parents.isEmpty())
+      { //no parents at all 
+         return false; 
+      }
+      //it's a landing page, check if it is in this folder.
+      PSONavTools navTools = new PSONavTools();
+      IPSNode navon = navTools.findNavNodeForFolder(folderid);
+      if(navon == null)
+      {
+         log.warn("no navon found for folder id " + folderid);
+         return false; 
+      }
+      int navonId = gmgr.makeLocator(navon.getGuid()).getId();
+      for(PSLocator loc : parents)
+      {
+         if(navonId == loc.getId())
+         {//navon id matches parent id
+            log.trace("found matching parent navon " + loc.getId()); 
+            return true; 
+         }
+      }
+      return false;  
+   }
+   /**
     * Is this page referenced in the landing page slot. Convenience method for 
     * {@link #isLandingPage(String)}
     * @param guid the guid
@@ -224,11 +267,39 @@ public class PSORelationshipTools extends PSJexlUtilBase implements IPSJexlExpre
     */
    @IPSJexlMethod(description="is this page referenced in the landing page slot",
          params={@IPSJexlParam(name="guid", description="the current item guid")})
-   public boolean isLandingPage(IPSGuid guid) throws Exception
+   public boolean isLandingPageGuid(IPSGuid guid) throws Exception
    {
       initServices();
       String id = gmgr.makeLocator(guid).getPart(PSLocator.KEY_ID); 
       return isLandingPage(id); 
+   }
+
+   /**
+    * Is this page referenced in the landing page slot for the current folder. Convenience method for 
+    * {@link #isLandingPage(String,String)}
+    * @param guid the guid
+    * @return code>true</code> if this page has a public navon parent in the landing page slot.
+    * @throws Exception
+    */
+   @IPSJexlMethod(description="is this page referenced in the landing page slot",
+         params={@IPSJexlParam(name="contentGuid", description="the current item guid"),
+          @IPSJexlParam(name="folderGuid", description="the folder guid")})
+   public boolean isLandingPageInFolderGuid(IPSGuid contentGuid, IPSGuid folderGuid) throws Exception
+   {
+      initServices();
+      String contentid = gmgr.makeLocator(contentGuid).getPart(PSLocator.KEY_ID);
+      String folderid = gmgr.makeLocator(folderGuid).getPart(PSLocator.KEY_ID); 
+      return isLandingPageInFolder(contentid, folderid); 
+   }
+
+   @IPSJexlMethod(description="is this page referenced in the landing page slot",
+         params={@IPSJexlParam(name="contentid", description="the current item id"),
+          @IPSJexlParam(name="folderid", description="the folder id")})
+   public boolean isLandingPageInFolderInt(int contentid, int folderid) throws Exception
+   {
+      String cid = String.valueOf(contentid);
+      String fid = String.valueOf(folderid); 
+      return isLandingPageInFolder(cid, fid); 
    }
    
    /**

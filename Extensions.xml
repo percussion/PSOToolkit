@@ -572,4 +572,12 @@
       </PSXExtensionParamDef>
       <suppliedResources/>
    </Extension>
+   <Extension categorystring="" context="global/percussion/generic/" deprecated="no" handler="Java" name="PSOUserCommunityUDF" restoreRequestParamsOnError="no">
+		<initParam name="com.percussion.user.description">Return the users current community name</initParam>
+		<initParam name="com.percussion.extension.version">1</initParam>
+		<initParam name="com.percussion.extension.reentrant">yes</initParam>
+		<initParam name="className">com.percussion.pso.legacy.PSOUserCommunityUDF</initParam>
+		<interface name="com.percussion.extension.IPSUdfProcessor"/>
+		<suppliedResources/>
+	</Extension>  
 </PSXExtensionHandlerConfiguration>
