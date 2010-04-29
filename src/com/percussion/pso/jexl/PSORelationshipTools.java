@@ -355,6 +355,7 @@ public class PSORelationshipTools extends PSJexlUtilBase implements IPSJexlExpre
 	         params={@IPSJexlParam(name="owner",description="guid for this item")})
    public List<String> getItemSlots(IPSGuid owner) 
    		throws Exception {
+	   initServices();
 	   PSRelationshipFilter filter = new PSRelationshipFilter();
 	   IPSContentWs cws = PSContentWsLocator.getContentWebservice();
 	   PSLocator ownerLoc = gmgr.makeLocator(owner);
