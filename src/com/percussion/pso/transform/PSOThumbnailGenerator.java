@@ -8,12 +8,17 @@
  */
 package com.percussion.pso.transform;
 
+import java.awt.AlphaComposite;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
 import java.awt.RenderingHints;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.IndexColorModel;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -25,14 +30,23 @@ import java.util.Iterator;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReadParam;
+import javax.imageio.ImageReader;
+import javax.imageio.ImageTypeSpecifier;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
+import javax.imageio.metadata.IIOInvalidTreeException;
+import javax.imageio.metadata.IIOMetadata;
+import javax.imageio.metadata.IIOMetadataNode;
+import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Node;
 
 import com.percussion.extension.IPSExtensionDef;
 import com.percussion.extension.IPSItemInputTransformer;
@@ -45,6 +59,7 @@ import com.percussion.security.PSAuthorizationException;
 import com.percussion.server.IPSRequestContext;
 import com.percussion.server.PSRequestValidationException;
 import com.percussion.util.PSPurgableTempFile;
+import com.percussion.xml.PSXmlDocumentBuilder;
 
 
 /**
@@ -104,13 +119,20 @@ public class PSOThumbnailGenerator extends PSFileInfo
     * 4. ThumbPrefix - Prefix added to the full size image name so that the filename
     * of the generated thumbnail is PREFIFX + FullSizeImageName
     * 5. ThumbWidth - Specified width, overrides MaxDimension. 
-    * 6. ThumbHeight - Specified height, overrides MaxDimention
+    * 6. ThumbHeight - Specified height, overrides MaxDimension
+    * 7. UseOriginalFileType - If "yes", then use the same file type as the original image. 
     * <p>
     * If both width and height are specified, then the image will squashed to those 
     * dimensions.  If only one is specified, the aspect ratio of the original image
     * will be used to compute the desired image size. If neither height nor width is specified, 
     * then MaxDimension will be used instead.  
     * </p>
+    * <p>
+    * By default the thumbnail image is a (non-transparent) Jpeg image.  If you want the thumbnail 
+    * image to use the same image format as the original image, specify a "Yes" for the UseOriginalFileType 
+    * parameter.  The transparency and color model of the original image will be preserved, so if the original
+    * is a transparent GIF or PNG, the thumbnail will also be transparent.  Of course, if the original is a 
+    * JPEG, then the thumbnail will also be a JPEG.      
     * @param params - parameters
     * @param request - IPSRequestContext
     * @throws PSAuthorizationException
@@ -130,6 +152,7 @@ public class PSOThumbnailGenerator extends PSFileInfo
       int height = 0;
       int width = 0; 
       int maxDimension = 0; 
+      boolean useOriginalFileType = false; 
       String sourceFieldName = params[0].toString();
       if(StringUtils.isBlank(sourceFieldName))
       {
@@ -173,6 +196,14 @@ public class PSOThumbnailGenerator extends PSFileInfo
             height = Integer.parseInt(thumbHeight); 
          }
       }
+      if(params.length > 6)
+      {
+    	  String useParent = params[6].toString(); 
+    	  if(StringUtils.isNotBlank(useParent) && useParent.toLowerCase().startsWith("y"))
+    	  {
+    		  useOriginalFileType = true; 
+    	  }
+      }
       try
       {
     	  Object obj = request.getParameterObject(sourceFieldName);
@@ -187,7 +218,7 @@ public class PSOThumbnailGenerator extends PSFileInfo
     			  InputStream imageStream = new FileInputStream(temp); 
 
     			  PSPurgableTempFile thumbFile = makeThumbFile(imageStream, source_filename, thumb_prefix, 
-    					  parent_mimetype, maxDimension, width, height);            
+    					  parent_mimetype, maxDimension, width, height, useOriginalFileType);            
 
     			  if(thumbFile != null)
     			  {
@@ -201,20 +232,29 @@ public class PSOThumbnailGenerator extends PSFileInfo
                String imageStr = (String) obj; 
                byte[] imageBytes = imageStr.getBytes();  
                String parent_mimetype = request.getParameter(sourceFieldName + "_type"); 
-               String source_filename = request.getParameter(sourceFieldName + "_filename"); 
+               String source_filename = request.getParameter(sourceFieldName + "_filename");
+               String source_ext = request.getParameter(sourceFieldName + "_ext"); 
                if(imageBytes.length >0 && Base64.isArrayByteBase64(imageBytes) &&
                      StringUtils.isNotBlank(parent_mimetype) && StringUtils.isNotBlank(source_filename))
                {  
                   InputStream imageStream = new ByteArrayInputStream(Base64.decodeBase64(imageBytes));
                   PSPurgableTempFile thumbFile = makeThumbFile(imageStream, source_filename, thumb_prefix, 
-                        parent_mimetype, maxDimension, width, height);            
+                        parent_mimetype, maxDimension, width, height, useOriginalFileType);            
 
                   if(thumbFile != null)
                   {
                         request.setParameter(thumbFieldName, thumbFile);
-                        request.setParameter(thumbFieldName + "_type", thumbFile.getSourceContentType()); 
-                        request.setParameter(thumbFieldName + "_filename", StringUtils.substringBeforeLast(thumbFile.getName(),".")); 
-                        request.setParameter(thumbFieldName + "_ext", ".JPG");
+                        request.setParameter(thumbFieldName + "_filename", StringUtils.substringBeforeLast(thumbFile.getName(),"."));
+                        if(useOriginalFileType)
+                        {
+                           request.setParameter(thumbFieldName + "_ext", source_ext);
+                           request.setParameter(thumbFieldName + "_type", parent_mimetype);
+                        }
+                        else
+                        {
+                           request.setParameter(thumbFieldName + "_ext", ".JPG");
+                           request.setParameter(thumbFieldName + "_type", "image/jpeg");
+                        }
                   }                  
                   else
                   {
@@ -252,12 +292,15 @@ public class PSOThumbnailGenerator extends PSFileInfo
     * occur.  
     */
    public PSPurgableTempFile makeThumbFile(InputStream imageStream, String source_filename, String thumb_prefix,
-         String parent_mimetype, int maxDimension, int width, int height )
+         String parent_mimetype, int maxDimension, int width, int height, boolean useOriginalType )
    {
       log.debug("processing file " + source_filename);
       String fullImageFileName = StringUtils.contains(source_filename, File.separator) ? 
             StringUtils.substringAfterLast(source_filename, File.separator) : source_filename;
             
+      String thumb_mime = "image/jpeg";
+      if(useOriginalType)
+    	   thumb_mime = parent_mimetype; 
       String thumb_filename = thumb_prefix + fullImageFileName;
       if (parent_mimetype.indexOf("image") >= 0)
       {
@@ -265,11 +308,11 @@ public class PSOThumbnailGenerator extends PSFileInfo
             //String thumb_ContentType = temp.getSourceContentType();
             PSPurgableTempFile thumb_temp = new PSPurgableTempFile(thumb_filename,
                                                 "", null, thumb_filename,
-                                                "image/jpeg", null);
+                                                thumb_mime, null);
             thumb_temp.deleteOnExit();
             OutputStream thumbStream = new FileOutputStream(thumb_temp);
             
-            createThumbnail(thumbStream, imageStream, maxDimension, width, height);
+            createThumbnail(thumbStream, imageStream, maxDimension, width, height, useOriginalType);
             logMessage("Size of the thumbnail created = " +
                        thumb_temp.length(), null);
            return thumb_temp; 
@@ -292,52 +335,166 @@ public class PSOThumbnailGenerator extends PSFileInfo
     * @param instream the source image as a byte stream. 
     * @param maxDim The width and height of the thumbnail must be maxDim pixels or less.
     */
-   protected void createThumbnail(OutputStream outstream, InputStream instream,  int maxDim, int width, int height) throws IOException
+   protected void createThumbnail(OutputStream outstream, InputStream instream,  int maxDim, int width, int height, boolean useOriginalType) throws IOException
    {
       try {
          // Get the image from a file.
-         BufferedImage inImage = ImageIO.read(instream);
-         // Determine the scale.
-         Dimension originalSize = new Dimension(inImage.getWidth(), inImage.getHeight()); 
-         
-         Dimension outSize = computeSize(maxDim, width, height, originalSize);
-         
-         while(inImage.getHeight() > outSize.height*stepFactor || inImage.getWidth() > outSize.width*stepFactor)
+         BufferedImage inImage;
+         ImageInputStream iis = ImageIO.createImageInputStream(instream);
+         Validate.notNull(iis); 
+        
+         ImageReader reader = findCompatibleReader(iis);  
+         Validate.notNull(reader, "unable to locate image reader for image type"); 
+         if(log.isDebugEnabled())
          {
-            inImage = halfImage(inImage);
+            log.debug("Image format is " + reader.getFormatName());
          }
+         inImage = readImage(iis, reader); 
          
+         BufferedImage outImage = paintImage(inImage, maxDim, width, height); 
          
-         // Create an image buffer in which to paint on.
-         int imageType = (inImage.getTransparency() == Transparency.OPAQUE) ? 
-               BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
-         BufferedImage outImage = new BufferedImage(outSize.width, outSize.height, imageType);
-         
-         // Paint image.
-         Graphics2D g2d = outImage.createGraphics();
-         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-               RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-         g2d.drawImage(inImage, 0, 0, outSize.width, outSize.height, null);
-         g2d.dispose();
-
-         Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName(imageFormat);
-         ImageWriter iw = iter.next(); 
-         ImageWriteParam iwp = iw.getDefaultWriteParam();
-         iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-         
-         iwp.setCompressionQuality(compression); 
-         
-         MemoryCacheImageOutputStream mcios = new MemoryCacheImageOutputStream(outstream);
-         iw.setOutput(mcios); 
-         iw.write(null, new IIOImage(outImage, new ArrayList<BufferedImage>(), null), iwp); 
+         ImageWriter iw = null;  
+         if(useOriginalType)
+         {
+            iw = ImageIO.getImageWriter(reader);
+         }
+         else
+         {
+        	Iterator<ImageWriter> ir = ImageIO.getImageWritersByFormatName("JPEG");
+        	if(ir.hasNext())
+        	{ //this should always be true.  
+        		iw = ir.next(); 
+        	}
+         }
+         Validate.notNull(iw);
+         writeImage(outImage, iw, outstream); 
     
-         outstream.flush();
       }
-      catch (IOException e) {
+      catch (Exception e) {
          log.error("Could not create thumbnail " + e.getMessage(), e);
       }
    }
 
+   /**
+    * Finds a compatible image reader for an image input stream
+    * @param iis the image input stream 
+    * @return the image reader for the stream. Never <code>null</code>.
+    * @throws RuntimeException if a compatible image reader is not available for the stream. 
+    */
+   protected ImageReader findCompatibleReader(ImageInputStream iis) 
+   {
+	   Iterator<ImageReader> ireaders = ImageIO.getImageReaders(iis); 
+       Validate.notNull(ireaders);
+       if(!ireaders.hasNext())
+       {
+           String emsg = "no image reader for image type"; 
+           log.error(emsg); 
+           throw new RuntimeException(emsg);          
+       }
+       ImageReader reader = ireaders.next(); 
+       Validate.notNull(reader, "unable to locate image reader for image type");
+       return reader;
+   }
+   
+   /**
+    * Reads an image stream into a buffer.  
+    * @param iis the input stream for the image.
+    * @param reader the image reader to use. 
+    * @return the image
+    * @throws IOException if any errors occur while reading the image. 
+    */
+   protected BufferedImage readImage(ImageInputStream iis, ImageReader reader) 
+      throws IOException
+   {
+	   BufferedImage inImage; 
+	   reader.setInput(iis); 
+       
+       ImageReadParam param = reader.getDefaultReadParam();
+
+       try 
+       {
+           inImage = reader.read(0,param); 
+       }
+       finally
+       {
+           reader.dispose();
+           iis.close(); 
+       }
+       return inImage; 
+   }
+   
+   /**
+    * Paints a resized image onto a new buffered image. 
+    * The size of the output image is determined from the original size of the image, the max dimension, 
+    * height and width.   
+    * @param inImage the input image.
+    * @param maxDim the maximum dimension. Will be the height or width depending on the aspect ratio
+    * of the input image. 
+    * @param width the desired width.
+    * @param height the desired height.
+    * @return the new (resized buffered image).
+    * @see #computeSize(int, int, int, Dimension)
+    */
+   protected BufferedImage paintImage(BufferedImage inImage, int maxDim, int width, int height )
+   {
+	// Determine the scale.
+       Dimension originalSize = new Dimension(inImage.getWidth(), inImage.getHeight()); 
+       
+       Dimension outSize = computeSize(maxDim, width, height, originalSize);
+       
+       while(inImage.getHeight() > outSize.height*stepFactor || inImage.getWidth() > outSize.width*stepFactor)
+       {
+          inImage = halfImage(inImage);
+       }
+       
+	   
+	   // Create an image buffer in which to paint on.
+       BufferedImage outImage = createBufferedImage(outSize.width, outSize.height, inImage);
+       // Paint image.
+       Graphics2D g2d = getGraphics(outImage); 
+      
+       g2d.drawImage(inImage, 0, 0, outSize.width, outSize.height, null);
+       g2d.dispose();
+
+       return outImage; 
+   }
+   
+   /**
+    * Writes an image to an output stream
+    * @param outImage the image to write
+    * @param iw the image writer to use.
+    * @param outstream the stream to write the image to.
+    * @throws IOException if an error occurs while writing. 
+    */
+   protected void writeImage(BufferedImage outImage, ImageWriter iw, OutputStream outstream) throws IOException
+   {
+       ImageWriteParam iwp = iw.getDefaultWriteParam();
+       IIOMetadata metadata = null; 
+       
+       if(imageFormat.equals("JPEG"))
+       {
+          log.debug("compressing a JPEG");
+          iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);         
+          iwp.setCompressionQuality(compression); 
+       }
+       if(imageFormat.equals("gif") && outImage.getColorModel().hasAlpha()) //a transparent gif
+       {
+           log.debug("setting GIF transparency flag"); 
+           metadata = getTransparentMetadata(outImage, iw, iwp);
+           log.debug("transparent metadata is " + metadata); 
+       }
+       
+       MemoryCacheImageOutputStream mcios = new MemoryCacheImageOutputStream(outstream);
+       try {
+    	   iw.setOutput(mcios); 
+    	   iw.write(null, new IIOImage(outImage, new ArrayList<BufferedImage>(), metadata), iwp);
+       } finally
+       {
+    	   mcios.flush();
+    	   outstream.flush();
+       }
+
+   }
    /**
     * Computes the size of the thumbnail image based on parameters specified. 
     * If height and width are both specified, these values define the size directly. 
@@ -405,25 +562,10 @@ public class PSOThumbnailGenerator extends PSFileInfo
       int height = inImage.getHeight() / stepFactor;
       int width = inImage.getWidth() / stepFactor; 
       log.debug("Scaling to image height " + height + " width " + width );
-      int imageType = (inImage.getTransparency() == Transparency.OPAQUE) ? 
-              BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
-      BufferedImage halfImage = new BufferedImage(width, height, imageType);
-      Graphics2D half = halfImage.createGraphics();
-      if((height * width) < maxInterpolationSize)
-      {
-      log.debug("using bilinear interpolation");    
-      half.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-             RenderingHints.VALUE_INTERPOLATION_BILINEAR);  
-      }
-      /*half.setRenderingHint(RenderingHints.KEY_RENDERING, 
-            RenderingHints.VALUE_RENDER_QUALITY); */ 
-      /* half.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, 
-            RenderingHints.VALUE_COLOR_RENDER_QUALITY); */
-      half.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
-            RenderingHints.VALUE_ANTIALIAS_ON);
-      half.setRenderingHint(RenderingHints.KEY_DITHERING, 
-            RenderingHints.VALUE_DITHER_ENABLE); 
-      
+ 
+      BufferedImage halfImage = createBufferedImage(width, height, inImage);
+      Graphics2D half = getGraphics(halfImage);
+     
       half.drawImage(inImage, 0, 0, width, height, 0, 0, inImage.getWidth(), inImage.getHeight(), null);
       if(log.isDebugEnabled())
       {
@@ -475,6 +617,115 @@ public class PSOThumbnailGenerator extends PSFileInfo
       
    }
 
+   protected BufferedImage createBufferedImage(int width, int height, BufferedImage baseImage)
+   {
+       boolean transparency = isTransparent(baseImage);
+       log.debug("image transparency is " + transparency);
+       int imageType = baseImage.getType();
+       log.debug("image type is " + imageType); 
+       GraphicsConfiguration gc = baseImage.createGraphics().getDeviceConfiguration();
+       BufferedImage outImage = gc.createCompatibleImage(width, height, Transparency.BITMASK); 
+       if(imageType == 0)           
+       {
+           outImage = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);           
+       }
+       else if(imageType == BufferedImage.TYPE_BYTE_INDEXED || imageType == BufferedImage.TYPE_BYTE_BINARY)
+       {
+           IndexColorModel cm = (IndexColorModel) baseImage.getColorModel(); 
+           outImage = new BufferedImage(width, height, imageType, cm);
+       }
+       else
+       {
+           outImage = new BufferedImage(width, height, imageType); 
+       }
+       return outImage;        
+   }
+  
+   protected Graphics2D getGraphics( BufferedImage image)
+   {
+         Graphics2D g2d = image.createGraphics(); 
+         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+               RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, 
+               RenderingHints.VALUE_RENDER_QUALITY); 
+         g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, 
+               RenderingHints.VALUE_COLOR_RENDER_QUALITY); 
+         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
+               RenderingHints.VALUE_ANTIALIAS_ON);
+         g2d.setRenderingHint(RenderingHints.KEY_DITHERING, 
+               RenderingHints.VALUE_DITHER_ENABLE);
+         ColorModel cm = image.getColorModel();
+         if(cm instanceof IndexColorModel && cm.hasAlpha())
+         { //transparent image
+             log.debug("clearing transparent image"); 
+             g2d.setComposite(AlphaComposite.Clear); 
+             g2d.fillRect(0, 0, image.getWidth(), image.getHeight()); 
+             g2d.setComposite(AlphaComposite.Src); 
+         }
+         return g2d; 
+   }
+   
+   protected IIOMetadata getTransparentMetadata(BufferedImage image, ImageWriter riter, ImageWriteParam riteParam) 
+   throws IIOInvalidTreeException  
+   {
+       IndexColorModel cm = (IndexColorModel) image.getColorModel();
+       int transparentColor = cm.getTransparentPixel(); 
+       log.debug("transparent color is " + transparentColor); 
+       ImageTypeSpecifier imageTypeSpecifier = new ImageTypeSpecifier(image); 
+       IIOMetadata metadata = riter.getDefaultImageMetadata(imageTypeSpecifier, riteParam);
+       String metaFormatName = metadata.getNativeMetadataFormatName(); 
+       log.debug("meta format name is " + metaFormatName); 
+       IIOMetadataNode root = (IIOMetadataNode) metadata.getAsTree(metaFormatName); 
+       IIOMetadataNode gce = getChildMetadataNode(root, "GraphicControlExtension"); 
+       gce.setAttribute("transparentColorFlag", "true");
+       gce.setAttribute("transparentColorIndex" , String.valueOf(transparentColor));
+       
+       logXml(root); 
+       
+       metadata.mergeTree(metaFormatName, root); 
+       return metadata; 
+   }
+   
+   protected void logXml(Node node)
+   {
+       if(!log.isDebugEnabled())
+           return; 
+    	   String xstr = PSXmlDocumentBuilder.toString(node, PSXmlDocumentBuilder.FLAG_ALLOW_NULL);
+    	   log.debug(xstr); 
+   
+   }
+   
+   protected boolean isTransparent(BufferedImage image)
+   {
+       if(image.getTransparency() == Transparency.OPAQUE) 
+          return false; 
+       return true; 
+   }
+   /**
+    * Get or create child metadata node with the specified name
+    * @param root root or parent node of the metadata tree. 
+    * @param nodeName the node name
+    * @return the child node. Never <code>null</code>
+    */
+   protected IIOMetadataNode getChildMetadataNode(IIOMetadataNode root, String nodeName)
+   {
+       IIOMetadataNode node; 
+       int nNodes = root.getLength(); 
+       for(int i = 0; i < nNodes; i++)
+       {
+           node = (IIOMetadataNode) root.item(i); 
+           if(node.getNodeName().equalsIgnoreCase(nodeName))
+           {
+               log.debug("found node " + nodeName);
+               return node; 
+           }
+       }
+       node = new IIOMetadataNode(nodeName);       
+       root.appendChild(node); 
+       log.debug("created new node "  + nodeName); 
+       return node; 
+   }
+   
    private static final String PARAM_BASE = "com.percussion.pso.transform.PSOThumbnailGenerator";  
    private void logMessage(String msg, IPSRequestContext req){
       log.info(msg);

@@ -211,7 +211,11 @@
 			<dataType>java.lang.String</dataType>
 			<description>Specified height for thumbnail (optional)</description>
 		</PSXExtensionParamDef>
-		
+		<PSXExtensionParamDef id="0">
+		    <name>UseOriginalFileFormat</name>
+		    <dataType>java.lang.String</dataType>
+		    <description>Use original file format if "yes". Otherwise JPG will be used.</description>
+		</PSXExtensionParamDef>
 		<suppliedResources/>
 	</Extension>	
 	<Extension name="PSORequiredFieldsItemValidation" context="user/" handler="Java" categorystring="itemvalidation" deprecated="no" restoreRequestParamsOnError="no">

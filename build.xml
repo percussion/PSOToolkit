@@ -111,6 +111,9 @@
     		<fileset dir="${src}">
       			<include name="**/*.xml"/>
     			<include name="**/*.properties" />
+    			<include name="**/*.jpg" />
+    			<include name="**/*.gif" />
+    			<include name="**/*.png" />
     		</fileset>
   		</copy>
 	</target>

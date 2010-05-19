@@ -9,11 +9,10 @@
 package com.percussion.pso.validation;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
@@ -157,12 +156,36 @@ public abstract class PSOAbstractItemValidationExit
          return true; 
       }
       initServices();
-      List<String> allowed = Arrays.<String>asList(allowedStates.split(","));
+      List<String> allowed = splitAndTrim(allowedStates);
       PSState state = finder.findDestinationState(contentid, transitionid);
-      Validate.notNull(state,"Invalid workflow state " + contentid );
+      if(state == null)
+      {
+    	  log.warn("Workflow state not found for item " + contentid); 
+    	  return false; //assume no match. 
+      }
       return allowed.contains(state.getName())? true : false;  
    }
    
+   protected List<String> splitAndTrim(String input)
+   {
+	   return splitAndTrim(input,","); 
+   }
+   protected List<String> splitAndTrim(String input, String delimiter)
+   {
+	   List<String> result = new ArrayList<String>(); 
+	   if(StringUtils.isBlank(input))
+		   return result; 
+	   String[] parts = input.split(delimiter); 
+	   for(String part : parts)
+	   {
+		   if(!StringUtils.isBlank(part))
+		   {
+			   result.add(part.trim()); 
+		   }
+	   }
+	   return result; 
+	   
+   }
    /**
     * @see com.percussion.extension.IPSExtension#init(com.percussion.extension.IPSExtensionDef, java.io.File)
     */

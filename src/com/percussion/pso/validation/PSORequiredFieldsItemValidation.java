@@ -8,7 +8,6 @@
  */
 package com.percussion.pso.validation;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -69,7 +68,7 @@ public class PSORequiredFieldsItemValidation
       if(super.matchDestinationState(contentid, transitionid, states))
       {
          log.debug("Validating item " + contentid);
-         List<String> flds = Arrays.<String>asList(fields.split(","));
+         List<String> flds = splitAndTrim(fields);  
          for(String f : flds)
          {
             log.debug("validating field " + f);
