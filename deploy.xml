@@ -59,7 +59,7 @@
 	<target name="javadoc">
 		<fail unless="env.RHYTHMYX_HOME" message="You must set the RHYTHMYX_HOME environment variable"/>
 		<copy todir="${rhythmyx.home}/Docs/Rhythmyx/PSOToolkit">
-		   <fileset dir="javadoc" />
+		   <fileset dir="apidoc" />
 	    </copy>
 	</target>
 	
