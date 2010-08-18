@@ -584,4 +584,22 @@
 		<interface name="com.percussion.extension.IPSUdfProcessor"/>
 		<suppliedResources/>
 	</Extension>  
+	<!-- Extension for the stock XHTML Validating Velocity assembler -->
+   <Extension categorystring="" context="global/percussion/assemblers/" deprecated="no" handler="Java" name="validatingXHTMLVelocityAssembler" restoreRequestParamsOnError="no">
+      <initParam name="com.percussion.user.description">An XHTML Validating velocity assembler.</initParam>
+      <initParam name="com.percussion.extension.assembly.libraries">sys_assembly.vm,rx_assembly.vm</initParam>
+      <initParam name="com.percussion.extension.version">7</initParam>
+      <initParam name="com.percussion.extension.reentrant">yes</initParam>
+      <initParam name="className">com.percussion.pso.assembler.PSValidatingVelocityAssembler</initParam>
+      <initParam name="com.percussion.extension.assembly.fileSuffix">.vm</initParam>
+      <initParam name="com.percussion.extension.assembly.autoReload">yes</initParam>
+      <initParam name="com.percussion.extension.assembly.TidyPropertiesFile">rx_resources/tidy/xhtml.properties</initParam>
+      <initParam name="com.percussion.extension.assembly.ForcePublish">false</initParam>
+      <initParam name="com.percussion.extension.assembly.DontFixMarkup">false</initParam>
+      <initParam name="com.percussion.extension.assembly.FailPublishOnErrors">true</initParam>
+      <initParam name="com.percussion.extension.assembly.FailPublishOnWarnings">false</initParam>
+      <initParam name="com.percussion.extension.assembly.IsXHTMLContent">true</initParam>
+      <interface name="com.percussion.services.assembly.IPSAssembler"/>
+      <suppliedResources/>
+      </Extension>
 </PSXExtensionHandlerConfiguration>

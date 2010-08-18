@@ -44,7 +44,7 @@
 	<classpathentry kind="lib" path="ivylib/rxmisctools.jar"/>
 	<classpathentry kind="lib" path="ivylib/rxpublisher.jar"/>
 	<classpathentry kind="lib" path="ivylib/rxserver.jar"/>
-	<classpathentry kind="lib" path="ivylib/rxservices.jar"/>
+	<classpathentry kind="lib" path="ivylib/rxservices.jar" sourcepath="C:/Rhythmyx/Docs/Rhythmyx/Javadocs"/>
 	<classpathentry kind="lib" path="ivylib/rxtablefactory.jar"/>
 	<classpathentry kind="lib" path="ivylib/rxutils.jar"/>
 	<classpathentry kind="lib" path="ivylib/rxwebservices.jar"/>
@@ -55,6 +55,6 @@
 	<classpathentry kind="lib" path="ivylib/spring-webmvc.jar"/>
 	<classpathentry kind="lib" path="ivylib/spring.jar"/>
 	<classpathentry kind="lib" path="ivylib/stax-api.jar"/>
-	<classpathentry kind="lib" path="ivylib/Tidy.jar"/>
+	<classpathentry kind="lib" path="ivylib/jtidy-r938.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
