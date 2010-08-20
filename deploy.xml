@@ -58,10 +58,10 @@
 		<mkdir dir="${rhythmyx.home}/rx_resources/tidy" />
 		
 		<!--Backup old Property files -->
-		<copy file="${rhythmyx.home}/rx_resources/tidy/xhtml.properties" tofile="${rhythmyx.home}/rx_resources/tidy/xhtml.properties.bak"/>
-		<copy file="${rhythmyx.home}/rx_resources/tidy/xml.properties" tofile="${rhythmyx.home}/rx_resources/tidy/xml.properties.bak"/>
-		<copy file="${rhythmyx.home}/rx_resources/tidy/html.properties" tofile="${rhythmyx.home}/rx_resources/tidy/html.properties.bak"/>
-		<copy file="${rhythmyx.home}/rx_resources/tidy/sample-all.properties" tofile="${rhythmyx.home}/rx_resources/tidy/sample-all.properties.bak"/>
+		<copy file="${rhythmyx.home}/rx_resources/tidy/xhtml.properties" tofile="${rhythmyx.home}/rx_resources/tidy/xhtml.properties.bak" failonerror="false" overwrite="true"/>
+		<copy file="${rhythmyx.home}/rx_resources/tidy/xml.properties" tofile="${rhythmyx.home}/rx_resources/tidy/xml.properties.bak" failonerror="false" overwrite="true"/>
+		<copy file="${rhythmyx.home}/rx_resources/tidy/html.properties" tofile="${rhythmyx.home}/rx_resources/tidy/html.properties.bak" failonerror="false" overwrite="true"/>
+		<copy file="${rhythmyx.home}/rx_resources/tidy/sample-all.properties" tofile="${rhythmyx.home}/rx_resources/tidy/sample-all.properties.bak" failonerror="false" overwrite="true"/>
 		
 		<!-- Release latest property files -->
 		<copy file="${basedir}/rx_resources/tidy/xhtml.properties" tofile="${rhythmyx.home}/rx_resources/tidy/xhtml.properties"/>
