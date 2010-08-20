@@ -95,12 +95,17 @@ public class ValidatingContentAssemblerMerge {
 	      IPSAssemblyItem parent = result.getCloneParentItem();
 	      
 	      boolean isSnippet;
-	      if ((parent != null) & (result.getId()!= parent.getId())) {
+	      try{
+	      if ((parent != null) && (result.getId()!= parent.getId())) {
 	    	  log.debug("Not processing. Item "+ result.getId() + " has parent Item id="+parent.getId());
 	    	  isSnippet = true;
 	      } else {
 	    	  log.debug("No Parent Item Processing Item id="+ result.getId());
 	    	  isSnippet = false;
+	      }
+	      }catch(Exception ex){log.debug("Unexpected Error " + ex.getMessage() + " Snippet detection logic");}
+	      finally{
+	    	isSnippet=false;  //@TODO: FIGURE OUT WHY THIS IS CRASHING ON EVENTS
 	      }
 	     
 	      
