@@ -64,10 +64,10 @@
 		<copy file="${rhythmyx.home}/rx_resources/tidy/sample-all.properties" tofile="${rhythmyx.home}/rx_resources/tidy/sample-all.properties.bak" failonerror="false" overwrite="true"/>
 		
 		<!-- Release latest property files -->
-		<copy file="${basedir}/rx_resources/tidy/xhtml.properties" tofile="${rhythmyx.home}/rx_resources/tidy/xhtml.properties"/>
-		<copy file="${basedir}/rx_resources/tidy/xml.properties" tofile="${rhythmyx.home}/rx_resources/tidy/xml.properties"/>
-		<copy file="${basedir}/rx_resources/tidy/html.properties" tofile="${rhythmyx.home}/rx_resources/tidy/html.properties"/>
-		<copy file="${basedir}/rx_resources/tidy/sample-all.properties" tofile="${rhythmyx.home}/rx_resources/tidy/sample-all.properties"/>	
+		<copy file="${basedir}/Rhythmyx/rx_resources/tidy/xhtml.properties" tofile="${rhythmyx.home}/rx_resources/tidy/xhtml.properties"/>
+		<copy file="${basedir}/Rhythmyx/rx_resources/tidy/xml.properties" tofile="${rhythmyx.home}/rx_resources/tidy/xml.properties"/>
+		<copy file="${basedir}/Rhythmyx/rx_resources/tidy/html.properties" tofile="${rhythmyx.home}/rx_resources/tidy/html.properties"/>
+		<copy file="${basedir}/Rhythmyx/rx_resources/tidy/sample-all.properties" tofile="${rhythmyx.home}/rx_resources/tidy/sample-all.properties"/>	
 	</target>
 	
 	<target name="javadoc">
