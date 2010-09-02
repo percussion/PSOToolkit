@@ -584,6 +584,15 @@
 		<interface name="com.percussion.extension.IPSUdfProcessor"/>
 		<suppliedResources/>
 	</Extension>  
+	<Extension categorystring="workflow" context="global/percussion/workflow/" deprecated="no" handler="Java" name="PSOSetRevisionLock" restoreRequestParamsOnError="no">
+		<initParam name="com.percussion.user.description">Sets the Revision Lock. Once the lock has been set, it cannot be reset. </initParam>
+		<initParam name="com.percussion.extension.version">1</initParam>
+		<initParam name="className">com.percussion.pso.workflow.PSOSetRevisionLock</initParam>
+		<initParam name="com.percussion.extension.reentrant">yes</initParam>
+		<interface name="com.percussion.extension.IPSWorkflowAction"/>
+		<suppliedResources/>
+	</Extension>
+	
 	<!-- Extension for the stock XHTML Validating Velocity assembler -->
    <Extension categorystring="" context="global/percussion/assemblers/" deprecated="no" handler="Java" name="validatingXHTMLVelocityAssembler" restoreRequestParamsOnError="no">
       <initParam name="com.percussion.user.description">An XHTML Validating velocity assembler.</initParam>
@@ -602,4 +611,20 @@
       <interface name="com.percussion.services.assembly.IPSAssembler"/>
       <suppliedResources/>
       </Extension>
+    <Extension name="PSEffectLoggingEffectEffect" categorystring="relationship" context="user/" deprecated="no" handler="Java" restoreRequestParamsOnError="no">
+		<initParam name="com.percussion.user.description">Moves the dependent item to the owners folders.</initParam>
+		<initParam name="com.percussion.extension.version">1</initParam>
+		<initParam name="com.percussion.extension.reentrant">yes</initParam>
+		<initParam name="className">com.percussion.pso.effects.PSEffectLoggingEffect</initParam>
+		<interface name="com.percussion.relationship.IPSEffect"/>
+		<suppliedResources/>
+	</Extension>
+		<Extension name="PSOPreventOnTranslatedItem" categorystring="relationship" context="user/" deprecated="no" handler="Java" restoreRequestParamsOnError="no">
+		<initParam name="com.percussion.user.description">Prevents a relationship from being created on a translated item.</initParam>
+		<initParam name="com.percussion.extension.version">1</initParam>
+		<initParam name="com.percussion.extension.reentrant">yes</initParam>
+		<initParam name="className">com.percussion.pso.effects.PSOPreventOnTranslatedItem</initParam>
+		<interface name="com.percussion.relationship.IPSEffect"/>
+		<suppliedResources/>
+	</Extension>
 </PSXExtensionHandlerConfiguration>

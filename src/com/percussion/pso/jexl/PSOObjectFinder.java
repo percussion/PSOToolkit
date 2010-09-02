@@ -17,6 +17,7 @@ import javax.jcr.RepositoryException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 import com.percussion.cms.objectstore.PSComponentSummary;
 import com.percussion.design.objectstore.PSLocator;
 import com.percussion.error.PSException;
@@ -53,7 +54,7 @@ import com.percussion.webservices.security.PSSecurityWsLocator;
  */
 public class PSOObjectFinder extends PSJexlUtilBase
       implements
-         IPSJexlExpression, IPSOObjectFinder
+      IPSJexlExpression, IPSOObjectFinder
 {
    /**
     * Logger for this class
@@ -295,6 +296,8 @@ public class PSOObjectFinder extends PSJexlUtilBase
       PSUserSession session = req.getUserSession();
       return session; 
    }
+   
+  
    
    /**
     * @param cws The cws to set. This routine should only be used

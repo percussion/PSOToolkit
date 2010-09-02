@@ -37,14 +37,14 @@
 	<classpathentry kind="lib" path="ivylib/percbeans.jar"/>
 	<classpathentry kind="lib" path="ivylib/rhythmyx.jar"/>
 	<classpathentry kind="lib" path="ivylib/rxbusiness.jar"/>
-	<classpathentry kind="lib" path="ivylib/rxclient.jar"/>
-	<classpathentry kind="lib" path="ivylib/rxextensions.jar"/>
-	<classpathentry kind="lib" path="ivylib/rxff.jar"/>
+	<classpathentry kind="lib" path="ivylib/rxclient.jar" sourcepath="/Rhythmyx-Rel-6.7"/>
+	<classpathentry kind="lib" path="ivylib/rxextensions.jar" sourcepath="/Rhythmyx-Rel-6.7"/>
+	<classpathentry kind="lib" path="ivylib/rxff.jar" sourcepath="/Rhythmyx-Rel-6.7"/>
 	<classpathentry kind="lib" path="ivylib/rxinstall.jar"/>
 	<classpathentry kind="lib" path="ivylib/rxmisctools.jar"/>
 	<classpathentry kind="lib" path="ivylib/rxpublisher.jar"/>
 	<classpathentry kind="lib" path="ivylib/rxserver.jar"/>
-	<classpathentry kind="lib" path="ivylib/rxservices.jar" sourcepath="C:/Rhythmyx/Docs/Rhythmyx/Javadocs"/>
+	<classpathentry kind="lib" path="ivylib/rxservices.jar" sourcepath="/Rhythmyx-Rel-6.7"/>
 	<classpathentry kind="lib" path="ivylib/rxtablefactory.jar"/>
 	<classpathentry kind="lib" path="ivylib/rxutils.jar"/>
 	<classpathentry kind="lib" path="ivylib/rxwebservices.jar"/>
@@ -55,6 +55,6 @@
 	<classpathentry kind="lib" path="ivylib/spring-webmvc.jar"/>
 	<classpathentry kind="lib" path="ivylib/spring.jar"/>
 	<classpathentry kind="lib" path="ivylib/stax-api.jar"/>
-	<classpathentry kind="lib" path="ivylib/jtidy-r938.jar"/>
+	<classpathentry kind="lib" path="ivylib/Tidy.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

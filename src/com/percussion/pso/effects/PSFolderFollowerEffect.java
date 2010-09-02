@@ -47,6 +47,7 @@ public class PSFolderFollowerEffect extends PSAbstractFolderEffect implements IP
       
    }
 
+   
    /**
     * Gets the parent folders of this item.  
     * @param loc the item locator

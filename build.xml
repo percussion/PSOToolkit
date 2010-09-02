@@ -56,6 +56,8 @@
 	<property name="comspec" location="${env.ComSpec}"/>
 	<property name="cdrive" location="${env.USERPROFILE}"/> 
 	
+	<property name="vbox.vmname" value="RXBase_1" /> 
+	
 	<!-- Rhythmyx classpath  --> 
 	<path id="rx.class.path"> 
 		 <fileset dir="${ivylib}">
@@ -243,5 +245,15 @@
 			
 	</target>	
 
-
+	<target name="testdeliver" depends="" description="generate the distribution">
+		  		<exec executable="VBoxManage" failifexecutionfails="false" > 
+				      <arg line="guestcontrol execute ${vbox.vmname}  /bin/bash --arguments '/mnt/hostdata/PSOToolkit66/install.sh /home/rhythmyx/Rhythmyx' --username rhythmyx --password demo --verbose --wait-for stdout"/> 
+				 </exec>
+	</target>
+	
+	<target name="stoprhythmyx" depends="" description="generate the distribution">
+		<exec executable="VBoxManage" failifexecutionfails="false" > 
+			<arg line="guestcontrol execute ${vbox.vmname}  /bin/bash --arguments '/home/rhythmyx/Rhythmyx/bin/RhythmyxDaemon stop /home/rhythmyx/Rhythmyx/' --username rhythmyx --password demo --verbose --wait-for stdout"/> 
+		</exec>
+	</target>
 </project>

@@ -27,7 +27,9 @@ then
    echo RHYTHMYX_HOME=$RHYTHMYX_HOME
    echo JAVA_HOME=$JAVA_HOME
    echo ANT_HOME=$ANT_HOME
-   $ANT_HOME/bin/ant -f deploy.xml
+   export DIR_NAME=`dirname $0`
+   
+   $ANT_HOME/bin/ant -f $DIR_NAME/deploy.xml
    exit 0
 else
   echo "$1 is not a Directory"
