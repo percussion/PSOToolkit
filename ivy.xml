@@ -33,7 +33,6 @@
 	   	<exclude org="org.springframework" matcher="exact" name="spring-web" />
 	   	<exclude org="org.springframework" matcher="exact" name="spring-core" />
 	  </dependency>
-	   <dependency org=
 	  <dependency org="javax.activation" name="activation" rev="1.1" conf="default" /> 
 	  <dependency org="stax" name="stax-api" rev="1.0.1" conf="test->default" /> 
 	  
