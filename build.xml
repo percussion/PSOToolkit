@@ -48,7 +48,7 @@
 	<property name="lib" location="lib"/>
 	<property name="bin" location="bin"/>
 	<property name="ivylib" location="ivylib" /> 
-	<property name="apidoc" location="apidoc" />
+	<property name="javadoc" location="javadoc" />
 	
 	<property name="zipprefix" value="PSOToolkit6.6" /> 
 	
@@ -121,8 +121,8 @@
 	</target>
 	
 	<target name="javadoc" depends="compile">
-		<mkdir dir="apidoc"/>
-		<javadoc destdir="apidoc" private="true" use="yes" 
+		<mkdir dir="javadoc"/>
+		<javadoc destdir="javadoc" private="true" use="yes" 
 		windowtitle="${ant.project.name}">
 			<packageset dir="${src}" defaultexcludes="yes">
 				<include name="com/percussion/**"/>	
@@ -131,7 +131,7 @@
 			<link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
 			<link href="http://java.sun.com/j2ee/1.4/docs/api/" />
 			<link href="http://static.springframework.org/spring/docs/2.0.x/api/" />
-			<link href="http://commons.apache.org/logging/apidocs/" />
+			<link href="http://commons.apache.org/logging/javadocs/" />
 		</javadoc>
 	</target>
 	
@@ -240,7 +240,7 @@
 			<zipfileset dir="." includes="license.txt, Extensions.xml, Install.bat"  prefix="${zipprefix}" />
 		    <zipfileset dir="${bin}" includes="build.properties"  prefix="${zipprefix}" />  			
 			<zipfileset dir="WEB-INF" prefix="${zipprefix}/WEB-INF" />
-			<zipfileset dir="${apidoc}" prefix="${zipprefix}/javadoc" />	
+			<zipfileset dir="${javadoc}" prefix="${zipprefix}/javadoc" />	
 			<zipfileset dir="Rhythmyx" prefix="${zipprefix}/Rhythmyx" />
 		</zip>
 			
