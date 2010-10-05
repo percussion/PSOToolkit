@@ -15,6 +15,7 @@ import java.nio.channels.FileLock;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import java.util.Map;
 
 /**
  * A collection of generally useful routines for Rhythmyx Server interactions.
@@ -92,5 +93,22 @@ public class RxServerUtils
    
    private static final String LOCK_FILE_NAME = "server_run_lock";
    private static final long LOCK_FILE_INTERVAL = 10000L; 
+   private static final String RHYTHMYX_HOME="RHYTHMYX_HOME";
+   
+   /***
+    * Get the value of the RHYTHMYX_HOME environment variable or null if it is not set.
+    * 
+    * @author natechadwick
+    * @return 
+    */
+   public static String getRhythmyxHome(){
+   
+	   Map<String, String> env = System.getenv();
+
+	   if(env.containsKey(RHYTHMYX_HOME))
+		   return env.get(RHYTHMYX_HOME);
+	   else
+		   return null;
+   }
    
 }
