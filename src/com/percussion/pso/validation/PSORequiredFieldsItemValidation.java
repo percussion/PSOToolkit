@@ -59,11 +59,18 @@ public class PSORequiredFieldsItemValidation
    {
       String contentid = req.getParameter(IPSHtmlParameters.SYS_CONTENTID);
       Validate.notEmpty(contentid);
-      String transitionid = req.getParameter(IPSHtmlParameters.SYS_TRANSITIONID);
+      String transitionid = req.getParameter(IPSHtmlParameters.SYS_TRANSITIONID);      
+      
+      if(transitionid == null || transitionid == ""){
+    	  transitionid = "123455";
+      }
+      
       Validate.notEmpty(transitionid);
       String fields = params[0].toString();
       Validate.notEmpty(fields);
       String states = params[1].toString();
+    
+
       
       if(super.matchDestinationState(contentid, transitionid, states))
       {
