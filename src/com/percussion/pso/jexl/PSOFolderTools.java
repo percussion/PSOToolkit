@@ -11,8 +11,6 @@
  */
 package com.percussion.pso.jexl;
 
-import static java.util.Arrays.asList;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,6 +35,8 @@ import com.percussion.extension.IPSJexlParam;
 import com.percussion.extension.PSExtensionException;
 import com.percussion.extension.PSExtensionProcessingException;
 import com.percussion.extension.PSJexlUtilBase;
+import com.percussion.server.PSRequest;
+import com.percussion.server.webservices.PSServerFolderProcessor;
 import com.percussion.services.assembly.IPSAssemblyItem;
 import com.percussion.services.assembly.data.PSAssemblyWorkItem;
 import com.percussion.services.assembly.impl.nav.PSNavHelper;
@@ -45,6 +45,7 @@ import com.percussion.services.filter.PSFilterException;
 import com.percussion.services.guidmgr.IPSGuidManager;
 import com.percussion.services.guidmgr.PSGuidManagerLocator;
 import com.percussion.utils.guid.IPSGuid;
+import com.percussion.utils.request.PSRequestInfo;
 import com.percussion.webservices.PSErrorException;
 import com.percussion.webservices.PSErrorResultsException;
 import com.percussion.webservices.content.IPSContentWs;
@@ -175,13 +176,14 @@ public class PSOFolderTools extends PSJexlUtilBase implements IPSJexlExpression
     * @throws PSErrorResultsException
     * @throws PSExtensionProcessingException
     * @throws PSErrorException
+ * @throws PSCmsException 
     */
    @IPSJexlMethod(description="get the folder path for this item", 
            params={@IPSJexlParam(name="assemblyItem", description="$sys.assemblyItem")},
            returns="the path of the folder that contains this item"
    )
    public String getParentFolderPath(IPSAssemblyItem assemblyItem)
-            throws PSErrorResultsException, PSExtensionProcessingException, PSErrorException {
+            throws PSErrorResultsException, PSExtensionProcessingException, PSErrorException, PSCmsException {
         int id = assemblyItem.getFolderId();
         String path = null;
         /*
@@ -232,13 +234,9 @@ public class PSOFolderTools extends PSJexlUtilBase implements IPSJexlExpression
         } 
         else {
             log.debug("Using AssemblyItem's folderid = " + id);
-            IPSGuid folderGuid = guidManager.makeGuid(new PSLocator(id, -1));
-            List<PSFolder> folders = contentWs.loadFolders(asList(folderGuid));
-            if (folders.size() < 1) {
-                path = null;
-            } 
-            else {
-                path = folders.get(0).getFolderPath();
+            path = getFolderPath(id);
+            if (path==null) {
+            	log.debug("Could not get folder path for id "+id);
             }
         }
         return path;
@@ -266,6 +264,14 @@ public class PSOFolderTools extends PSJexlUtilBase implements IPSJexlExpression
         }
     }
 
+   public String getFolderPath(int id) throws PSCmsException {
+	   PSRequest req = (PSRequest) PSRequestInfo
+       .getRequestInfo(PSRequestInfo.KEY_PSREQUEST);
+	   PSServerFolderProcessor folderproc = new PSServerFolderProcessor(req,null);
+	   String[] ret = folderproc.getItemPaths(new PSLocator(id,-1));
+	   return  (ret.length>0) ? ret[0] : null;
+   }
+   
    @Override
     public void init(IPSExtensionDef def, File codeRoot)
             throws PSExtensionException {
@@ -274,6 +280,8 @@ public class PSOFolderTools extends PSJexlUtilBase implements IPSJexlExpression
         IPSGuidManager guidManager = PSGuidManagerLocator.getGuidMgr();
         init(contentWs, guidManager);
     }
+   
+   
 
     public IPSContentWs getContentWs() {
         return contentWs;
