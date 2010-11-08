@@ -14,6 +14,7 @@ import javax.jcr.RepositoryException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.percussion.cms.PSCmsException;
 import com.percussion.extension.IPSExtensionDef;
 import com.percussion.extension.PSExtensionException;
 import com.percussion.extension.PSExtensionProcessingException;
@@ -114,7 +115,7 @@ public class PSOAncestorFolderSlotContentFinder extends PSBaseSlotContentFinder 
     
     
     private PSItemSummary findAncestorItem(IPSAssemblyItem assemblyItem, String contentType) 
-        throws PSExtensionProcessingException, PSErrorResultsException, PSErrorException {
+        throws PSExtensionProcessingException, PSErrorResultsException, PSErrorException, PSCmsException {
         String path = getFolderTools().getParentFolderPath(assemblyItem);
         List<IPSGuid> folderIds =  getContentWs().findPathIds(path);
         reverse(folderIds);
