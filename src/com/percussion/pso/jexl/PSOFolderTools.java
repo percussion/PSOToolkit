@@ -93,47 +93,6 @@ public class PSOFolderTools extends PSJexlUtilBase implements IPSJexlExpression
    }
    
    
-   /**
-    * Get the folder paths for an item. 
-    * @param itemId the GUID for the item
-    * @return the parent folder path. If there are multiple paths, the 
-    * first one will be returned. Will be return empty list if the item is
-    * not in any folders. 
-    * @throws PSErrorException
-    * @throws PSExtensionProcessingException
-    */
-   @IPSJexlMethod(description="get the folder path for this item", 
-         params={@IPSJexlParam(name="itemId", description="the item GUID")})
-   public List<String> getParentFolderPaths(IPSGuid itemId) 
-   throws PSErrorException, PSExtensionProcessingException   
-   {
-      String errmsg; 
-      if(itemId == null)
-      {
-         errmsg = "No path for null guid"; 
-         log.error(errmsg); 
-         throw new PSExtensionProcessingException(0, errmsg); 
-      }
-      String[] paths = null;
-      try
-      {
-         paths = contentWs.findFolderPaths(itemId);
-      } catch (Exception e)
-      {
-        log.error("Unexpected exception " + e.getMessage(), e );
-        throw new PSExtensionProcessingException(this.getClass().getCanonicalName(), e); 
-      } 
-      if(paths == null)
-      {
-         errmsg = "cannot find folder path for " + itemId; 
-         log.info(errmsg);
-         return new ArrayList<String>(); 
-         //throw new PSExtensionProcessingException(0, errmsg); 
-      }
-      
-      return Arrays.asList(paths);
-     
-   }
    
    /**
     * Get the folder path for an item. 
@@ -143,11 +102,12 @@ public class PSOFolderTools extends PSJexlUtilBase implements IPSJexlExpression
     * not in any folders. 
     * @throws PSErrorException
     * @throws PSExtensionProcessingException
+ * @throws PSCmsException 
     */
    @IPSJexlMethod(description="get the folder path for this item", 
          params={@IPSJexlParam(name="itemId", description="the item GUID")})
    public String getParentFolderPath(IPSGuid itemId) 
-   throws PSErrorException, PSExtensionProcessingException   
+   throws PSErrorException, PSExtensionProcessingException, PSCmsException   
    {
 	  String errmsg; 
 	  
@@ -270,6 +230,26 @@ public class PSOFolderTools extends PSJexlUtilBase implements IPSJexlExpression
 	   PSServerFolderProcessor folderproc = new PSServerFolderProcessor(req,null);
 	   String[] ret = folderproc.getItemPaths(new PSLocator(id,-1));
 	   return  (ret.length>0) ? ret[0] : null;
+   }
+  
+   /**
+    * Get the folder paths for an item. 
+    * @param itemId the GUID for the item
+    * @return the parent folder path. If there are multiple paths, the 
+    * first one will be returned. Will be return empty list if the item is
+    * not in any folders. 
+ * @throws PSCmsException 
+    * @throws PSErrorException
+    * @throws PSExtensionProcessingException
+    */
+   @IPSJexlMethod(description="get the folder path for this item", 
+         params={@IPSJexlParam(name="itemId", description="the item GUID")})
+   public List<String> getParentFolderPaths(IPSGuid guid) throws PSCmsException {
+	   PSRequest req = (PSRequest) PSRequestInfo
+       .getRequestInfo(PSRequestInfo.KEY_PSREQUEST);
+	   PSServerFolderProcessor folderproc = new PSServerFolderProcessor(req,null);
+	   String[] ret = folderproc.getFolderPaths(new PSLocator(guid.getUUID(),-1));
+	   return  Arrays.asList(ret);
    }
    
    @Override
