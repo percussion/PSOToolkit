@@ -14,6 +14,7 @@ package com.percussion.pso.jexl;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -278,5 +279,54 @@ public class PSOFolderTools extends PSJexlUtilBase implements IPSJexlExpression
     public void setGuidManager(IPSGuidManager guidManager) {
         this.guidManager = guidManager;
     }
-   
+
+
+	@IPSJexlMethod(description="Add a folder tree for the fully qualified path. ", 
+	           params={@IPSJexlParam(name="path", description="folder path")},
+	           returns="The newly added folders"
+	   )
+
+	    public PSFolder addFolderTree(String path) 
+	{
+         PSFolder folder = null;
+         String[] stringArr = new String[1];
+         stringArr[0]= path;
+         try {
+			folder = contentWs.loadFolders(stringArr).get(0);
+		} catch (PSErrorResultsException e1) {
+			log.info("Folder does not exist, creating new FolderTree for path: " + path, e1);
+			try {
+				folder = contentWs.addFolderTree(path).get(0);
+			} catch (PSErrorResultsException e) {
+				log.error("Could not generate new folder at path: " + path, e);
+	            throw new RuntimeException(e);
+			} catch (PSErrorException e) {
+				log.error("Could not generate new folder at path: " + path, e);
+	            throw new RuntimeException(e);
+			}
+		}
+         
+		
+		return folder;
+	       
+	    }
+	@IPSJexlMethod(description="Add a folder below the specified Parent folder", 
+			params={@IPSJexlParam(name="folderName", description="Name of the folder to create"),
+			@IPSJexlParam(name="parent", description="folder path to create new folder in")},
+			returns="The newly added folder"
+	)
+	
+	public PSFolder addFolder(String folderName, String parent) 
+	{
+		PSFolder folder = null;
+
+		try {
+			folder = contentWs.addFolder(folderName, parent);
+		}  catch (PSErrorException e) {
+			log.error("Could not generate new folder '" + folderName + "' at path: " + parent, e);
+			throw new RuntimeException(e);
+		}
+		return folder;
+		
+	}
 }
