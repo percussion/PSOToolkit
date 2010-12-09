@@ -29,6 +29,7 @@ import org.apache.commons.logging.LogFactory;
 import com.percussion.cms.PSCmsException;
 import com.percussion.cms.objectstore.PSFolder;
 import com.percussion.cms.objectstore.PSFolderProperty;
+import com.percussion.cms.objectstore.PSRelationshipFilter;
 import com.percussion.design.objectstore.PSLocator;
 import com.percussion.extension.IPSExtensionDef;
 import com.percussion.extension.IPSJexlExpression;
@@ -265,7 +266,16 @@ public class PSOFolderTools extends PSJexlUtilBase implements IPSJexlExpression
             throw new RuntimeException(e);
         }
     }
-
+   
+   @IPSJexlMethod(description=" Find all ids for the specified path.", 
+           params={@IPSJexlParam(name="path", description="folder path")},
+           returns="List of folder guids"
+   )
+   public List<IPSGuid> findPathIds(String path) throws PSErrorException {
+	  return getContentWs().findPathIds(path);
+   }
+   
+   
    @Override
     public void init(IPSExtensionDef def, File codeRoot)
             throws PSExtensionException {
