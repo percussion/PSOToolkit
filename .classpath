@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="ivylib/activation.jar"/>
 	<classpathentry kind="lib" path="ivylib/antlr.jar"/>
 	<classpathentry kind="lib" path="ivylib/cglib-nodep.jar"/>
@@ -35,20 +34,24 @@
 	<classpathentry kind="lib" path="ivylib/objenesis.jar"/>
 	<classpathentry kind="lib" path="ivylib/percbeans.jar"/>
 	<classpathentry kind="lib" path="ivylib/rhythmyx.jar"/>
-	<classpathentry kind="lib" path="ivylib/rxclient.jar" sourcepath="/Rhythmyx-Rel-6.5.2"/>
+	<classpathentry kind="lib" path="ivylib/rxclient.jar"/>
 	<classpathentry kind="lib" path="ivylib/rxextensions.jar"/>
 	<classpathentry kind="lib" path="ivylib/rxff.jar"/>
 	<classpathentry kind="lib" path="ivylib/rxinstall.jar"/>
 	<classpathentry kind="lib" path="ivylib/rxmisctools.jar"/>
 	<classpathentry kind="lib" path="ivylib/rxpublisher.jar"/>
 	<classpathentry kind="lib" path="ivylib/rxserver.jar"/>
-	<classpathentry kind="lib" path="ivylib/rxservices.jar" sourcepath="/Rhythmyx-Rel-6.7"/>
+	<classpathentry kind="lib" path="ivylib/rxservices.jar"/>
 	<classpathentry kind="lib" path="ivylib/rxtablefactory.jar"/>
 	<classpathentry kind="lib" path="ivylib/rxutils.jar"/>
-	<classpathentry kind="lib" path="ivylib/rxwebservices.jar" sourcepath="/Rhythmyx-Rel-6.7"/>
-	<classpathentry kind="lib" path="ivylib/saxon.jar"/>
+	<classpathentry kind="lib" path="ivylib/rxwebservices.jar"/>
 	<classpathentry kind="lib" path="ivylib/spring-mock.jar"/>
 	<classpathentry kind="lib" path="ivylib/spring.jar"/>
 	<classpathentry kind="lib" path="ivylib/Tidy.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.6.0_21"/>
+	<classpathentry kind="lib" path="ivylib/saxon.jar"/>
+	<classpathentry kind="lib" path="ivylib/xalan.jar"/>
+	<classpathentry kind="lib" path="ivylib/xercesImpl.jar"/>
+	<classpathentry kind="lib" path="ivylib/xmlParserAPIs.jar"/>
 	<classpathentry kind="output" path="bin1"/>
 </classpath>
