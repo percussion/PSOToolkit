@@ -33,7 +33,7 @@ import com.percussion.services.workflow.data.PSWorkflow;
 /**
  * Allocates the next number in a sequence. 
  *
- * @author davidbenua
+ * @author davidbenua,stephenbolton,natechadwick
  *
  */
 public class PSOPreventDeepCloneUDF extends PSSimpleJavaUdfExtension
@@ -81,7 +81,7 @@ public class PSOPreventDeepCloneUDF extends PSSimpleJavaUdfExtension
          throws PSConversionException
    {
 	   	
-	    initServices();
+	   initServices();
 	   log.info("Filtering items for revision" );
 	
 	   
@@ -108,30 +108,40 @@ public class PSOPreventDeepCloneUDF extends PSSimpleJavaUdfExtension
 	      }
 	      
 	   	log.debug("Got summary for id "+id);
-	   	
+
 	   	int wfid = sum.getWorkflowAppId();
 	   	int stateid = sum.getContentStateId();
 	   	
-	   	String wfName = getWorkflowName(wfid);
-	   	String stateName = getStateName(wfid, stateid);
+	   	//Always clone non workflow objects.
+	   	if(wfid > 0 && stateid > 0){
 	   	
-	   	log.debug("Item is in workflow="+wfName+" state="+stateName);
-	   
-	   	if (states.contains(stateName)) {
-	   		log.debug("Found item state in deep clone list ");
+		   	
+		   	String wfName = getWorkflowName(wfid);
+		   	String stateName = getStateName(wfid, stateid);
+		   	
+		   	log.debug("Item is in workflow="+wfName+" state="+stateName);
+		   
+		   	if (states.contains(stateName)) {
+		   		log.debug("Found item state in deep clone list ");
+		   		return true;
+		   	}
+		   	
+	   	}else{
+	   		log.debug("Item is not workflowable..skipping.");
 	   		return true;
 	   	}
 	   return false;
    }
    
-   public String getWorkflowName(int id) {
+   private String getWorkflowName(int id) {
 		initServices();
 		log.debug("Getting workflow name");
 		PSWorkflow workflow = wf.loadWorkflow(new PSGuid(PSTypeEnum.WORKFLOW,id));
 		log.debug("got workflow name "+workflow.getName());
 		return workflow.getName();
 	}
-	public String getStateName(int wfid,int stateid) {
+   
+	private String getStateName(int wfid,int stateid) {
 		initServices();
 		log.debug("Getting state name");
 		PSState state = wf.loadWorkflowState(new PSGuid(PSTypeEnum.WORKFLOW_STATE,stateid),new PSGuid(PSTypeEnum.WORKFLOW,wfid));
@@ -139,7 +149,7 @@ public class PSOPreventDeepCloneUDF extends PSSimpleJavaUdfExtension
 		return state.getName();
 	}
 	
-	 /**
+	    /**
 	    * Safely gets the specified index of the parameter array as a String.
 	    * The default value will be returned if parameter array is null, or does not
 	    * contain a non-empty string at the specified index.
@@ -152,7 +162,7 @@ public class PSOPreventDeepCloneUDF extends PSSimpleJavaUdfExtension
 	    * @return the parameter at the specified index (converted to a String and
 	    * trimmed), or the defaultValue.
 	    */
-	   public static String getParameter(Object[] params, int index,
+	   private static String getParameter(Object[] params, int index,
 	                                     String defaultValue) {
 	      if (params == null || params.length < index + 1 || params[index] == null ||
 	            params[index].toString().trim().length() == 0) {
