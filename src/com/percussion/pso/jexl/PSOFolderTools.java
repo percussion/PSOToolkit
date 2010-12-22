@@ -239,9 +239,7 @@ public class PSOFolderTools extends PSJexlUtilBase implements IPSJexlExpression
     * @return the parent folder path. If there are multiple paths, the 
     * first one will be returned. Will be return empty list if the item is
     * not in any folders. 
- * @throws PSCmsException 
-    * @throws PSErrorException
-    * @throws PSExtensionProcessingException
+    * @throws PSCmsException 
     */
    @IPSJexlMethod(description="get the folder path for this item", 
          params={@IPSJexlParam(name="itemId", description="the item GUID")})
@@ -252,6 +250,40 @@ public class PSOFolderTools extends PSJexlUtilBase implements IPSJexlExpression
 	   String[] ret = folderproc.getFolderPaths(new PSLocator(guid.getUUID(),-1));
 	   return  Arrays.asList(ret);
    }
+   
+   
+   /**
+    * Get the folder id for a folder path. 
+    * @param path the path for the item
+    * @return content item id for the folder
+    * @throws PSCmsException 
+    */
+   @IPSJexlMethod(description="get the folder id for this folder path", 
+         params={@IPSJexlParam(name="path", description="The path to get the id for")})
+   public int getIdForPath(String path) throws PSCmsException {
+	   PSRequest req = (PSRequest) PSRequestInfo
+       .getRequestInfo(PSRequestInfo.KEY_PSREQUEST);
+	   PSServerFolderProcessor folderproc = new PSServerFolderProcessor(req,null);
+	   int id = folderproc.getIdByPath(path);
+	   return id;
+   }
+   
+   /**
+    * Get the folder id for a item id 
+    * @param itemId the id to find the parent folder id for
+    * @return content item id for the folder
+    * @throws PSCmsException 
+    */
+   @IPSJexlMethod(description="get the parent folder id for this item id", 
+	         params={@IPSJexlParam(name="itemId", description="The item id to find the folder id for")})
+	   public int getParentFolderId(int itemId) throws PSCmsException {
+		   PSRequest req = (PSRequest) PSRequestInfo
+	       .getRequestInfo(PSRequestInfo.KEY_PSREQUEST);
+		   PSServerFolderProcessor folderproc = new PSServerFolderProcessor(req,null);
+		   int id = folderproc.getIdByPath(getFolderPath(itemId));
+		   return id;
+	   }
+	   
    
    @Override
     public void init(IPSExtensionDef def, File codeRoot)
