@@ -238,7 +238,8 @@
 			<zipfileset dir="${lib}" includes="${jarname}" prefix="${zipprefix}/lib" />
 			<zipfileset dir="." includes="readme.txt, deploy.xml, install.sh" prefix="${zipprefix}" />
 			<zipfileset dir="." includes="license.txt, Extensions.xml, Install.bat"  prefix="${zipprefix}" />
-		    <zipfileset dir="${bin}" includes="build.properties"  prefix="${zipprefix}" />  			
+			<zipfileset dir="${ivylib}" includes="rome.jar"  prefix="${zipprefix}/lib" />  
+			<zipfileset dir="${bin}" includes="build.properties"  prefix="${zipprefix}" />  			
 			<zipfileset dir="WEB-INF" prefix="${zipprefix}/WEB-INF" />
 			<zipfileset dir="${javadoc}" prefix="${zipprefix}/javadoc" />	
 			<zipfileset dir="Rhythmyx" prefix="${zipprefix}/Rhythmyx" />
