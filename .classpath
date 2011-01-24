@@ -44,7 +44,11 @@
 	<classpathentry kind="lib" path="ivylib/rxmisctools.jar"/>
 	<classpathentry kind="lib" path="ivylib/rxpublisher.jar"/>
 	<classpathentry kind="lib" path="ivylib/rxserver.jar"/>
-	<classpathentry kind="lib" path="ivylib/rxservices.jar" sourcepath="/Rhythmyx-Rel-6.7"/>
+	<classpathentry kind="lib" path="ivylib/rxservices.jar" sourcepath="/Rhythmyx-Rel-6.7">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/C:/Rhythmyx/Docs/Rhythmyx/Javadocs/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="ivylib/rxtablefactory.jar"/>
 	<classpathentry kind="lib" path="ivylib/rxutils.jar"/>
 	<classpathentry kind="lib" path="ivylib/rxwebservices.jar" sourcepath="/Rhythmyx-Rel-6.7"/>
@@ -56,5 +60,7 @@
 	<classpathentry kind="lib" path="ivylib/spring.jar" sourcepath="/Rhythmyx-Rel-6.7"/>
 	<classpathentry kind="lib" path="ivylib/stax-api.jar"/>
 	<classpathentry kind="lib" path="ivylib/Tidy.jar"/>
+	<classpathentry kind="lib" path="ivylib/rome.jar"/>
+	<classpathentry kind="lib" path="ivylib/jdom.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
