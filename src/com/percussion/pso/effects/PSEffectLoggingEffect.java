@@ -149,7 +149,13 @@ public class PSEffectLoggingEffect implements IPSEffect
 				case IPSExecutionContext.RS_UPDATE: context="UPDATE"; break;
 				default: context="UNKOWN";
 			  }
-			
+			  
+			  String sourceFolderId = req.getParameter("sys_moveSourceFolderId");
+			  String targetFolderId = req.getParameter("sys_moveTargetFolderId");
+			  
+			  log.debug("Move source folder id is ="+sourceFolderId);
+			  log.debug("Move target folder id is ="+targetFolderId);
+			  
 			  PSRelationship current = exCtx.getCurrentRelationship(); 
 			  PSRelationship orig =  exCtx.getOriginatingRelationship();
 			  Set<PSRelationship> processed = (Set<PSRelationship>)exCtx.getProcessedRelationships();
@@ -177,6 +183,9 @@ public class PSEffectLoggingEffect implements IPSEffect
 			  // if following can just replicate add and removing of items
 			  
 			  log.debug(o);
+			  
+			  
+			  
 			  if(exCtx.isConstruction() && current.getConfig().getCategory().equals("rs_folder")) {
 				  int dependent=current.getDependent().getId();
 				  int owner=current.getOwner().getId();

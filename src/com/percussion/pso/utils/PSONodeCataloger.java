@@ -74,6 +74,7 @@ public class PSONodeCataloger
       }
       log.debug("content type names " + names); 
       return names;
+  
    }
    
    
