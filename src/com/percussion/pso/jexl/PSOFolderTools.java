@@ -224,7 +224,16 @@ public class PSOFolderTools extends PSJexlUtilBase implements IPSJexlExpression
             throw new RuntimeException(e);
         }
     }
-
+   /**
+    * Get the folder paths Given a FolderID. 
+    * @param id the id of the folder
+    * @return the folder path. 
+    * @throws PSCmsException 
+    */  
+   @IPSJexlMethod(description="Gets the folder path given a Folder ID", 
+           params={@IPSJexlParam(name="id", description="folder id")},
+           returns="The folder path (String)"
+   )
    public String getFolderPath(int id) throws PSCmsException {
 	   PSRequest req = (PSRequest) PSRequestInfo
        .getRequestInfo(PSRequestInfo.KEY_PSREQUEST);
