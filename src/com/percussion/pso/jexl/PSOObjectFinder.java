@@ -300,6 +300,21 @@ public class PSOObjectFinder extends PSJexlUtilBase
 	   return communityName;
  }
    
+   /***
+    * Returns a PSState object for the given state and workflow.  This can be used to get 
+    * the publishable flag on a given workflow state. 
+    * 
+    * For Example:
+    * 
+    * $summary = $user.psoObjectFinder.getComponentSummary($sys.assemblyItem.getId()) 
+    * $state = $user.psoObjectFinder.getWorkflowState($summary.getContentStateId(),$summary.getWorkflowAppId()) 
+    * 
+    * <h1>STATE CURRENT VALUE=${state.getContentValidValue()}</h1>
+    * 
+    * @param stateId
+    * @param workflowAppId
+    * @return
+    */
 	 @IPSJexlMethod(description="Get the workflow info for a given item", 
 		         params={@IPSJexlParam(name="stateId",description="the stateId"),@IPSJexlParam(name="workflowAppId",description="Returns the State definition for the specified workflow state.")})
 	public PSState getWorkflowState(int stateId,int workflowAppId) {
