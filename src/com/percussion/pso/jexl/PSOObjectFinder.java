@@ -35,8 +35,13 @@ import com.percussion.services.contentmgr.IPSNode;
 import com.percussion.services.contentmgr.PSContentMgrLocator;
 import com.percussion.services.guidmgr.IPSGuidManager;
 import com.percussion.services.guidmgr.PSGuidManagerLocator;
+import com.percussion.services.guidmgr.data.PSGuid;
 import com.percussion.services.security.data.PSCommunity;
+import com.percussion.services.workflow.IPSWorkflowService;
+import com.percussion.services.workflow.PSWorkflowServiceLocator;
+import com.percussion.services.workflow.data.PSState;
 import com.percussion.util.IPSHtmlParameters;
+import com.percussion.util.PSWorkflowInfo;
 import com.percussion.utils.guid.IPSGuid;
 import com.percussion.utils.request.PSRequestInfo;
 import com.percussion.webservices.content.IPSContentWs;
@@ -71,7 +76,8 @@ public class PSOObjectFinder extends PSJexlUtilBase
    private static IPSContentMgr cmgr = null; 
    
    private static IPSSecurityWs sws = null; 
-   
+
+   private static IPSWorkflowService wf=null;
    /**
     * 
     */
@@ -87,13 +93,21 @@ public class PSOObjectFinder extends PSJexlUtilBase
     */
    private static void initServices()
    {
-      if(cws == null)
-      {
-      gmgr = PSGuidManagerLocator.getGuidMgr(); 
-      cmgr = PSContentMgrLocator.getContentMgr(); 
-      cws = PSContentWsLocator.getContentWebservice();
-      sws = PSSecurityWsLocator.getSecurityWebservice();
-      }
+	  if(cws == null)
+		cws = PSContentWsLocator.getContentWebservice();
+
+	  if(wf== null)
+		wf = PSWorkflowServiceLocator.getWorkflowService();
+    
+	  if(gmgr==null)
+		gmgr = PSGuidManagerLocator.getGuidMgr(); 
+      
+	  if(cmgr==null)
+		cmgr = PSContentMgrLocator.getContentMgr(); 
+      
+	  if(sws==null)
+    	 sws = PSSecurityWsLocator.getSecurityWebservice();
+      
    }
    
    /**
@@ -285,6 +299,15 @@ public class PSOObjectFinder extends PSJexlUtilBase
 	   }
 	   return communityName;
  }
+   
+	 @IPSJexlMethod(description="Get the workflow info for a given item", 
+		         params={@IPSJexlParam(name="stateId",description="the stateId"),@IPSJexlParam(name="workflowAppId",description="Returns the State definition for the specified workflow state.")})
+	public PSState getWorkflowState(int stateId,int workflowAppId) {
+		   initServices();
+		   PSState state = wf.loadWorkflowState(new PSGuid(PSTypeEnum.WORKFLOW_STATE,stateId),new PSGuid(PSTypeEnum.WORKFLOW,workflowAppId));
+		   return state;
+	}   
+   
    
    /**
     * Gets the user session. 
