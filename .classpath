@@ -36,7 +36,7 @@
 	<classpathentry kind="lib" path="ivylib/objenesis.jar"/>
 	<classpathentry kind="lib" path="ivylib/percbeans.jar"/>
 	<classpathentry kind="lib" path="ivylib/rhythmyx.jar"/>
-	<classpathentry kind="lib" path="ivylib/rxbusiness.jar"/>
+	<classpathentry kind="lib" path="ivylib/rxbusiness.jar" sourcepath="/Rhythmyx-Rel-6.7"/>
 	<classpathentry kind="lib" path="ivylib/rxclient.jar" sourcepath="/Rhythmyx-Rel-6.7"/>
 	<classpathentry kind="lib" path="ivylib/rxextensions.jar" sourcepath="/Rhythmyx-Rel-6.7"/>
 	<classpathentry kind="lib" path="ivylib/rxff.jar" sourcepath="/Rhythmyx-Rel-6.7"/>
@@ -50,7 +50,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="ivylib/rxtablefactory.jar"/>
-	<classpathentry kind="lib" path="ivylib/rxutils.jar"/>
+	<classpathentry kind="lib" path="ivylib/rxutils.jar" sourcepath="/Rhythmyx-Rel-6.7"/>
 	<classpathentry kind="lib" path="ivylib/rxwebservices.jar" sourcepath="/Rhythmyx-Rel-6.7"/>
 	<classpathentry kind="lib" path="ivylib/rxworkflow.jar"/>
 	<classpathentry kind="lib" path="ivylib/saxon.jar"/>

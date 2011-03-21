@@ -67,7 +67,7 @@ public class PSORevisionCorrectingItemFilter extends PSBaseFilter
    public List<IPSFilterItem> filter(List<IPSFilterItem> items,
          Map<String, String> params) throws PSFilterException
    {
-      log.info("Filtering items for revision" );
+      log.debug("Filtering items for revision" );
       List<String> wfStates = SimplifyParameters.
           getValueAsList(params.get(WORKFLOW_STATES));
       List<IPSFilterItem> results = new ArrayList<IPSFilterItem>(items.size()); 
