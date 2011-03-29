@@ -1,10 +1,5 @@
-<project name="PSOToolkit65" default="dist" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
-	<description>
-       PSO Toolkit for Rhythmyx 6.5
-		
-	   This build file depends on Ivy 2.0 (beta 1, but should be upward compatible)
-	   
-    </description>
+<project name="PSOToolkit67" default="dist" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+	<description>PSO Toolkit for Rhythmyx 6.7</description>
 	<!-- =================================
 	Download and install Ivy2 from http://ant.apache.org/ivy
     Modify your Ant runtime preferences in Eclipse to include the Ivy JARs
@@ -29,10 +24,10 @@
 	<property name="rhythmyx.service" value="${env.RHYTHMYX_SERVICE}"/>
 
 	<!-- name of our output jar --> 
-	<property name="jarname" value="PSOToolkit-6.6.jar" />	
+	<property name="jarname" value="PSOToolkit-6.7.jar" />	
 	<!-- name of our distribution zip -->
-	<property name="distfile" value="PSOToolkit6.6.zip" />	
-	<property name="testdistfile" value="PSOToolkit6.6-test.zip" /> 
+	<property name="distfile" value="PSOToolkit6.7.zip" />	
+	<property name="testdistfile" value="PSOToolkit6.7-test.zip" /> 
 	
 	<property name="rhythmyx.deploy" value="${rhythmyx.home}/AppServer/server/rx/deploy" /> 
 	<property name="rhythmyx.rxapp"  value="${rhythmyx.deploy}/rxapp.ear/rxapp.war" /> 
@@ -50,7 +45,7 @@
 	<property name="ivylib" location="ivylib" /> 
 	<property name="javadoc" location="javadoc" />
 	
-	<property name="zipprefix" value="PSOToolkit6.6" /> 
+	<property name="zipprefix" value="PSOToolkit6.7" /> 
 	
 	<!-- used for running Windows commands --> 
 	<property name="comspec" location="${env.ComSpec}"/>
