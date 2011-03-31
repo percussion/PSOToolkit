@@ -14,6 +14,14 @@
 
 	<target name="jarcopy" description="copy the jar file" >
 		<fail unless="env.RHYTHMYX_HOME" message="You must set the RHYTHMYX_HOME environment variable"/>
+		<move todir="${rhythmyx.lib}" failonerror="false">
+					    <fileset dir="${rhythmyx.lib}">
+					     	<!-- remove old Content-rs if it exists -->
+					    	 <include name="PSOToolkit*.jar" /> 
+					    </fileset>
+					    <mapper type="glob" from="*" to="*.bak"/>
+		</move>
+		
 		<copy todir="${rhythmyx.lib}" verbose="true"> 
 			<fileset dir="${lib}">
 		          <include name="**.jar" /> 
