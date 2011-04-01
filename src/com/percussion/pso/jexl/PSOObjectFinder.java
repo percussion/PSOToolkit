@@ -59,7 +59,7 @@ import com.percussion.webservices.security.PSSecurityWsLocator;
  */
 public class PSOObjectFinder extends PSJexlUtilBase
       implements
-      IPSJexlExpression, IPSOObjectFinder
+      IPSOObjectFinder, IPSJexlExpression 
 {
    /**
     * Logger for this class
@@ -287,12 +287,12 @@ public class PSOObjectFinder extends PSJexlUtilBase
    
    @IPSJexlMethod(description="get the community name for a  given community id", 
 	         params={@IPSJexlParam(name="communityId",description="the id for the community")})
- public String getCommunityName(int communityId) {
+ public String getCommunityName(String communityId) {
 	   initServices();
 	   List<PSCommunity> communities = sws.loadCommunities(null);
 	   String communityName = null;
 	   for(PSCommunity comm :  communities) {
-		if (communityId == comm.getGUID().getUUID()) {
+		if (Integer.parseInt(communityId) == comm.getGUID().getUUID()) {
 			communityName = comm.getName();
 			break;
 		}
@@ -317,7 +317,7 @@ public class PSOObjectFinder extends PSJexlUtilBase
     */
 	 @IPSJexlMethod(description="Get the workflow info for a given item", 
 		         params={@IPSJexlParam(name="stateId",description="the stateId"),@IPSJexlParam(name="workflowAppId",description="Returns the State definition for the specified workflow state.")})
-	public PSState getWorkflowState(int stateId,int workflowAppId) {
+	public PSState getWorkflowState(String stateId,String workflowAppId) {
 		   initServices();
 		   PSState state = wf.loadWorkflowState(new PSGuid(PSTypeEnum.WORKFLOW_STATE,stateId),new PSGuid(PSTypeEnum.WORKFLOW,workflowAppId));
 		   return state;

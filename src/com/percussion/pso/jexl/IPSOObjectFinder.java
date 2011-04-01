@@ -116,4 +116,9 @@ public interface IPSOObjectFinder
     */
    @IPSJexlMethod(description = "get the template guid for a given id", params = {@IPSJexlParam(name = "template", description = "the id for the template")})
    public IPSGuid getTemplateGuid(int templateid);
+
+   @IPSJexlMethod(description="get the community name for a  given community id", 
+	         params={@IPSJexlParam(name="communityId",description="the id for the community")})
+	        public String getCommunityName(String communityId);
+   
 }
