@@ -96,7 +96,7 @@
 	
 	<target name="ivy-publish" depends="ivy-resolve"  >
 		<ivy:publish resolver="foo-shared-sftp" forcedeliver="true"  
-			pubrevision="6.6" overwrite="true" >
+			pubrevision="7.0" overwrite="true" >
 			<artifacts pattern="${lib}/[artifact]-[revision].[ext]" /> 
 		</ivy:publish>
 	</target>
