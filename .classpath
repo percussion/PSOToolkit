@@ -7,9 +7,7 @@
 	<classpathentry kind="lib" path="ivylib/aopalliance.jar"/>
 	<classpathentry kind="lib" path="ivylib/asm-attrs.jar"/>
 	<classpathentry kind="lib" path="ivylib/asm.jar"/>
-	<classpathentry kind="lib" path="ivylib/cglib-nodep.jar"/>
 	<classpathentry kind="lib" path="ivylib/commons-beanutils.jar"/>
-	<classpathentry kind="lib" path="ivylib/commons-betwixt-0.7RC2.jar"/>
 	<classpathentry kind="lib" path="ivylib/commons-codec.jar"/>
 	<classpathentry kind="lib" path="ivylib/commons-collections.jar"/>
 	<classpathentry kind="lib" path="ivylib/commons-fileupload.jar"/>
@@ -33,7 +31,6 @@
 	<classpathentry kind="lib" path="ivylib/jta.jar"/>
 	<classpathentry kind="lib" path="ivylib/junit.jar"/>
 	<classpathentry kind="lib" path="ivylib/log4j.jar"/>
-	<classpathentry kind="lib" path="ivylib/objenesis.jar"/>
 	<classpathentry kind="lib" path="ivylib/percbeans.jar"/>
 	<classpathentry kind="lib" path="ivylib/rhythmyx.jar"/>
 	<classpathentry kind="lib" path="ivylib/rxbusiness.jar" sourcepath="/Rhythmyx-Rel-6.7"/>
@@ -62,5 +59,8 @@
 	<classpathentry kind="lib" path="ivylib/Tidy.jar"/>
 	<classpathentry kind="lib" path="ivylib/rome.jar"/>
 	<classpathentry kind="lib" path="ivylib/jdom.jar"/>
+	<classpathentry kind="lib" path="ivylib/rxdeployer.jar"/>
+	<classpathentry kind="lib" path="ivylib/rxlogin.jar"/>
+	<classpathentry kind="lib" path="ivylib/cglib.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
