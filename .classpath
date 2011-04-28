@@ -60,8 +60,6 @@
 	<classpathentry kind="lib" path="ivylib/spring.jar" sourcepath="/Rhythmyx-Rel-6.7"/>
 	<classpathentry kind="lib" path="ivylib/stax-api.jar"/>
 	<classpathentry kind="lib" path="ivylib/Tidy.jar"/>
-	<classpathentry kind="lib" path="ivylib/rome.jar"/>
 	<classpathentry kind="lib" path="ivylib/jdom.jar"/>
-	<classpathentry kind="lib" path="ivylib/modules.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
