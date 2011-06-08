@@ -656,4 +656,17 @@
 		</PSXExtensionParamDef>
 		<suppliedResources/>
 	</Extension> 
+	<Extension categorystring="" context="global/percussion/user/" deprecated="no" handler="Java" name="HashCodeFieldTransform" restoreRequestParamsOnError="no">
+      <initParam name="com.percussion.user.description">Return a hash code for the given parameter</initParam>
+      <initParam name="com.percussion.extension.version">1</initParam>
+      <initParam name="com.percussion.extension.reentrant">yes</initParam>
+      <initParam name="className">com.percussion.pso.transform.HashCodeFieldTransform</initParam>
+      <interface name="com.percussion.extension.IPSFieldInputTransformer"/>
+      <PSXExtensionParamDef id="0">
+         <name>source</name>
+         <dataType>java.lang.String</dataType>
+         <description>The Value to return the hashCode from.</description>
+      </PSXExtensionParamDef>
+      <suppliedResources/>
+   </Extension>
 </PSXExtensionHandlerConfiguration>
