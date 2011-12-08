@@ -1,0 +1,260 @@
+<project name="PSOToolkit67" default="dist" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+	<description>PSO Toolkit for Rhythmyx 6.7</description>
+	<!-- =================================
+	Download and install Ivy2 from http://ant.apache.org/ivy
+    Modify your Ant runtime preferences in Eclipse to include the Ivy JARs
+    Setup your ivy-local.properties  for your user / environment (see the sample file)
+    
+    To build for the first time: 
+    1) Run the ivy-retrieve target
+    2) In Project Properties, add all JARs in the ivylib folder. 
+    3) Build (using the testbuild and dist targets)
+    4) Run the ivy-publish target 
+    
+    You should occasionally refresh (with ivy-retrieve) and
+    do ivy-publish each time a new build is released. 
+    
+   	-->
+	<!-- set global properties for this build -->
+    
+	<property environment="env"/>
+	<!-- base directory of Rhythmyx installation --> 
+	<property name="rhythmyx.home" location="${env.RHYTHMYX_HOME}"/>
+	<!-- name of Rhythmyx Service -->
+	<property name="rhythmyx.service" value="${env.RHYTHMYX_SERVICE}"/>
+
+	<!-- name of our output jar --> 
+	<property name="jarname" value="PSOToolkit-6.7.jar" />	
+	<!-- name of our distribution zip -->
+	<property name="distfile" value="PSOToolkit6.7.zip" />	
+	<property name="testdistfile" value="PSOToolkit6.7-test.zip" /> 
+	
+	<property name="rhythmyx.deploy" value="${rhythmyx.home}/AppServer/server/rx/deploy" /> 
+	<property name="rhythmyx.rxapp"  value="${rhythmyx.deploy}/rxapp.ear/rxapp.war" /> 
+	<property name="rhythmyx.rxpub"  value="${rhythmyx.deploy}/RxServices.war"/> 
+	<property name="rhythmyx.rxapp.lib"    value="${rhythmyx.rxapp}/WEB-INF/lib"/>
+	<property name="rhythmyx.server.lib"  value="${rhythmyx.home}/AppServer/server/rx/lib" /> 
+	<property name="rhythmyx.rxapp.spring-config"
+	value="${rhythmyx.rxapp}/WEB-INF/config/user/spring" />
+	<property name="rhythmyx.rxapp.WEB-INF" value="${rhythmyx.rxapp}/WEB-INF" />
+
+	<!-- relative paths -->
+	<property name="src" location="src"/>
+	<property name="lib" location="lib"/>
+	<property name="bin" location="bin"/>
+	<property name="ivylib" location="ivylib" /> 
+	<property name="javadoc" location="javadoc" />
+	
+	<property name="zipprefix" value="PSOToolkit6.7" /> 
+	
+	<!-- used for running Windows commands --> 
+	<property name="comspec" location="${env.ComSpec}"/>
+	<property name="cdrive" location="${env.USERPROFILE}"/> 
+	
+	<property name="vbox.vmname" value="RXBase_1" /> 
+	
+	<!-- Rhythmyx classpath  --> 
+	<path id="rx.class.path"> 
+		 <fileset dir="${ivylib}">
+		 	<include name="**.jar"/>
+		 </fileset>
+		 <fileset dir="${lib}">
+			 	<include name="jdom.jar"/>
+		</fileset>
+	</path>
+	
+
+	<target name="init">
+		<!-- Create the time stamp -->
+		<tstamp/>
+	</target>
+	
+	<target name="ivy-clean" depends="ivy-configure">
+		<ivy:cleancache />
+		<delete dir="${ivylib}" /> 
+		<mkdir dir="${ivylib}" />
+	</target>
+	
+	<target name="clean" description="clean up">
+		<delete dir="${bin}"/>
+		<mkdir dir="${bin}"/>
+	</target>
+	
+	<target name="ivy-configure">
+	   <ivy:settings />
+    </target>
+
+	<target name="ivy-resolve" depends="ivy-configure" >
+	   <ivy:resolve conf="test,optional"/> 
+	</target>
+	
+	<target name="ivy-retrieve" depends="ivy-resolve">
+	   <ivy:retrieve pattern="${ivylib}/[artifact].[ext]" type="jar" conf="test" />   	
+	</target>
+	
+	<!-- report on dependencies -->
+	<target name="ivy-report" depends="ivy-resolve">
+	  <ivy:report conf="test,optional"  graph="false" /> 
+	</target>
+	
+	<target name="ivy-publish" depends="ivy-resolve"  >
+		<ivy:publish resolver="foo-shared-sftp" forcedeliver="true"  
+			pubrevision="6.7" overwrite="true" >
+			<artifacts pattern="${lib}/[artifact]-[revision].[ext]" /> 
+		</ivy:publish>
+	</target>
+	
+	<target name="compile" description="compile the source ">
+		<!-- Compile the java code from ${src} into ${bin} -->
+		<javac srcdir="${src}" destdir="${bin}" debug="true" target="1.5" source="1.5" classpathref="rx.class.path" />
+		<copy todir="${bin}">
+    		<fileset dir="${src}">
+      			<include name="**/*.xml"/>
+    			<include name="**/*.properties" />
+    			<include name="**/*.jpg" />
+    			<include name="**/*.gif" />
+    			<include name="**/*.png" />
+    		</fileset>
+  		</copy>
+	</target>
+	
+	<target name="javadoc" depends="compile">
+		<mkdir dir="javadoc"/>
+		<javadoc destdir="javadoc" private="true" use="yes" 
+		windowtitle="${ant.project.name}">
+			<packageset dir="${src}" defaultexcludes="yes">
+				<include name="com/percussion/**"/>	
+			</packageset>
+			<classpath refid="rx.class.path"/>
+			<link href="http://java.sun.com/j2se/1.5.0/docs/api/"/>
+			<link href="http://java.sun.com/j2ee/1.4/docs/api/" />
+			<link href="http://static.springframework.org/spring/docs/2.0.x/api/" />
+			<link href="http://commons.apache.org/logging/javadocs/" />
+		</javadoc>
+	</target>
+	
+	<target name="test" depends="compile" description="run unit tests">
+		<property name="build-test-results" location="${bin}/test-results" />
+		<delete dir="${build-test-results}" />
+		<mkdir dir="${build-test-results}" />
+		<junit printsummary="yes" haltonerror="yes">
+			<classpath>
+				<path location="${bin}" />
+				<path refid="rx.class.path" />  
+			</classpath>
+			<formatter type="plain" />
+			<batchtest fork="yes" todir="${build-test-results}">
+				<fileset dir="${src}">
+					<include name="test/percussion/**/*Test.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+	
+	<target name="jarbuilder" depends="compile" description="just build the jar, no server">
+		<propertyfile file="${bin}/build.properties">
+			<entry key="build.number" value="${build.number}"/>
+			<entry key="build.date" type="date" pattern="EEEE MMM dd yyyy" value="now"/>
+    	</propertyfile>
+		<jar jarfile="${lib}/${jarname}" basedir="${bin}">
+			<include name="com/percussion/pso/**"/>
+			<exclude name="log4j.properties" /> 
+			<include name="build.properties" /> 
+			<include name="readme.txt" />			
+		</jar>
+
+	</target>
+	
+	<target name="installExtensions">
+		<java classname="com.percussion.util.PSExtensionInstallTool" fork="true">
+		    <arg value="${rhythmyx.home}" />
+			<arg value="${basedir}" />
+			<classpath>
+			    <fileset dir="${rhythmyx.rxapp.lib}">
+			    	<include name="rxserver.jar"/>
+			    	<include name="rxclient.jar"/> 
+			    	<include name="rxutils.jar" />
+			    	<include name="rxservices.jar" />
+			    	<include name="rxbusiness.jar" /> 
+			    	<include name="commons-lang*.jar"/> 
+			    	<include name="commons-jexl*.jar"/>
+			    	<include name="jcr*.jar" /> 
+			    	<include name="commons-logging*.jar" /> 
+			    	<include name="commons-collections*.jar" /> 
+			    	<include name="commons-httpclient*.jar" /> 
+				</fileset>
+			    <fileset dir="${rhythmyx.home}/AppServer/lib/endorsed" >
+				    <include name="xml-apis.jar" />
+			    </fileset>
+				<fileset dir="${rhythmyx.home}/AppServer/server/rx/lib">
+				<include name="javax.servlet.jar" /> 
+ 			    	<include name="commons-collections*.jar" /> 
+  		    	    </fileset>				
+			</classpath>			
+		</java>     
+	</target>
+	
+	<target name="testbuild" description="build for local test">		
+		<echo>Stopping ${rhythmyx.service}</echo>
+		
+		<exec executable="net.exe" failonerror="false">
+			<arg line="stop ${rhythmyx.service}"/>
+			<env key="COMSPEC" path="${comspec}"/>
+		</exec>
+		<property name="build.number" value="test build" /> 
+		<antcall target="jarbuilder"/>
+		<delete file="${rhythmyx.home}/AppServer/server/rx/log/server.log" verbose="true" failonerror="false" />
+		<copy file="${lib}/${jarname}" todir="${rhythmyx.rxapp.lib}" verbose="true" />
+		<copy todir="${rhythmyx.rxapp.WEB-INF}" verbose="true" >
+			<fileset dir="WEB-INF" />
+		</copy>
+		<!--copy file="mybeans.xml" todir="${rhythmyx.rxapp.spring-config}" verbose="true" /  -->
+		<echo>waiting for shutdown...</echo>
+	    <sleep seconds="5" /> 
+		<echo>Restarting ${rhythmyx.service}</echo>
+		<exec executable="net.exe" failonerror="true">
+			<arg line="start ${rhythmyx.service}"/>
+			<env key="COMSPEC" path="${comspec}"/>
+		</exec>
+	</target>
+	
+	<target name="remotetest" description="Build for remote test">
+		<property name="build.number" value="test build" /> 
+		<antcall target="jarbuilder"/>
+		<zip destfile="${testdistfile}">						
+			<zipfileset dir="${lib}" includes="${jarname}" prefix="${zipprefix}/lib" />
+			<zipfileset dir="." includes="readme.txt, build.number, deploy.xml" prefix="${zipprefix}" />
+			<zipfileset dir="." includes="license.txt, Extensions.xml, install.sh, Install.bat" prefix="${zipprefix}" />
+			<zipfileset dir="WEB-INF" prefix="${zipprefix}/WEB-INF" />
+		</zip>
+
+	</target>
+	
+	<target name="dist" depends="init, clean, javadoc" description="generate the distribution">
+		<buildnumber/>
+		<antcall target="jarbuilder"/>	
+		<zip destfile="${distfile}">						
+			<zipfileset dir="${lib}" includes="${jarname}" prefix="${zipprefix}/lib" />
+			<zipfileset dir="." includes="readme.txt, deploy.xml, install.sh" prefix="${zipprefix}" />
+			<zipfileset dir="." includes="license.txt, Extensions.xml, Install.bat"  prefix="${zipprefix}" />
+			<zipfileset dir="${lib}" includes="jdom.jar"  prefix="${zipprefix}/lib" />  
+			<zipfileset dir="${bin}" includes="build.properties"  prefix="${zipprefix}" />  			
+			<zipfileset dir="WEB-INF" prefix="${zipprefix}/WEB-INF" />
+			<zipfileset dir="${javadoc}" prefix="${zipprefix}/javadoc" />	
+			<zipfileset dir="Rhythmyx" prefix="${zipprefix}/Rhythmyx" />
+		</zip>
+			
+	</target>	
+
+	<target name="testdeliver" depends="" description="generate the distribution">
+		  		<exec executable="VBoxManage" failifexecutionfails="false" > 
+				      <arg line="guestcontrol execute ${vbox.vmname}  /bin/bash --arguments '/mnt/hostdata/PSOToolkit66/install.sh /home/rhythmyx/Rhythmyx' --username rhythmyx --password demo --verbose --wait-for stdout"/> 
+				 </exec>
+	</target>
+	
+	<target name="stoprhythmyx" depends="" description="generate the distribution">
+		<exec executable="VBoxManage" failifexecutionfails="false" > 
+			<arg line="guestcontrol execute ${vbox.vmname}  /bin/bash --arguments '/home/rhythmyx/Rhythmyx/bin/RhythmyxDaemon stop /home/rhythmyx/Rhythmyx/' --username rhythmyx --password demo --verbose --wait-for stdout"/> 
+		</exec>
+	</target>
+</project>

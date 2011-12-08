@@ -1,0 +1,98 @@
+<project name="Rhythmyx 6 Install Extensions" default="dist" basedir=".">
+	<description>
+       Install extensions on a Rhythmyx 6 server  
+	   The RHYTHMYX_HOME environment variable must be set 
+    </description>
+	<property environment="env"/>
+	<!-- base directory of Rhythmyx installation -->
+	<property name="rhythmyx.home" location="${env.RHYTHMYX_HOME}"/>
+	<property name="rhythmyx.WEB-INF" value="${rhythmyx.home}/AppServer/server/rx/deploy/rxapp.ear/rxapp.war/WEB-INF"/>
+	<property name="rhythmyx.lib" value="${rhythmyx.WEB-INF}/lib"/>
+	<!-- relative paths -->
+	<property name="lib" location="lib"/>
+	
+
+	<target name="jarcopy" description="copy the jar file" >
+		<fail unless="env.RHYTHMYX_HOME" message="You must set the RHYTHMYX_HOME environment variable"/>
+		<move todir="${rhythmyx.lib}" failonerror="false">
+					    <fileset dir="${rhythmyx.lib}">
+					     	<!-- remove old Content-rs if it exists -->
+					    	 <include name="PSOToolkit*.jar" /> 
+					    </fileset>
+					    <mapper type="glob" from="*" to="*.bak"/>
+		</move>
+		
+		<copy todir="${rhythmyx.lib}" verbose="true"> 
+			<fileset dir="${lib}">
+		          <include name="**.jar" /> 
+		     </fileset>
+			<fileset dir="${basedir}">
+				<include name="**.jar" />
+			</fileset>
+		</copy>
+		<copy todir="${rhythmyx.WEB-INF}" verbose="true">
+		   <fileset dir="WEB-INF" /> 
+		</copy>
+	</target>
+	
+	<target name="installExtensions">
+		<fail unless="env.RHYTHMYX_HOME" message="You must set the RHYTHMYX_HOME environment variable"/>
+		<java classname="com.percussion.util.PSExtensionInstallTool" fork="true">
+			<arg value="${rhythmyx.home}"/>
+			<arg value="${basedir}"/>
+			<classpath>
+			    <fileset dir="${rhythmyx.lib}">
+			    	<include name="rxserver.jar"/>
+			    	<include name="rxclient.jar"/> 
+			    	<include name="rxbusiness.jar"/> 
+			    	<include name="rxutils.jar" />
+			    	<include name="rxservices.jar" />
+			    	<include name="commons-lang*.jar"/>
+			    	<include name="commons-jexl*.jar"/> 
+			    	<include name="jcr*.jar" /> 
+			    	<include name="commons-logging*.jar" /> 
+			    	<include name="commons-collections*.jar" /> 
+			    	<include name="commons-httpclient*.jar" /> 
+				</fileset>
+			    <fileset dir="${rhythmyx.home}/AppServer/lib/endorsed" >
+				    <include name="xml-apis.jar" />
+			    </fileset>
+				<fileset dir="${rhythmyx.home}/AppServer/server/rx/lib">
+    			    	        <include name="commons-collections*.jar" /> 
+					<include name="javax.servlet.jar" /> 
+					<!-- servlet-api required instead for 7.0.x-->
+					<include name="servlet-api.jar" /> 
+		    	</fileset>				
+			</classpath>	
+		</java>
+		<!-- Copy Tidy Properties files for the Validating Velocity Assembler -->
+		<mkdir dir="${rhythmyx.home}/rx_resources/tidy" />
+		
+		<!--Backup old Property files -->
+		<copy file="${rhythmyx.home}/rx_resources/tidy/xhtml.properties" tofile="${rhythmyx.home}/rx_resources/tidy/xhtml.properties.bak" failonerror="false" overwrite="true"/>
+		<copy file="${rhythmyx.home}/rx_resources/tidy/xml.properties" tofile="${rhythmyx.home}/rx_resources/tidy/xml.properties.bak" failonerror="false" overwrite="true"/>
+		<copy file="${rhythmyx.home}/rx_resources/tidy/html.properties" tofile="${rhythmyx.home}/rx_resources/tidy/html.properties.bak" failonerror="false" overwrite="true"/>
+		<copy file="${rhythmyx.home}/rx_resources/tidy/sample-all.properties" tofile="${rhythmyx.home}/rx_resources/tidy/sample-all.properties.bak" failonerror="false" overwrite="true"/>
+		
+		<!-- Release latest property files -->
+		<copy file="${basedir}/Rhythmyx/rx_resources/tidy/xhtml.properties" tofile="${rhythmyx.home}/rx_resources/tidy/xhtml.properties"/>
+		<copy file="${basedir}/Rhythmyx/rx_resources/tidy/xml.properties" tofile="${rhythmyx.home}/rx_resources/tidy/xml.properties"/>
+		<copy file="${basedir}/Rhythmyx/rx_resources/tidy/html.properties" tofile="${rhythmyx.home}/rx_resources/tidy/html.properties"/>
+		<copy file="${basedir}/Rhythmyx/rx_resources/tidy/sample-all.properties" tofile="${rhythmyx.home}/rx_resources/tidy/sample-all.properties"/>	
+	</target>
+	
+	<target name="javadoc">
+		<fail unless="env.RHYTHMYX_HOME" message="You must set the RHYTHMYX_HOME environment variable"/>
+		<copy todir="${rhythmyx.home}/Docs/Rhythmyx/PSOToolkit">
+		   <fileset dir="javadoc" />
+	    </copy>
+	</target>
+	
+	<target name="dist">
+		<fail unless="env.RHYTHMYX_HOME" message="You must set the RHYTHMYX_HOME environment variable"/>
+		<echo>Installing PSOToolkit to ${rhythmyx.home}</echo>
+		<antcall target="jarcopy"/>
+		<antcall target="installExtensions"/>
+		<antcall target="javadoc" />
+	</target>
+</project>
