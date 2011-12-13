@@ -53,6 +53,10 @@
 	
 	<property name="vbox.vmname" value="RXBase_1" /> 
 	
+	<condition property="ivy.lib.exists">
+		<available file="${ivylib}" type="dir"/>
+	</condition>
+	
 	<!-- Rhythmyx classpath  --> 
 	<path id="rx.class.path"> 
 		 <fileset dir="${ivylib}">
@@ -104,7 +108,11 @@
 		</ivy:publish>
 	</target>
 	
-	<target name="compile" description="compile the source ">
+	<target name="init.ivy.lib" unless="ivy.lib.exists">
+		   <antcall target="ivy-retrieve"/>
+	</target>
+
+	<target name="compile" depends="init.ivy.lib" description="compile the source ">
 		<!-- Compile the java code from ${src} into ${bin} -->
 		<javac srcdir="${src}" destdir="${bin}" debug="true" target="1.5" source="1.5" classpathref="rx.class.path" />
 		<copy todir="${bin}">
