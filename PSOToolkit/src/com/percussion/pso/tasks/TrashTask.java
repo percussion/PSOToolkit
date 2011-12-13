@@ -393,7 +393,7 @@ public class TrashTask implements IPSTask {
 			final boolean useSubfolder = commOrphans.size() > MAX_ITEMS_IN_FOLDER;
 			int count = 1;
 			final String rootFolder = trashfolder + "/"
-					+ getCommunityName(communityId) + "/Lost_and_Found_"
+					+ getCommunityName(communityId) + "/Orphaned_Items_"
 					+ dateString;
 
 			String folder = new String(rootFolder);
