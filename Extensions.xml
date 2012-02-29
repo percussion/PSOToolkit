@@ -664,4 +664,132 @@
 		</PSXExtensionParamDef>
 		<suppliedResources/>
 	</Extension> 
+	<Extension categorystring="" context="global/percussion/user/" deprecated="no" handler="Java" name="HashCodeFieldTransform" restoreRequestParamsOnError="no">
+      <initParam name="com.percussion.user.description">Return a hash code for the given parameter</initParam>
+      <initParam name="com.percussion.extension.version">1</initParam>
+      <initParam name="com.percussion.extension.reentrant">yes</initParam>
+      <initParam name="className">com.percussion.pso.transform.HashCodeFieldTransform</initParam>
+      <interface name="com.percussion.extension.IPSFieldInputTransformer"/>
+      <PSXExtensionParamDef id="0">
+         <name>source</name>
+         <dataType>java.lang.String</dataType>
+         <description>The Value to return the hashCode from.</description>
+      </PSXExtensionParamDef>
+      <suppliedResources/>
+   </Extension>
+   
+   <Extension categorystring="" context="global/percussion/user/" deprecated="no" handler="Java" name="pso_CopyParameter" restoreRequestParamsOnError="no">
+      <initParam name="com.percussion.user.description">Return a hash code for the given parameter</initParam>
+      <initParam name="com.percussion.extension.version">1</initParam>
+      <initParam name="com.percussion.extension.reentrant">yes</initParam>
+      <initParam name="className">com.percussion.pso.transform.PSOCopyParameter</initParam>
+      <interface name="com.percussion.extension.IPSItemInputTransformer"/>
+        <interface name="com.percussion.extension.IPSRequestPreProcessor"/>
+       <PSXExtensionParamDef id="0">
+         <name>source</name>
+         <dataType>java.lang.String</dataType>
+         <description>request parameter name to be copied</description>
+      </PSXExtensionParamDef>
+      <PSXExtensionParamDef id="0">
+         <name>destination</name>
+         <dataType>java.lang.String</dataType>
+         <description>request parameter name to receive copy</description>
+      </PSXExtensionParamDef>
+	  <PSXExtensionParamDef id="0">
+         <name>onlyIfEmpty</name>
+         <dataType>java.lang.String</dataType>
+         <description>Optional Do not populate if value already specified default false, turn on with "true"</description>
+      </PSXExtensionParamDef>
+      <PSXExtensionParamDef id="0">
+         <name>fieldSize</name>
+         <dataType>java.lang.String</dataType>
+         <description>Optional truncate copied value to this number of characters</description>
+      </PSXExtensionParamDef>
+       <PSXExtensionParamDef id="0">
+         <name>cleanup</name>
+         <dataType>java.lang.String</dataType>
+         <description>Optional cleanup filename turn on with "true"</description>
+      </PSXExtensionParamDef>
+       <PSXExtensionParamDef id="0">
+         <name>includesExtension</name>
+         <dataType>java.lang.String</dataType>
+         <description>Optional.  Keep a final . for an extension.  turn on with "true"</description>
+      </PSXExtensionParamDef>
+      <PSXExtensionParamDef id="0">
+         <name>forceLower</name>
+         <dataType>java.lang.String</dataType>
+         <description>Optional.  Force to lower case.  turn on with "true"</description>
+      </PSXExtensionParamDef>
+       <PSXExtensionParamDef id="0">
+         <name>doNotCopyEmpty</name>
+         <dataType>java.lang.String</dataType>
+         <description>Optional.  Do not blank destination if source is blank.  turn on with "true"</description>
+      </PSXExtensionParamDef>
+      <suppliedResources/>
+   </Extension>
+   <Extension categorystring="trashTask" context="global/percussion/task/" deprecated="no" handler="Java" name="pso_cleanupTrashTask" restoreRequestParamsOnError="no">
+      <initParam name="com.percussion.user.description">
+        This is used to execute move and cleanup items using a trash folder and state
+  Items In this folder will be forced into a trash state if they are not
+  already. using a comma separated list of transitions to attempt. Items in a
+  trash state will be purged after an optional number of days. This includes
+  items not explicitly moved to the trash folder. Orphaned items will be moved
+  into the trash folder Folder structure //Folders/{trash folder
+  name}/{community name} will be used to split up items by folder Orphaned
+  items will be placed into a folder based upon the date they were found
+  //Folders/{trash folder name}/{community name}/Orphaned-20101112 sys_title of
+  orphaned items will be appended with (1) (2) etc. if there are duplicates If
+  more than 200 orphaned items are found for the community subfolders
+  1-200,201-400 etc. will be created Orphaned items will be forced into trash
+  state when being moved Empty trash folders below the top level community
+  folder will be removed after processing. Separate view can be made to show
+  items with AA relationships to items in trash state so they can be manually
+  cleaned up before automatic removal.
+         Purging expired publishing log entries. The task result contains the following context variables, 
+         which can be used in notification template (both subject and body fields):
+         $numberOfDays (String type, the number of days before removing items in trash state. This is specified in the parameter of the extension)
+         $tools.* (utilities defined in tools.xml)
+         $sys.taskName (String type, the name of the task)
+         $sys.completed (Boolean type, it is true if the job was completed; otherwise false)
+         $sys.problemDesc (String type, the problem description in case of execution failure)
+         $sys.executionDatetime (Date type, The starting date and time of the execution)
+         $sys.executionElapsedTime (Long type in milli-seconds. The duration of the execution)
+      </initParam>
+      <initParam name="com.percussion.extension.version">2</initParam>
+      <initParam name="com.percussion.extension.reentrant">yes</initParam>
+      <initParam name="className">com.percussion.pso.tasks.TrashTask</initParam>
+      <interface name="com.percussion.services.schedule.IPSTask"/>
+      <PSXExtensionParamDef id="1">
+         <name>numberOfDays</name>
+         <dataType>java.lang.String</dataType>
+         <description>The number of days in the past for which to preserve expired logs. Logs created farther in the past will be purged. Defaults to 30 days if not specified.</description>
+      </PSXExtensionParamDef>
+      <PSXExtensionParamDef id="1">
+         <name>trashFolder</name>
+         <dataType>java.lang.String</dataType>
+         <description>The Folder that will contain the trash items. Must start with //Folders/</description>
+      </PSXExtensionParamDef>
+      <PSXExtensionParamDef id="1">
+         <name>transitionNames</name>
+         <dataType>java.lang.String</dataType>
+         <description>Comma separated list of transition trigger names to attempt to transition items in trash folder to trash state</description>
+      </PSXExtensionParamDef>
+       <PSXExtensionParamDef id="1">
+         <name>trashState</name>
+         <dataType>java.lang.String</dataType>
+         <description>The name of the trash state</description>
+      </PSXExtensionParamDef>
+      <PSXExtensionParamDef id="1">
+         <name>moveOrphans</name>
+         <dataType>java.lang.String</dataType>
+         <description>Should orphaned items be moved to trash folder true or false</description>
+      </PSXExtensionParamDef>
+      <PSXExtensionParamDef id="1">
+         <name>orphanIsError</name>
+         <dataType>java.lang.String</dataType>
+         <description>Does the existence of orphans count as an error for notifications true or false</description>
+      </PSXExtensionParamDef>
+      <suppliedResources/>
+   </Extension>
+  
 </PSXExtensionHandlerConfiguration>

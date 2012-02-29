@@ -58,7 +58,10 @@
 				    <include name="xml-apis.jar" />
 			    </fileset>
 				<fileset dir="${rhythmyx.home}/AppServer/server/rx/lib">
+    			    	        <include name="commons-collections*.jar" /> 
 					<include name="javax.servlet.jar" /> 
+					<!-- servlet-api required instead for 7.0.x-->
+					<include name="servlet-api.jar" /> 
 		    	</fileset>				
 			</classpath>	
 		</java>

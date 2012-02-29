@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 1999-2011 Percussion Software.
+ * 
+ * Permission is hereby granted, free of charge, to use, copy and create derivative works of this software and associated documentation files (the "Software") for internal use only and only in connection with products from Percussion Software. 
+ * 
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL PERCUSSION SOFTWARE BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ ******************************************************************************/
 /*
  * com.percussion.pso.jexl PSOStringTools.java
  *  
@@ -25,6 +34,7 @@ import com.percussion.extension.IPSJexlMethod;
 import com.percussion.extension.IPSJexlParam;
 import com.percussion.extension.PSJexlUtilBase;
 import com.percussion.i18n.PSI18nUtils;
+import com.percussion.pso.utils.PathCleanupUtils;
 import com.percussion.xml.PSXmlDocumentBuilder;
 
 /**
@@ -129,5 +139,14 @@ public class PSOStringTools extends PSJexlUtilBase implements IPSJexlExpression
        return body;
    }
    
+   @IPSJexlMethod(description="Creates a very clean path using - for word separators  " +
+	   		" If includesExtension is true then a final single . is maintained.",
+	           params={
+	           @IPSJexlParam(name="forceLower", description="make the path all lower case"),
+	           @IPSJexlParam(name="includesExtension", description="Keep a final . for the extension")
+	           })
+   public String cleanupPath(String path, boolean forceLower, boolean includesExtension) {
+	   return PathCleanupUtils.cleanupPathPart(path, forceLower, includesExtension);
    
+  */
 }

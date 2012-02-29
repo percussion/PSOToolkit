@@ -53,10 +53,17 @@
 	
 	<property name="vbox.vmname" value="RXBase_1" /> 
 	
+	<condition property="ivy.lib.exists">
+		<available file="${ivylib}" type="dir"/>
+	</condition>
+	
 	<!-- Rhythmyx classpath  --> 
 	<path id="rx.class.path"> 
 		 <fileset dir="${ivylib}">
 		 	<include name="**.jar"/>
+		 </fileset>
+		 <fileset dir="${lib}">
+			 	<include name="jdom.jar"/>
 		 </fileset>
 		</path>
 	
@@ -101,7 +108,11 @@
 		</ivy:publish>
 	</target>
 	
-	<target name="compile" description="compile the source ">
+	<target name="init.ivy.lib" unless="ivy.lib.exists">
+		   <antcall target="ivy-retrieve"/>
+	</target>
+
+	<target name="compile" depends="init.ivy.lib" description="compile the source ">
 		<!-- Compile the java code from ${src} into ${bin} -->
 		<javac srcdir="${src}" destdir="${bin}" debug="true" target="1.5" source="1.5" classpathref="rx.class.path" />
 		<copy todir="${bin}">
@@ -184,8 +195,9 @@
 				    <include name="xml-apis.jar" />
 			    </fileset>
 				<fileset dir="${rhythmyx.home}/AppServer/server/rx/lib">
-					<include name="javax.servlet.jar" /> 
-		    	</fileset>				
+				<include name="javax.servlet.jar" /> 
+ 			    	<include name="commons-collections*.jar" /> 
+  		    	    </fileset>				
 			</classpath>			
 		</java>     
 	</target>
@@ -219,7 +231,8 @@
 		<antcall target="jarbuilder"/>
 		<zip destfile="${testdistfile}">						
 			<zipfileset dir="${lib}" includes="${jarname}" prefix="${zipprefix}/lib" />
-			<zipfileset dir="." includes="readme.txt, build.number, deploy.xml" prefix="${zipprefix}" />
+			<zipfileset dir="." includes="readme.txt, build.number, deploy.xml" prefix="${zipprefix}" />		
+			<zipfileset dir="." includes="install.sh" filemode="755" prefix="${zipprefix}" />
 			<zipfileset dir="." includes="license.txt, Extensions.xml, install.sh, Install.bat" prefix="${zipprefix}" />
 			<zipfileset dir="WEB-INF" prefix="${zipprefix}/WEB-INF" />
 		</zip>
