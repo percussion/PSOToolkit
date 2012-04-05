@@ -147,6 +147,6 @@ public class PSOStringTools extends PSJexlUtilBase implements IPSJexlExpression
 	           })
    public String cleanupPath(String path, boolean forceLower, boolean includesExtension) {
 	   return PathCleanupUtils.cleanupPathPart(path, forceLower, includesExtension);
-   
-  */
+   }
+
 }

@@ -565,10 +565,17 @@ public class TrashTask implements IPSTask {
 	
 	 * @return String */
 	private String getCommunityName(int id) {
-		final PSCommunity[] communities = rolemgr
+		if (id==-1) return "unknown";
+		 PSCommunity[] communities = null;
+		try {
+			communities = rolemgr
 				.loadCommunities(new IPSGuid[] { new PSGuid(
 						PSTypeEnum.COMMUNITY_DEF, id) });
-		if (communities.length > 0) {
+		} catch (IllegalArgumentException e) {
+			log.error("Unknown community with "+id);
+			
+		}
+		if (communities == null || communities.length > 0) {
 			return communities[0].getName();
 		} else {
 			return String.valueOf(id);
