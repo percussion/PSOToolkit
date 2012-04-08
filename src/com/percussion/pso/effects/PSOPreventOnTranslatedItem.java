@@ -24,6 +24,8 @@ import com.percussion.extension.PSParameterMismatchException;
 import com.percussion.relationship.IPSEffect;
 import com.percussion.relationship.IPSExecutionContext;
 import com.percussion.relationship.PSEffectResult;
+import com.percussion.relationship.annotation.PSEffectContext;
+import com.percussion.relationship.annotation.PSHandlesEffectContext;
 import com.percussion.server.IPSRequestContext;
 import com.percussion.services.guidmgr.IPSGuidManager;
 import com.percussion.services.guidmgr.PSGuidManagerLocator;
@@ -45,6 +47,10 @@ import com.percussion.webservices.system.PSSystemWsLocator;
  * @author DavidBenua
  *
  */
+@PSHandlesEffectContext(optional=
+{PSEffectContext.PRE_CONSTRUCTION,PSEffectContext.PRE_DESTRUCTION,
+		PSEffectContext.PRE_UPDATE,PSEffectContext.PRE_CHECKIN,PSEffectContext.PRE_CLONE,
+		PSEffectContext.PRE_WORKFLOW})
 public class PSOPreventOnTranslatedItem implements IPSEffect
 {
 

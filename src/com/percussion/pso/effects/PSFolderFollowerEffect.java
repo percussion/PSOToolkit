@@ -20,6 +20,8 @@ import com.percussion.extension.PSParameterMismatchException;
 import com.percussion.relationship.IPSEffect;
 import com.percussion.relationship.IPSExecutionContext;
 import com.percussion.relationship.PSEffectResult;
+import com.percussion.relationship.annotation.PSEffectContext;
+import com.percussion.relationship.annotation.PSHandlesEffectContext;
 import com.percussion.server.IPSRequestContext;
 import com.percussion.utils.guid.IPSGuid;
 import com.percussion.webservices.PSErrorException;
@@ -38,6 +40,7 @@ import com.percussion.webservices.PSErrorsException;
  *
  * Copyright 2007, Percussion Software, Inc.  
  */
+@PSHandlesEffectContext(required={PSEffectContext.PRE_CONSTRUCTION,PSEffectContext.PRE_DESTRUCTION,PSEffectContext.PRE_UPDATE})
 public class PSFolderFollowerEffect extends PSAbstractFolderEffect implements IPSEffect
       
 {

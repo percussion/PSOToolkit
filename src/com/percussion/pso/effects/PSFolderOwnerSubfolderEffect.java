@@ -24,6 +24,8 @@ import com.percussion.extension.PSParameterMismatchException;
 import com.percussion.relationship.IPSEffect;
 import com.percussion.relationship.IPSExecutionContext;
 import com.percussion.relationship.PSEffectResult;
+import com.percussion.relationship.annotation.PSEffectContext;
+import com.percussion.relationship.annotation.PSHandlesEffectContext;
 import com.percussion.server.IPSRequestContext;
 import com.percussion.utils.guid.IPSGuid;
 import com.percussion.webservices.PSErrorException;
@@ -37,6 +39,7 @@ import com.percussion.webservices.PSErrorsException;
  * @author DavidBenua
  *
  */
+@PSHandlesEffectContext(required={PSEffectContext.PRE_CONSTRUCTION,PSEffectContext.PRE_UPDATE})
 public class PSFolderOwnerSubfolderEffect extends PSAbstractFolderEffect
       implements
          IPSEffect
@@ -131,7 +134,7 @@ public class PSFolderOwnerSubfolderEffect extends PSAbstractFolderEffect
    public void attempt(Object[] params, IPSRequestContext req, IPSExecutionContext exCtx, PSEffectResult result)
          throws PSExtensionProcessingException, PSParameterMismatchException
    {
-      if(exCtx.isConstruction())
+      if(exCtx.isPreConstruction() | exCtx.isPreUpdate())
       {
          String subfolderName = params[0].toString(); 
          log.debug("subfolder name is " + subfolderName); 

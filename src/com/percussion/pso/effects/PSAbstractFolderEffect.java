@@ -20,6 +20,7 @@ import com.percussion.extension.PSParameterMismatchException;
 import com.percussion.relationship.IPSEffect;
 import com.percussion.relationship.IPSExecutionContext;
 import com.percussion.relationship.PSEffectResult;
+import com.percussion.relationship.annotation.PSHandlesEffectContext;
 import com.percussion.server.IPSRequestContext;
 import com.percussion.services.guidmgr.IPSGuidManager;
 import com.percussion.services.guidmgr.PSGuidManagerLocator;
@@ -35,6 +36,7 @@ import com.percussion.webservices.system.PSSystemWsLocator;
  * @author DavidBenua
  *
  */
+@PSHandlesEffectContext()
 public abstract class PSAbstractFolderEffect implements IPSEffect
 {
    /**

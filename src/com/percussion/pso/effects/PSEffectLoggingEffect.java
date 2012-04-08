@@ -24,6 +24,7 @@ import com.percussion.extension.PSParameterMismatchException;
 import com.percussion.relationship.IPSEffect;
 import com.percussion.relationship.IPSExecutionContext;
 import com.percussion.relationship.PSEffectResult;
+import com.percussion.relationship.annotation.PSHandlesEffectContext;
 import com.percussion.server.IPSRequestContext;
 import com.percussion.server.PSRequestValidationException;
 import com.percussion.services.guidmgr.IPSGuidManager;
@@ -46,6 +47,7 @@ import com.percussion.webservices.system.PSSystemWsLocator;
  *
  * Copyright 2007, Percussion Software, Inc.  
  */
+@PSHandlesEffectContext()
 public class PSEffectLoggingEffect implements IPSEffect
       
 {
