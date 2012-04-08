@@ -1,5 +1,5 @@
 <project name="PSOToolkit70" default="dist" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
-	<description>PSO Toolkit for CM System 7.0</description>
+	<description>PSO Toolkit for CM System 7.x</description>
 	<!-- =================================
 	Download and install Ivy2 from http://ant.apache.org/ivy
     Modify your Ant runtime preferences in Eclipse to include the Ivy JARs
@@ -24,10 +24,10 @@
 	<property name="rhythmyx.service" value="${env.RHYTHMYX_SERVICE}"/>
 
 	<!-- name of our output jar --> 
-	<property name="jarname" value="PSOToolkit-7.0.jar" />	
+	<property name="jarname" value="PSOToolkit-7.x.jar" />	
 	<!-- name of our distribution zip -->
-	<property name="distfile" value="PSOToolkit7.0.zip" />	
-	<property name="testdistfile" value="PSOToolkit7.0-test.zip" /> 
+	<property name="distfile" value="PSOToolkit7.x.zip" />	
+	<property name="testdistfile" value="PSOToolkit7.x-test.zip" /> 
 	
 	<property name="rhythmyx.deploy" value="${rhythmyx.home}/AppServer/server/rx/deploy" /> 
 	<property name="rhythmyx.rxapp"  value="${rhythmyx.deploy}/rxapp.ear/rxapp.war" /> 
@@ -45,7 +45,7 @@
 	<property name="ivylib" location="ivylib" /> 
 	<property name="javadoc" location="javadoc" />
 	
-	<property name="zipprefix" value="PSOToolkit7.0" /> 
+	<property name="zipprefix" value="PSOToolkit7.x" /> 
 	
 	<!-- used for running Windows commands --> 
 	<property name="comspec" location="${env.ComSpec}"/>

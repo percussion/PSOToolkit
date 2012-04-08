@@ -1,6 +1,6 @@
-<project name="Rhythmyx 6 Install Extensions" default="dist" basedir=".">
+<project name="Rhythmyx 7 Install Extensions" default="dist" basedir=".">
 	<description>
-       Install extensions on a Rhythmyx 6 server  
+       Install extensions on a Rhythmyx 7 server  
 	   The RHYTHMYX_HOME environment variable must be set 
     </description>
 	<property environment="env"/>
@@ -16,7 +16,7 @@
 		<fail unless="env.RHYTHMYX_HOME" message="You must set the RHYTHMYX_HOME environment variable"/>
 		<move todir="${rhythmyx.lib}" failonerror="false">
 					    <fileset dir="${rhythmyx.lib}">
-					     	<!-- remove old Content-rs if it exists -->
+					     	<!-- remove old PSOToolkit if it exists -->
 					    	 <include name="PSOToolkit*.jar" /> 
 					    </fileset>
 					    <mapper type="glob" from="*" to="*.bak"/>
@@ -60,7 +60,7 @@
 				<fileset dir="${rhythmyx.home}/AppServer/server/rx/lib">
     			    	        <include name="commons-collections*.jar" /> 
 					<include name="javax.servlet.jar" /> 
-					<!-- servlet-api required instead for 7.0.x-->
+					<!-- servlet-api required instead for 7.x-->
 					<include name="servlet-api.jar" /> 
 		    	</fileset>				
 			</classpath>	
