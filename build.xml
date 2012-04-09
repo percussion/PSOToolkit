@@ -1,5 +1,5 @@
-<project name="PSOToolkit70" default="dist" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
-	<description>PSO Toolkit for CM System 7.x</description>
+<project name="PSOToolkit67" default="dist" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+	<description>PSO Toolkit for Rhythmyx 6.7</description>
 	<!-- =================================
 	Download and install Ivy2 from http://ant.apache.org/ivy
     Modify your Ant runtime preferences in Eclipse to include the Ivy JARs
@@ -24,10 +24,10 @@
 	<property name="rhythmyx.service" value="${env.RHYTHMYX_SERVICE}"/>
 
 	<!-- name of our output jar --> 
-	<property name="jarname" value="PSOToolkit-7.x.jar" />	
+	<property name="jarname" value="PSOToolkit-6.7.jar" />	
 	<!-- name of our distribution zip -->
-	<property name="distfile" value="PSOToolkit7.x.zip" />	
-	<property name="testdistfile" value="PSOToolkit7.x-test.zip" /> 
+	<property name="distfile" value="PSOToolkit6.7.zip" />	
+	<property name="testdistfile" value="PSOToolkit6.7-test.zip" /> 
 	
 	<property name="rhythmyx.deploy" value="${rhythmyx.home}/AppServer/server/rx/deploy" /> 
 	<property name="rhythmyx.rxapp"  value="${rhythmyx.deploy}/rxapp.ear/rxapp.war" /> 
@@ -45,7 +45,7 @@
 	<property name="ivylib" location="ivylib" /> 
 	<property name="javadoc" location="javadoc" />
 	
-	<property name="zipprefix" value="PSOToolkit7.x" /> 
+	<property name="zipprefix" value="PSOToolkit6.7" /> 
 	
 	<!-- used for running Windows commands --> 
 	<property name="comspec" location="${env.ComSpec}"/>
@@ -62,10 +62,7 @@
 		 <fileset dir="${ivylib}">
 		 	<include name="**.jar"/>
 		 </fileset>
-		 <fileset dir="${lib}">
-			 	<include name="jdom.jar"/>
-		 </fileset>
-		</path>
+	</path>
 	
 
 	<target name="init">
@@ -103,7 +100,7 @@
 	
 	<target name="ivy-publish" depends="ivy-resolve"  >
 		<ivy:publish resolver="foo-shared-sftp" forcedeliver="true"  
-			pubrevision="7.0" overwrite="true" >
+			pubrevision="6.7" overwrite="true" >
 			<artifacts pattern="${lib}/[artifact]-[revision].[ext]" /> 
 		</ivy:publish>
 	</target>
@@ -246,8 +243,8 @@
 			<zipfileset dir="${lib}" includes="${jarname}" prefix="${zipprefix}/lib" />
 			<zipfileset dir="." includes="readme.txt, deploy.xml, install.sh" prefix="${zipprefix}" />
 			<zipfileset dir="." includes="license.txt, Extensions.xml, Install.bat"  prefix="${zipprefix}" />
-			<zipfileset dir="${lib}" includes="rome.jar"  prefix="${zipprefix}/lib" />  
-			<zipfileset dir="${lib}" includes="jdom.jar"  prefix="${zipprefix}/lib" />  
+			<zipfileset dir="${ivylib}" includes="rome.jar"  prefix="${zipprefix}/lib" />  
+			<zipfileset dir="${ivylib}" includes="jdom.jar"  prefix="${zipprefix}/lib" />  
 			<zipfileset dir="${bin}" includes="build.properties"  prefix="${zipprefix}" />  			
 			<zipfileset dir="WEB-INF" prefix="${zipprefix}/WEB-INF" />
 			<zipfileset dir="${javadoc}" prefix="${zipprefix}/javadoc" />	
