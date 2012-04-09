@@ -1,4 +1,4 @@
-<project name="PSOToolkit70" default="dist" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+<project name="PSOToolkit7x" default="dist" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
 	<description>PSO Toolkit for CM System 7.x</description>
 	<!-- =================================
 	Download and install Ivy2 from http://ant.apache.org/ivy
