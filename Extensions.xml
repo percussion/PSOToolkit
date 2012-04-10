@@ -643,14 +643,6 @@
 		<interface name="com.percussion.relationship.IPSEffect"/>
 		<suppliedResources/>
 	</Extension>
-	 <Extension categorystring="relationship" context="global/percussion/relationship/effect/" deprecated="no" handler="Java" name="PSOAttachTranslatedFolder" restoreRequestParamsOnError="no">
-      <initParam name="com.percussion.user.description">This effect is typically attached to relationships of category translation. The net result of this effect is: The newly translated object (item or folder) will be attached to its translation parent&#39;s folder parent&#39;s translation matching the locale of the new translation. If the folder parent does not have a translation with a matching locale, the new object will be attached to the folder parent itself. If the translation parent is not attached to any folder then the new translation will not be attached to any folder. This effect will be active for the following situations only: 1. The execution context is RS_PRE_CONSTRUCTION. 2. The origination relationship and the current relationship both are of category translation. 3. The originating relationship&#39;s owner is a folder.</initParam>
-      <initParam name="com.percussion.extension.version">1</initParam>
-      <initParam name="com.percussion.extension.reentrant">yes</initParam>
-      <initParam name="className">com.percussion.pso.effects.PSOAttachTranslatedFolder</initParam>
-      <interface name="com.percussion.relationship.IPSEffect"/>
-      <suppliedResources/>
-   </Extension>
    <Extension categorystring="" context="global/percussion/generic/" deprecated="no" handler="Java" name="PSOPreventDeepCloneUDF" restoreRequestParamsOnError="no">
 		<initParam name="com.percussion.user.description">When added as a deep cloning conditional only deep clones if item is in defined list of states</initParam>
 		<initParam name="com.percussion.extension.version">1</initParam>
