@@ -1,6 +1,5 @@
 /ivylib
 /bin
-/solutions.log
 /javadoc
-/build.number
-/PSOToolkit*.zip
+build.number
+PSOToolkit*.zip
