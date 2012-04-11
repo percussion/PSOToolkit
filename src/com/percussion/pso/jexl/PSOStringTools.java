@@ -142,6 +142,7 @@ public class PSOStringTools extends PSJexlUtilBase implements IPSJexlExpression
    @IPSJexlMethod(description="Creates a very clean path using - for word separators  " +
 	   		" If includesExtension is true then a final single . is maintained.",
 	           params={
+		   	   @IPSJexlParam(name="path", description="the path to clean"),
 	           @IPSJexlParam(name="forceLower", description="make the path all lower case"),
 	           @IPSJexlParam(name="includesExtension", description="Keep a final . for the extension")
 	           })
