@@ -1,4 +1,4 @@
-<project name="PSOToolkit70" default="dist" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+<project name="PSOToolkit7x" default="dist" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
 	<description>PSO Toolkit for CM System 7.x</description>
 	<!-- =================================
 	Download and install Ivy2 from http://ant.apache.org/ivy
@@ -246,8 +246,6 @@
 			<zipfileset dir="${lib}" includes="${jarname}" prefix="${zipprefix}/lib" />
 			<zipfileset dir="." includes="readme.txt, deploy.xml, install.sh" prefix="${zipprefix}" />
 			<zipfileset dir="." includes="license.txt, Extensions.xml, Install.bat"  prefix="${zipprefix}" />
-			<zipfileset dir="${lib}" includes="rome.jar"  prefix="${zipprefix}/lib" />  
-			<zipfileset dir="${lib}" includes="jdom.jar"  prefix="${zipprefix}/lib" />  
 			<zipfileset dir="${bin}" includes="build.properties"  prefix="${zipprefix}" />  			
 			<zipfileset dir="WEB-INF" prefix="${zipprefix}/WEB-INF" />
 			<zipfileset dir="${javadoc}" prefix="${zipprefix}/javadoc" />	
