@@ -69,5 +69,27 @@ public class PathCleanupUtilsTest
       assertEquals("a/b/c-d/awefe-dd-and-and-32.jpg", result);
    }
    
+   @Test
+   public final void stripExtension()
+   {
+      final String testString ="a/b/c\\d/Awefe.dd&&$32.jpg";
+      String result = PathCleanupUtils.cleanupPathPart(testString, true, true,true,"","","");
+      assertEquals("a/b/c-d/awefe-dd-and-and-32", result);
+   }
+   
+   @Test
+   public final void addPrefixSuffixWithExtension()
+   {
+      final String testString ="a/b/c\\d/Awefe.dd&&$32.jpg";
+      String result = PathCleanupUtils.cleanupPathPart(testString, true, true,false,"prefix_","_suffix","");
+      assertEquals("prefix_a/b/c-d/awefe-dd-and-and-32_suffix.jpg", result);
+   }
+   @Test
+   public final void forceExtension()
+   {
+      final String testString ="filename.jpg";
+      String result = PathCleanupUtils.cleanupPathPart(testString, true, true,false,"prefix_","_suffix","test");
+      assertEquals("prefix_filename_suffix.test", result);
+   }
  
 }
