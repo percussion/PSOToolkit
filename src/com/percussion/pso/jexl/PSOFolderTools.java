@@ -1,3 +1,5 @@
+/*******************************************************************************
+ * Copyright (c) 1999-2011 Percussion Software.
 /*
  * com.percussion.pso.jexl PSOFolderTools.java
  * 
