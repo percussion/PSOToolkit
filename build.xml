@@ -1,5 +1,5 @@
-<project name="PSOToolkit70" default="dist" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
-	<description>PSO Toolkit for CM System 7.0</description>
+<project name="PSOToolkit7x" default="dist" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+	<description>PSO Toolkit for CM System 7.x</description>
 	<!-- =================================
 	Download and install Ivy2 from http://ant.apache.org/ivy
     Modify your Ant runtime preferences in Eclipse to include the Ivy JARs
@@ -24,10 +24,10 @@
 	<property name="rhythmyx.service" value="${env.RHYTHMYX_SERVICE}"/>
 
 	<!-- name of our output jar --> 
-	<property name="jarname" value="PSOToolkit-7.0.jar" />	
+	<property name="jarname" value="PSOToolkit-7.x.jar" />	
 	<!-- name of our distribution zip -->
-	<property name="distfile" value="PSOToolkit7.0.zip" />	
-	<property name="testdistfile" value="PSOToolkit7.0-test.zip" /> 
+	<property name="distfile" value="PSOToolkit7.x.zip" />	
+	<property name="testdistfile" value="PSOToolkit7.x-test.zip" /> 
 	
 	<property name="rhythmyx.deploy" value="${rhythmyx.home}/AppServer/server/rx/deploy" /> 
 	<property name="rhythmyx.rxapp"  value="${rhythmyx.deploy}/rxapp.ear/rxapp.war" /> 
@@ -45,7 +45,7 @@
 	<property name="ivylib" location="ivylib" /> 
 	<property name="javadoc" location="javadoc" />
 	
-	<property name="zipprefix" value="PSOToolkit7.0" /> 
+	<property name="zipprefix" value="PSOToolkit7.x" /> 
 	
 	<!-- used for running Windows commands --> 
 	<property name="comspec" location="${env.ComSpec}"/>
@@ -53,10 +53,17 @@
 	
 	<property name="vbox.vmname" value="RXBase_1" /> 
 	
+	<condition property="ivy.lib.exists">
+		<available file="${ivylib}" type="dir"/>
+	</condition>
+	
 	<!-- Rhythmyx classpath  --> 
 	<path id="rx.class.path"> 
 		 <fileset dir="${ivylib}">
 		 	<include name="**.jar"/>
+		 </fileset>
+		 <fileset dir="${lib}">
+			 	<include name="jdom.jar"/>
 		 </fileset>
 		</path>
 	
@@ -101,7 +108,11 @@
 		</ivy:publish>
 	</target>
 	
-	<target name="compile" description="compile the source ">
+	<target name="init.ivy.lib" unless="ivy.lib.exists">
+		   <antcall target="ivy-retrieve"/>
+	</target>
+
+	<target name="compile" depends="init.ivy.lib" description="compile the source ">
 		<!-- Compile the java code from ${src} into ${bin} -->
 		<javac srcdir="${src}" destdir="${bin}" debug="true" target="1.5" source="1.5" classpathref="rx.class.path" />
 		<copy todir="${bin}">
@@ -184,8 +195,9 @@
 				    <include name="xml-apis.jar" />
 			    </fileset>
 				<fileset dir="${rhythmyx.home}/AppServer/server/rx/lib">
-					<include name="javax.servlet.jar" /> 
-		    	</fileset>				
+				<include name="javax.servlet.jar" /> 
+ 			    	<include name="commons-collections*.jar" /> 
+  		    	    </fileset>				
 			</classpath>			
 		</java>     
 	</target>
@@ -219,7 +231,8 @@
 		<antcall target="jarbuilder"/>
 		<zip destfile="${testdistfile}">						
 			<zipfileset dir="${lib}" includes="${jarname}" prefix="${zipprefix}/lib" />
-			<zipfileset dir="." includes="readme.txt, build.number, deploy.xml" prefix="${zipprefix}" />
+			<zipfileset dir="." includes="readme.txt, build.number, deploy.xml" prefix="${zipprefix}" />		
+			<zipfileset dir="." includes="install.sh" filemode="755" prefix="${zipprefix}" />
 			<zipfileset dir="." includes="license.txt, Extensions.xml, install.sh, Install.bat" prefix="${zipprefix}" />
 			<zipfileset dir="WEB-INF" prefix="${zipprefix}/WEB-INF" />
 		</zip>
@@ -233,8 +246,6 @@
 			<zipfileset dir="${lib}" includes="${jarname}" prefix="${zipprefix}/lib" />
 			<zipfileset dir="." includes="readme.txt, deploy.xml, install.sh" prefix="${zipprefix}" />
 			<zipfileset dir="." includes="license.txt, Extensions.xml, Install.bat"  prefix="${zipprefix}" />
-			<zipfileset dir="${lib}" includes="rome.jar"  prefix="${zipprefix}/lib" />  
-			<zipfileset dir="${lib}" includes="jdom.jar"  prefix="${zipprefix}/lib" />  
 			<zipfileset dir="${bin}" includes="build.properties"  prefix="${zipprefix}" />  			
 			<zipfileset dir="WEB-INF" prefix="${zipprefix}/WEB-INF" />
 			<zipfileset dir="${javadoc}" prefix="${zipprefix}/javadoc" />	

@@ -1,11 +1,12 @@
-/*
- * COPYRIGHT (c) 1999 - 2008 by Percussion Software, Inc., Woburn, MA USA.
- * All rights reserved. This material contains unpublished, copyrighted
- * work including confidential and proprietary information of Percussion.
- *
- * com.percussion.pso.jexl IPSOObjectFinder.java
- *
- */
+/*******************************************************************************
+ * Copyright (c) 1999-2011 Percussion Software.
+ * 
+ * Permission is hereby granted, free of charge, to use, copy and create derivative works of this software and associated documentation files (the "Software") for internal use only and only in connection with products from Percussion Software. 
+ * 
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL PERCUSSION SOFTWARE BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ ******************************************************************************/
 package com.percussion.pso.jexl;
 import javax.jcr.RepositoryException;
 
@@ -116,4 +117,13 @@ public interface IPSOObjectFinder
     */
    @IPSJexlMethod(description = "get the template guid for a given id", params = {@IPSJexlParam(name = "template", description = "the id for the template")})
    public IPSGuid getTemplateGuid(int templateid);
+   /**
+    * Get the template guid for given id
+    * @param templateid the template id
+    * @return the template guid. 
+    */
+   @IPSJexlMethod(description="get the community name for a  given community id", 
+	         params={@IPSJexlParam(name="communityId",description="the id for the community")})
+	        public String getCommunityName(int communityId);
+   
 }
