@@ -89,8 +89,12 @@ public class PSOCopyParameter implements IPSItemInputTransformer,IPSRequestPrePr
       boolean forceLower =  forceLowerString.equalsIgnoreCase("true");
       String doNotCopyEmptyString = getParameter(params,7);
       boolean doNotCopyEmpty = doNotCopyEmptyString.equalsIgnoreCase("true");
-      
-      
+      String stripExtensionString = getParameter(params,8);
+      boolean stripExtension = stripExtensionString.equalsIgnoreCase("true");
+      String prefix = getParameter(params,9);
+      String suffix = getParameter(params,10);
+      String forceExtension = getParameter(params,11);
+     
       String s = (String)request.getParameterObject(sourceName);
       String d = (String)request.getParameterObject(destinationName);
       
@@ -98,7 +102,7 @@ public class PSOCopyParameter implements IPSItemInputTransformer,IPSRequestPrePr
     	  if (!onlyIfEmpty.equals("true") || d==null || d.trim().length()==0) {
     		  if (fieldSize > 0 && (s.length() > fieldSize)) s=s.substring(0,fieldSize);
     		  if (cleanup) {
-    			  s = PathCleanupUtils.cleanupPathPart(s, forceLower, includesExtension);
+    			  s = PathCleanupUtils.cleanupPathPart(s, forceLower, includesExtension,stripExtension,prefix,suffix,forceExtension);
     		  }
     		  request.setParameter(destinationName, s);
     	  }
