@@ -723,12 +723,12 @@
          <description>Optional.  Do we strip any extension if exists .  turn on with "true"</description>
       </PSXExtensionParamDef>
 		<PSXExtensionParamDef id="0">
-         <name>stripExtension</name>
+         <name>prefix</name>
          <dataType>java.lang.String</dataType>
          <description>Optional. Prefix to add to filename</description>
       </PSXExtensionParamDef>
 	  <PSXExtensionParamDef id="0">
-         <name>stripExtension</name>
+         <name>suffix</name>
          <dataType>java.lang.String</dataType>
          <description>Optional. Suffix to add to filename before and extension</description>
       </PSXExtensionParamDef>
