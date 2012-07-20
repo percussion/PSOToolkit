@@ -717,6 +717,26 @@
          <dataType>java.lang.String</dataType>
          <description>Optional.  Do not blank destination if source is blank.  turn on with "true"</description>
       </PSXExtensionParamDef>
+ 	  <PSXExtensionParamDef id="0">
+         <name>stripExtension</name>
+         <dataType>java.lang.String</dataType>
+         <description>Optional.  Do we strip any extension if exists .  turn on with "true"</description>
+      </PSXExtensionParamDef>
+		<PSXExtensionParamDef id="0">
+         <name>prefix</name>
+         <dataType>java.lang.String</dataType>
+         <description>Optional. Prefix to add to filename</description>
+      </PSXExtensionParamDef>
+	  <PSXExtensionParamDef id="0">
+         <name>suffix</name>
+         <dataType>java.lang.String</dataType>
+         <description>Optional. Suffix to add to filename before and extension</description>
+      </PSXExtensionParamDef>
+	  <PSXExtensionParamDef id="0">
+         <name>forceExtension</name>
+         <dataType>java.lang.String</dataType>
+         <description>Optional. add or replace extension with this value, do not include'.'</description>
+      </PSXExtensionParamDef>
       <suppliedResources/>
    </Extension>
    <Extension categorystring="trashTask" context="global/percussion/task/" deprecated="no" handler="Java" name="pso_cleanupTrashTask" restoreRequestParamsOnError="no">
