@@ -420,10 +420,15 @@
          <dataType>java.lang.Number</dataType>
          <description>The max nr of results</description>
       </PSXExtensionParamDef>
-        <PSXExtensionParamDef id="0">
+      <PSXExtensionParamDef id="0">
          <name>order_by</name>
          <dataType>java.lang.String</dataType>
          <description>The sort order for the results</description>
+      </PSXExtensionParamDef>
+      <PSXExtensionParamDef id="0">
+         <name>mayHaveCrossSiteLinks</name>
+         <dataType>java.lang.String</dataType>
+         <description>If true will add siteid for items found.  Will pick first site found for item.</description>
       </PSXExtensionParamDef>
       <suppliedResources/>
    </Extension>

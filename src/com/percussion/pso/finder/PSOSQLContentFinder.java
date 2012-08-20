@@ -171,6 +171,11 @@ public class PSOSQLContentFinder extends PSBaseSlotContentFinder
          log.debug("SQL Parameters are " + sqlParams);    
       }
       
+      String cslink = getValue(slotArgs, selectors,
+              PARAM_MAY_HAVE_CROSS_SITE_LINKS, null);
+        boolean includeSiteId = StringUtils.isNotBlank(cslink)
+              && cslink.equalsIgnoreCase("true");
+        
       try
       {
          List<Object[]> queryResults = PSOSimpleSqlQuery.doQuery(sqlQuery, sqlParams);
@@ -226,6 +231,10 @@ public class PSOSQLContentFinder extends PSBaseSlotContentFinder
             if(folderGuid != null)
             {
                item.setFolderId(folderGuid); 
+            }
+            if(includeSiteId)
+            {
+               setSiteFolderId(item, true);
             }
             items.add(item); 
          }
@@ -302,4 +311,6 @@ public class PSOSQLContentFinder extends PSBaseSlotContentFinder
    }
    public static final String PARAM_SQLPARAMS = "sqlparams";
    
+   private static final String PARAM_MAY_HAVE_CROSS_SITE_LINKS = 
+		      "mayHaveCrossSiteLinks";
 }
