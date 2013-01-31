@@ -1,17 +1,21 @@
 http://www.percussion.com
 
-This is the PSOToolkit for Rhythmyx 7.0 Routines will be added here
+This is the PSOToolkit for Rhythmyx 7.1 Routines will be added here
 as we find uses for them.  
 
-THIS VERSION REQUIRES RHYTHMYX 7.0.1 OR LATER 
-
+THIS VERSION REQUIRES RHYTHMYX 7.1 
 
 If you are using 6.5.2 or 6.7 see the other branches in the PSO Code Library.  
 
-	NOTE: Please remove prior versions of the PSO Toolkit by removing prior versions of the jar from 
-	the /Rhythmyx/AppServer/server/rx/deploy/rxapp.ear/rxapp.war/WEB-INF/lib directory.  
+For 7.0.3:  https://github.com/percussion/PSOToolkit/tree/rel-cms7
+For 6.7: 	https://github.com/percussion/PSOToolkit/tree/rel-cms67
+For 6.5.2:  https://github.com/percussion/PSOToolkit/tree/svn/6.5.2
 
-	The PSCToolkit5.jar may be left in place if your installation uses it. 
+
+NOTE: Please remove prior versions of the PSO Toolkit by removing prior versions of the jar from 
+the /Rhythmyx/AppServer/server/rx/deploy/rxapp.ear/rxapp.war/WEB-INF/lib directory.  
+
+The PSCToolkit5.jar may be left in place if your installation uses it. 
 	
 To deploy the toolkit, unzip the distribution into a new directory.
    
@@ -26,8 +30,6 @@ Where the argument is the home directory where Rhythmyx is installed.
 
 Otherwise, to manually install, you must have Java 1.6 and Apache Ant properly installed. 
 The RHYTHMYX_HOME environment variable must point at your Rhythmyx 7.0.1 installation.  
-
-
 
 Type the command: 
 
