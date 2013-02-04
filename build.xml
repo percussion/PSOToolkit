@@ -3,16 +3,16 @@
 	<!-- =================================
 	Download and install Ivy2 from http://ant.apache.org/ivy
     Modify your Ant runtime preferences in Eclipse to include the Ivy JARs
-    Setup your ivy-local.properties  for your user / environment (see the sample file)
+    Setup your ivy:local.properties  for your user / environment (see the sample file)
     
     To build for the first time: 
-    1) Run the ivy-retrieve target
+    1) Run the ivy:retrieve target
     2) In Project Properties, add all JARs in the ivylib folder. 
     3) Build (using the testbuild and dist targets)
-    4) Run the ivy-publish target 
+    4) Run the ivy:publish target 
     
-    You should occasionally refresh (with ivy-retrieve) and
-    do ivy-publish each time a new build is released. 
+    You should occasionally refresh (with ivy:retrieve) and
+    do ivy:publish each time a new build is released. 
     
    	-->
 	
@@ -60,13 +60,17 @@
 	
 	<!-- Ivy Classpath -->
 	<path id="ivy.class.path"> 
-		 <fileset dir="${lib}">
-		 	<include name="**.jar"/>
-		 	<exclude name="PSOToolkit*.jar"/>
-		 </fileset>
-	</path>
-	<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.class.path"/>
 		
+	</path>
+	
+	<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant"> 
+		<classpath>
+			 <fileset dir="${basedir}/lib">
+					 	<include name="*.jar"/>
+					 	<exclude name="PSOToolkit*.jar"/>
+			</fileset>
+		</classpath>
+	</taskdef>
 	
 	<!-- Rhythmyx classpath  --> 
 	<path id="rx.class.path"> 
@@ -84,7 +88,7 @@
 		<tstamp/>
 	</target>
 	
-	<target name="ivy-clean" depends="ivy-configure">
+	<target name="ivy:clean" depends="ivy:configure">
 		<ivy:cleancache />
 		<delete dir="${ivylib}" /> 
 		<mkdir dir="${ivylib}" />
@@ -95,24 +99,24 @@
 		<mkdir dir="${bin}"/>
 	</target>
 	
-	<target name="ivy-configure">
+	<target name="ivy:configure">
 	   <ivy:settings />
     </target>
 
-	<target name="ivy-resolve" depends="ivy-configure" >
+	<target name="ivy:resolve" depends="ivy:configure" >
 	   <ivy:resolve conf="test,optional"/> 
 	</target>
 	
-	<target name="ivy-retrieve" depends="ivy-resolve">
+	<target name="ivy:retrieve" depends="ivy:resolve">
 	   <ivy:retrieve pattern="${ivylib}/[artifact].[ext]" type="jar" conf="test" />   	
 	</target>
 	
 	<!-- report on dependencies -->
-	<target name="ivy-report" depends="ivy-resolve">
+	<target name="ivy:report" depends="ivy:resolve">
 	  <ivy:report conf="test,optional"  graph="false" /> 
 	</target>
 	
-	<target name="ivy-publish" depends="ivy-resolve"  >
+	<target name="ivy:publish" depends="ivy:resolve"  >
 		<ivy:publish resolver="foo-shared-sftp" forcedeliver="true"  
 			pubrevision="7.0" overwrite="true" >
 			<artifacts pattern="${lib}/[artifact]-[revision].[ext]" /> 
@@ -120,7 +124,7 @@
 	</target>
 	
 	<target name="init.ivy.lib" unless="ivy.lib.exists">
-		   <antcall target="ivy-retrieve"/>
+		   <antcall target="ivy:retrieve"/>
 	</target>
 
 	<target name="compile" depends="init.ivy.lib" description="compile the source ">
