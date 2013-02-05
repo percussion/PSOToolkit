@@ -1,4 +1,4 @@
-<project name="PSOToolkit7x" default="dist" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+<project name="PSOToolkit71" default="dist" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
 	<description>PSO Toolkit for CM System 7.x</description>
 	<!-- =================================
 	Download and install Ivy2 from http://ant.apache.org/ivy
@@ -58,16 +58,11 @@
 		<available file="${ivylib}" type="dir"/>
 	</condition>
 	
-	<!-- Ivy Classpath -->
-	<path id="ivy.class.path"> 
-		
-	</path>
-	
 	<taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant"> 
 		<classpath>
 			 <fileset dir="${basedir}/lib">
-					 	<include name="*.jar"/>
-					 	<exclude name="PSOToolkit*.jar"/>
+				<include name="**.jar"/>
+				<exclude name="PSOToolkit*.jar"/>
 			</fileset>
 		</classpath>
 	</taskdef>
