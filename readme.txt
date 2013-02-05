@@ -3,8 +3,9 @@ http://www.percussion.com
 This is the PSOToolkit for Rhythmyx 7.1 Routines will be added here
 as we find uses for them.  
 
-[![Build Status](https://percussion.ci.cloudbees.com/job/PSO%20Toolkit/job/PSO%20Toolkit%207.1%20Build/badge/icon)](https://percussion.ci.cloudbees.com/job/PSO%20Toolkit/job/PSO%20Toolkit%207.1%20Build/)
+The binary download can be found here: 
 
+http://cdn.percussion.com/downloads/open/psotoolkit/PSOToolkit7.1.zip
 
 THIS VERSION REQUIRES RHYTHMYX 7.1 
 
