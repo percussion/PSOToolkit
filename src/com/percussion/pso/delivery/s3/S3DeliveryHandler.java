@@ -40,6 +40,9 @@ import com.percussion.rx.delivery.impl.PSBaseDeliveryHandler;
  * Provides a delivery handler for publishing content to Amazon's S3
  * service. 
  * 
+ * NOTE:  This handler is in the early experimental stages, it should not be used in a production
+ * setting yet. 
+ * 
  * @author natechadwick
  *
  */
