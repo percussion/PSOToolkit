@@ -868,7 +868,7 @@
       </PSXExtensionParamDef>
           <PSXExtensionParamDef id="6">
          <name>navon.landingpage.default.communityid</name>
-         <dataType>java.lang.Integer</dataType>
+         <dataType>java.lang.String</dataType>
          <description>Specifies the ID of the Community for the Landing Page. Defaults to the community of the Navon if not supplied.</description>
       </PSXExtensionParamDef>          
 		<suppliedResources/>

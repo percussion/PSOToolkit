@@ -85,7 +85,6 @@ public class PSNavLandingPageGeneratorEffect extends  PSNavAbstractEffect{
 	 private String[] m_defaultLandingRequiredFields = null;
 	 private String[] m_defaultLandingRequiredValues = null;
 	 private Integer m_defaultLandingCommunityId = 0;
-	 private static final String PARAM_BASE = "com.percussion.pso.effects.PSNavLandingPageGeneratorEffect";  
 	 
 	/**
 	 * @return the m_defaultLandingCommunityId
@@ -210,15 +209,7 @@ public class PSNavLandingPageGeneratorEffect extends  PSNavAbstractEffect{
 	 * 
 	 */
 	@Override public void init(com.percussion.extension.IPSExtensionDef extDef, java.io.File codeRoot) throws com.percussion.extension.PSExtensionException {
-		
-		this.setDefaultContentType(extDef.getInitParameter(PARAM_BASE + DEFAULT_LANDING_CONTENTTYPE));
-		this.setDefaultLandingTitleTemplate(extDef.getInitParameter(PARAM_BASE + DEFAULT_LANDING_TITLE_TEMPLATE));
-		this.setDefaultLandingDisplayTitleField(extDef.getInitParameter(PARAM_BASE + DEFAULT_LANDING_DISPLAYTITLE_FIELD));
-		this.setDefaultLandingDisplayTitleFormat(extDef.getInitParameter(PARAM_BASE + DEFAULT_LANDING_DISPLAYTITLE_FORMAT));
-		this.setDefaultLandingRequiredFields(this.getCSVList(extDef.getInitParameter(PARAM_BASE + DEFAULT_LANDING_REQUIRED_FIELD_NAMES)));
-		this.setDefaultLandingRequiredValues(this.getCSVList(extDef.getInitParameter(PARAM_BASE + DEFAULT_LANDING_REQUIRED_FIELD_VALUES)));
-		this.setDefaultLandingCommunityId(Integer.parseInt(extDef.getInitParameter(PARAM_BASE + DEFAULT_LANDING_COMMUNITYID)));
-
+		super.init(extDef, codeRoot);
 	};
 	
 	
@@ -227,10 +218,14 @@ public class PSNavLandingPageGeneratorEffect extends  PSNavAbstractEffect{
 			IPSExecutionContext excontext, PSEffectResult result)
 			throws PSExtensionProcessingException, PSParameterMismatchException {
 		
+		
+		initParams(params);
+		
 		if(isExclusive(req)){
-			log.warn("Exclusion flag detected - skipping processing...");
-			result.setSuccess();
-			return;
+			log.debug("Exclusion flag detected.");
+			//TODO; Determine if this code is actually needed. 
+//			result.setSuccess();
+//			return;
 		}
 
 		PSRelationship curRel = excontext.getCurrentRelationship();
@@ -251,6 +246,25 @@ public class PSNavLandingPageGeneratorEffect extends  PSNavAbstractEffect{
 	}
 
 
+	private void initParams(Object[] params) {
+		if(params!=null){
+		this.setDefaultContentType(params[0].toString());
+		this.setDefaultLandingTitleTemplate(params[1].toString());
+		this.setDefaultLandingDisplayTitleField(params[2].toString());
+		this.setDefaultLandingDisplayTitleFormat(params[3].toString());
+		this.setDefaultLandingRequiredFields(getCSVList(params[4].toString()));
+		this.setDefaultLandingRequiredValues(getCSVList(params[5].toString()));
+		this.setDefaultLandingCommunityId(Integer.parseInt(params[6].toString()+""));	
+		
+		if(m_defaultLandingRequiredFields!=null && m_defaultLandingRequiredValues!=null){
+			if(m_defaultLandingRequiredFields.length != m_defaultLandingRequiredValues.length){
+				throw new IllegalArgumentException("Required fields and Required field value lists have a different number of enteries!");
+			}
+		}
+		}
+	}
+
+
 	private void addNewLandingPage(IPSRequestContext req,
 			PSNavRelationshipInfo info, PSEffectResult result) {
 		
@@ -265,7 +279,7 @@ public class PSNavLandingPageGeneratorEffect extends  PSNavAbstractEffect{
 			
 			PSNavConfig navConfig = PSNavConfig.getInstance();
 			
-			if(dep.getContentTypeGUID().equals(navConfig.getNavonType())){
+			if(dep.getContentTypeId() == navConfig.getNavonType()){
 				//This is a NavOn so we want to make sure it's landing
 				//page slot is empty.  If it is not, then we want to skip out.
 				//Otherwise we will create a new Landing Page and add it to the 
@@ -366,6 +380,21 @@ public class PSNavLandingPageGeneratorEffect extends  PSNavAbstractEffect{
            setFieldValue(lp, "sys_contentstartdate", new PSDateValue(new Date()));
            log.debug("Landing Page community id " + String.valueOf(communityId));
            setFieldValue(lp, "sys_communityid", new PSTextValue(String.valueOf(communityId)));
+           
+           //Set the required fields with the configured default values
+           if(m_defaultLandingRequiredFields != null && m_defaultLandingRequiredValues != null)
+           {
+        	   int i=0;
+        	   for(String fld_name : m_defaultLandingRequiredFields){
+        		   setFieldValue(lp, fld_name, new PSTextValue(m_defaultLandingRequiredValues[i]));        				   
+        		   i++;
+		       }
+        	   
+           }else{
+        	   log.debug("No required fields configured, skipping them.");
+           }
+           
+           
            log.debug("before new Landing Page save");
            lp.save(req.getSecurityToken());
            log.debug("after save");
