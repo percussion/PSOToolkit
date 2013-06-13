@@ -425,6 +425,11 @@
          <dataType>java.lang.String</dataType>
          <description>The sort order for the results</description>
       </PSXExtensionParamDef>
+       <PSXExtensionParamDef id="0">
+         <name>mayHaveCrossSiteLinks</name>
+         <dataType>java.lang.String</dataType>
+         <description>If true will add siteid for items found.  Will pick first site found for item.</description>
+      </PSXExtensionParamDef>
       <suppliedResources/>
    </Extension>
    <Extension name="PSOProxyQueryResource" context="user/" handler="Java" categorystring="contenteditor" deprecated="no" restoreRequestParamsOnError="no">
@@ -508,7 +513,7 @@
 		<interface name="com.percussion.relationship.IPSEffect"/>
 		<suppliedResources/>
 	</Extension>
-		<Extension name="PSFolderOwnerSubfolderEffect" categorystring="relationship" context="user/" deprecated="no" handler="Java" restoreRequestParamsOnError="no">
+	<Extension name="PSFolderOwnerSubfolderEffect" categorystring="relationship" context="user/" deprecated="no" handler="Java" restoreRequestParamsOnError="no">
 		<initParam name="com.percussion.user.description">Adds the dependent item to a subfolder of the owners folders.</initParam>
 		<initParam name="com.percussion.extension.version">1</initParam>
 		<initParam name="com.percussion.extension.reentrant">yes</initParam>
@@ -803,5 +808,74 @@
       </PSXExtensionParamDef>
       <suppliedResources/>
    </Extension>
-  
+  <Extension categorystring="" context="global/percussion/user/" deprecated="no" handler="Java" name="pso_S3DeliveryHandler" restoreRequestParamsOnError="no">
+      <initParam name="com.percussion.user.description">Provides a Publishing Delivery Handler for publishing content to Amazon's S3 service.</initParam>
+      <initParam name="com.percussion.extension.version">1</initParam>
+      <initParam name="com.percussion.extension.reentrant">yes</initParam>
+      <initParam name="className">com.percussion.pso.delivery.s3.PSS3DeliveryHandler</initParam>
+      <interface name="com.percussion.extension.IPSDeliveryHandler"/>
+      <PSXExtensionParamDef id="1">
+         <name>accessKey</name>
+         <dataType>java.lang.String</dataType>
+         <description>The AWS access key id for the account that will be published to.</description>
+      </PSXExtensionParamDef>
+      <PSXExtensionParamDef id="2">
+         <name>secretKey</name>
+         <dataType>java.lang.String</dataType>
+         <description>The AWS secret key for the supplied access key.  This can be retrieved from your AWS account.</description>
+      </PSXExtensionParamDef>
+      <PSXExtensionParamDef id="3">
+         <name>bucketName</name>
+         <dataType>java.lang.String</dataType>
+         <description>The name of the Bucket that will be published to.</description>
+      </PSXExtensionParamDef>
+      <PSXExtensionParamDef id="4">
+         <name>transactional</name>
+         <dataType>java.lang.Boolean</dataType>
+         <description>When true, items will be queued for one time transmittal to the remote bucket at the end of the edition, when false content will be delivered as it is processed by the publishing engine.</description>
+      </PSXExtensionParamDef>      
+   </Extension>
+   <Extension name="PSNavLandingPageGeneratorEffect" categorystring="relationship" context="user/" deprecated="no" handler="Java" restoreRequestParamsOnError="yes">
+		<initParam name="com.percussion.user.description">Adds a Landing Page of the specified type to the NavOn's Landing Page slot.</initParam>
+		<initParam name="com.percussion.extension.version">1</initParam>
+		<initParam name="com.percussion.extension.reentrant">yes</initParam>
+		<initParam name="className">com.percussion.pso.effects.PSNavLandingPageGeneratorEffect</initParam>
+		<interface name="com.percussion.relationship.IPSEffect"/>
+		<PSXExtensionParamDef id="0">
+         <name>navon.landingpage.default.ct</name>
+         <dataType>java.lang.String</dataType>
+         <description>Name of the content type to be used as the landing page.  This type must have default values for all required fields. Required, may not be null or empty. </description>
+      </PSXExtensionParamDef>
+     	<PSXExtensionParamDef id="1">
+         <name>navon.landingpage.default.title.template</name>
+         <dataType>java.lang.String</dataType>
+         <description>Specifies the string format to use for the title page</description>
+      </PSXExtensionParamDef>
+      <PSXExtensionParamDef id="2">
+         <name>navon.landingpage.default.displaytitle.field</name>
+         <dataType>java.lang.String</dataType>
+         <description>Specifies the name of the page to get the page title. May be null or empty.</description>
+      </PSXExtensionParamDef>
+      <PSXExtensionParamDef id="3">
+         <name>navon.landingpage.default.displaytitle.format</name>
+         <dataType>java.lang.String</dataType>
+         <description>Specifies the format of the display title</description>
+      </PSXExtensionParamDef>
+          <PSXExtensionParamDef id="4">
+         <name>navon.landingpage.default.required.fields.names</name>
+         <dataType>java.lang.String</dataType>
+         <description>Specifies a comma seperated list of required fields on the landing page type. May be null or empty.</description>
+      </PSXExtensionParamDef>
+          <PSXExtensionParamDef id="5">
+         <name>navon.landingpage.default.required.fields.values</name>
+         <dataType>java.lang.String</dataType>
+         <description>Specifies a comma seperated list of default values for corresponding field names. May be null or empty.</description>
+      </PSXExtensionParamDef>
+          <PSXExtensionParamDef id="6">
+         <name>navon.landingpage.default.communityid</name>
+         <dataType>java.lang.String</dataType>
+         <description>Specifies the ID of the Community for the Landing Page. Defaults to the community of the Navon if not supplied.</description>
+      </PSXExtensionParamDef>          
+		<suppliedResources/>
+	</Extension>
 </PSXExtensionHandlerConfiguration>
