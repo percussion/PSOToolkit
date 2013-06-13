@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -39,6 +40,8 @@ import com.percussion.relationship.IPSExecutionContext;
 import com.percussion.relationship.PSEffectResult;
 import com.percussion.relationship.annotation.PSEffectContext;
 import com.percussion.relationship.annotation.PSHandlesEffectContext;
+import com.percussion.rx.config.IPSConfigService;
+import com.percussion.rx.config.PSConfigServiceLocator;
 import com.percussion.server.IPSInternalRequest;
 import com.percussion.server.IPSRequestContext;
 import com.percussion.services.assembly.IPSAssemblyService;
@@ -46,6 +49,14 @@ import com.percussion.services.assembly.IPSAssemblyTemplate;
 import com.percussion.services.assembly.IPSTemplateSlot;
 import com.percussion.services.assembly.PSAssemblyException;
 import com.percussion.services.assembly.PSAssemblyServiceLocator;
+import com.percussion.services.catalog.PSTypeEnum;
+import com.percussion.services.content.IPSContentService;
+import com.percussion.services.content.PSContentServiceLocator;
+import com.percussion.services.guidmgr.PSGuidManagerLocator;
+import com.percussion.services.guidmgr.impl.PSGuidManager;
+import com.percussion.services.system.IPSSystemService;
+import com.percussion.services.system.PSSystemServiceLocator;
+import com.percussion.services.system.impl.PSSystemService;
 import com.percussion.util.IPSHtmlParameters;
 import com.percussion.utils.guid.IPSGuid;
 import com.percussion.utils.types.PSPair;
@@ -85,6 +96,7 @@ public class PSNavLandingPageGeneratorEffect extends  PSNavAbstractEffect{
 	 private String[] m_defaultLandingRequiredFields = null;
 	 private String[] m_defaultLandingRequiredValues = null;
 	 private Integer m_defaultLandingCommunityId = 0;
+	 private long m_contentTypeId=0;
 	 
 	/**
 	 * @return the m_defaultLandingCommunityId
@@ -356,7 +368,9 @@ public class PSNavLandingPageGeneratorEffect extends  PSNavAbstractEffect{
            String folderName = folder.getName();
            log.debug("adding new Landing Page to folder " + folderName);
 
-           PSItemDefinition lpDef = defMgr.getItemDef(defMgr.contentTypeNameToId(m_defaultContentType), communityId);
+           m_contentTypeId = defMgr.contentTypeNameToId(m_defaultContentType);
+           
+           PSItemDefinition lpDef = defMgr.getItemDef(m_contentTypeId, communityId);
            if (lpDef == null)
            {
                String errmsg = "Unable to find Itemdef for type {0} in community {1}. ";
@@ -475,19 +489,30 @@ public class PSNavLandingPageGeneratorEffect extends  PSNavAbstractEffect{
 				throw new PSNavException(e1);
 			}
 	        
+			
 	        if(lpSlot == null){
 	        	log.debug("Unable to locate the LandingPage slot:" + landingSlotName);
 	        	throw new PSNavException("Unable to locate the LandingPage slot:" + landingSlotName);
 	        }
 	        log.debug("LandingPage slot is " + lpSlot.toString() + " " + landingSlotName);
-
 	        Collection<PSPair<IPSGuid, IPSGuid>> slotTempsAndCTs = lpSlot.getSlotAssociations();
 	        
 	        IPSAssemblyTemplate t=null;
 	        if(slotTempsAndCTs == null || slotTempsAndCTs.isEmpty()){
 	        	throw new PSNavException("Unable to locate a default template for the landing page " + landingSlotName);
 	        }else{
-	        	IPSGuid templateGUID = slotTempsAndCTs.iterator().next().getSecond();
+	        	IPSGuid ct;
+	        	IPSGuid templateGUID = null;
+	        	
+	        	Iterator<PSPair<IPSGuid, IPSGuid>> it = slotTempsAndCTs.iterator();
+	        	while(it.hasNext()){
+	        		PSPair<IPSGuid, IPSGuid> p = it.next();
+	        		
+	        		    if(m_contentTypeId==p.getFirst().getUUID()){
+	        		    	templateGUID = (IPSGuid)p.getSecond();
+	        		    	break;
+	        		    }
+	        	}
 	        	
 	        	t = asWs.findTemplate(templateGUID);
 	        }
