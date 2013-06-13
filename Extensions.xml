@@ -425,6 +425,11 @@
          <dataType>java.lang.String</dataType>
          <description>The sort order for the results</description>
       </PSXExtensionParamDef>
+       <PSXExtensionParamDef id="0">
+         <name>mayHaveCrossSiteLinks</name>
+         <dataType>java.lang.String</dataType>
+         <description>If true will add siteid for items found.  Will pick first site found for item.</description>
+      </PSXExtensionParamDef>
       <suppliedResources/>
    </Extension>
    <Extension name="PSOProxyQueryResource" context="user/" handler="Java" categorystring="contenteditor" deprecated="no" restoreRequestParamsOnError="no">
