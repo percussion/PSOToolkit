@@ -39,9 +39,9 @@ For Example:
 
 To use the patch installer to install on Linux, add these lines to your .profile  
 
-> export RHYTHMYX_HOME=$HOME/Rhythmyx  ##or where ever it is installed
-> export JAVA_HOME=$RHYTHMYX_HOME/JRE/
-> export ANT_HOME=$RHYTHMYX_HOME/Patch/InstallToolkit/
+> export RHYTHMYX_HOME=$HOME/Rhythmyx  ##or where ever it is installed   
+> export JAVA_HOME=$RHYTHMYX_HOME/JRE/   
+> export ANT_HOME=$RHYTHMYX_HOME/Patch/InstallToolkit/   
 
 you can then run Ant: 
 
