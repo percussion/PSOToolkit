@@ -67,5 +67,5 @@ Download Apache Ivy with dependencies and copy the Ivy jar from the Ivy distribu
 ### Building
 The build script provides several targets.  To build the Toolkit distribution, use the "dist" target from the directory that you cloned the repository to:
 
-> ant dist 
+> ant ivy-retrieve, dist 
 
