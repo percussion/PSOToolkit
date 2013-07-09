@@ -585,7 +585,7 @@ public class PSNavLandingPageGeneratorEffect extends  PSNavAbstractEffect{
 	/***
 	  * Attempts a simple parse of the specified string to return CSV string represented as an array.
 	  * @param arg
-	  * @return
+	  * @return Returns an array of strings holding the parameters. If no params are found, returns null.
 	  */
 	 public String[] getCSVList(String arg){
 		 String ret[] = null;
