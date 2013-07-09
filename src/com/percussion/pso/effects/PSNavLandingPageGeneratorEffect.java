@@ -256,20 +256,35 @@ public class PSNavLandingPageGeneratorEffect extends  PSNavAbstractEffect{
 
 
 	private void initParams(Object[] params) {
-		if(params!=null){
-		this.setDefaultContentType(params[0].toString());
-		this.setDefaultLandingTitleTemplate(params[1].toString());
-		this.setDefaultLandingDisplayTitleField(params[2].toString());
-		this.setDefaultLandingDisplayTitleFormat(params[3].toString());
-		this.setDefaultLandingRequiredFields(getCSVList(params[4].toString()));
-		this.setDefaultLandingRequiredValues(getCSVList(params[5].toString()));
-		this.setDefaultLandingCommunityId(Integer.parseInt(params[6].toString()+""));	
 		
-		if(m_defaultLandingRequiredFields!=null && m_defaultLandingRequiredValues!=null){
-			if(m_defaultLandingRequiredFields.length != m_defaultLandingRequiredValues.length){
-				throw new IllegalArgumentException("Required fields and Required field value lists have a different number of enteries!");
+		if(params!=null){
+		
+			if(params[0]!=null)
+				this.setDefaultContentType(params[0].toString());
+	
+			if(params[1]!=null)
+				this.setDefaultLandingTitleTemplate(params[1].toString());
+		
+			if(params[2]!=null)
+				this.setDefaultLandingDisplayTitleField(params[2].toString());
+		
+			if(params[3]!=null)
+				this.setDefaultLandingDisplayTitleFormat(params[3].toString());
+		
+			if(params[4]!=null)
+				this.setDefaultLandingRequiredFields(getCSVList(params[4].toString()));
+		
+			if(params[5]!=null)
+				this.setDefaultLandingRequiredValues(getCSVList(params[5].toString()));
+		
+			if(params[6]!=null)
+				this.setDefaultLandingCommunityId(Integer.parseInt("0" + params[6].toString()));	
+		
+			if(m_defaultLandingRequiredFields!=null && m_defaultLandingRequiredValues!=null){
+				if(m_defaultLandingRequiredFields.length != m_defaultLandingRequiredValues.length){
+					throw new IllegalArgumentException("Required fields and Required field value lists have a different number of enteries!");
+				}
 			}
-		}
 		}
 	}
 
