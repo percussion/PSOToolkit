@@ -64,6 +64,7 @@
 		 </fileset>
 		 <fileset dir="${lib}">
 			 	<include name="jdom.jar"/>
+			 	<include name="aws-java-sdk-1.4.4.1.jar"/>
 		 </fileset>
 		</path>
 	
