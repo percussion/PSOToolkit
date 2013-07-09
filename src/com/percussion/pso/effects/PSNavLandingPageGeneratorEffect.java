@@ -230,49 +230,61 @@ public class PSNavLandingPageGeneratorEffect extends  PSNavAbstractEffect{
 			IPSExecutionContext excontext, PSEffectResult result)
 			throws PSExtensionProcessingException, PSParameterMismatchException {
 		
+		if(excontext.isPreConstruction()){
+			initParams(params);
 		
-		initParams(params);
 		
-		if(isExclusive(req)){
-			log.debug("Exclusion flag detected.");
-			//TODO; Determine if this code is actually needed. 
-//			result.setSuccess();
-//			return;
+			PSRelationship curRel = excontext.getCurrentRelationship();
+		
+			PSNavRelationshipInfo info;
+			try{
+				info = new PSNavRelationshipInfo(curRel, req);
+			}catch(Exception ex){
+				log.debug("Unable to load relationship for RID:" + curRel.getId(),ex);
+				result.setSuccess();
+				return;
+			}
+		
+		
+			addNewLandingPage(req,info,result);
 		}
-
-		PSRelationship curRel = excontext.getCurrentRelationship();
-		
-		PSNavRelationshipInfo info;
-		try{
-			info = new PSNavRelationshipInfo(curRel, req);
-		}catch(Exception ex){
-			log.debug("Unable to load relationship for RID:" + curRel.getId(),ex);
+		else{
 			result.setSuccess();
 			return;
 		}
-		
-		if(excontext.isPreConstruction()){
-			addNewLandingPage(req,info,result);
-		}
-		
 	}
 
 
 	private void initParams(Object[] params) {
-		if(params!=null){
-		this.setDefaultContentType(params[0].toString());
-		this.setDefaultLandingTitleTemplate(params[1].toString());
-		this.setDefaultLandingDisplayTitleField(params[2].toString());
-		this.setDefaultLandingDisplayTitleFormat(params[3].toString());
-		this.setDefaultLandingRequiredFields(getCSVList(params[4].toString()));
-		this.setDefaultLandingRequiredValues(getCSVList(params[5].toString()));
-		this.setDefaultLandingCommunityId(Integer.parseInt(params[6].toString()+""));	
 		
-		if(m_defaultLandingRequiredFields!=null && m_defaultLandingRequiredValues!=null){
-			if(m_defaultLandingRequiredFields.length != m_defaultLandingRequiredValues.length){
-				throw new IllegalArgumentException("Required fields and Required field value lists have a different number of enteries!");
+		if(params!=null){
+		
+			if(params[0]!=null)
+				this.setDefaultContentType(params[0].toString());
+	
+			if(params[1]!=null)
+				this.setDefaultLandingTitleTemplate(params[1].toString());
+		
+			if(params[2]!=null)
+				this.setDefaultLandingDisplayTitleField(params[2].toString());
+		
+			if(params[3]!=null)
+				this.setDefaultLandingDisplayTitleFormat(params[3].toString());
+		
+			if(params[4]!=null)
+				this.setDefaultLandingRequiredFields(getCSVList(params[4].toString()));
+		
+			if(params[5]!=null)
+				this.setDefaultLandingRequiredValues(getCSVList(params[5].toString()));
+		
+			if(params[6]!=null)
+				this.setDefaultLandingCommunityId(Integer.parseInt("0" + params[6].toString()));	
+		
+			if(m_defaultLandingRequiredFields!=null && m_defaultLandingRequiredValues!=null){
+				if(m_defaultLandingRequiredFields.length != m_defaultLandingRequiredValues.length){
+					throw new IllegalArgumentException("Required fields and Required field value lists have a different number of enteries!");
+				}
 			}
-		}
 		}
 	}
 
@@ -309,11 +321,22 @@ public class PSNavLandingPageGeneratorEffect extends  PSNavAbstractEffect{
 					
 					//Generate the Landing Page
 					log.debug("Creating Landing page for Navon...");
-					PSLocator lpLoc = createLandingPage(req,info.getOwner(),info.getDependent(),m_defaultLandingCommunityId);
-		
-				  //add the NavOn Landing Page link
-		           createNavOnLandingPageRelationship(req, info.getDependent(), lpLoc, landingSlot);
-		           
+					PSLocator lpLoc=null;
+					
+					try{
+						lpLoc = createLandingPage(req,info.getOwner(),info.getDependent(),m_defaultLandingCommunityId);
+					}catch(Exception e){
+						result.setError(e.getLocalizedMessage());
+						return;
+					}
+				  
+					//add the NavOn Landing Page link
+		            try{
+					createNavOnLandingPageRelationship(req, info.getDependent(), lpLoc, landingSlot);
+		            }catch(Exception e){
+		            	result.setError(e.getLocalizedMessage());
+		            	return;
+		            }
 			         
 					log.debug("Landing page generation complete.");
 					result.setSuccess();
@@ -342,8 +365,9 @@ public class PSNavLandingPageGeneratorEffect extends  PSNavAbstractEffect{
 	/***
 	 * Responsible for creating the landing page and adding it to 
 	 * the same Folder as the NavOn.
+	 * @throws Exception 
 	 */
-	private PSLocator createLandingPage(IPSRequestContext req, PSComponentSummary folder, PSComponentSummary navon, int communityId){
+	private PSLocator createLandingPage(IPSRequestContext req, PSComponentSummary folder, PSComponentSummary navon, int communityId) throws Exception{
 	
 		   boolean changeCommunity = false;
 	       String savedCommunity = null;
@@ -437,15 +461,9 @@ public class PSNavLandingPageGeneratorEffect extends  PSNavAbstractEffect{
              log.debug("Restored community to " + savedCommunity);
          }
          
-		} catch (PSInvalidContentTypeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (PSNavException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (PSCmsException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			log.error("Error generating Landing Page", e);
+			throw e;
 		}
 		 return lpLoc;
 	}
@@ -471,7 +489,7 @@ public class PSNavLandingPageGeneratorEffect extends  PSNavAbstractEffect{
 	        }
 	        if (lp == null)
 	        {
-	            throw new IllegalArgumentException("childNavon must not be null");
+	            throw new IllegalArgumentException("landing page must not be null");
 	        }
 	        
 	        log.debug("adding Landing Page to LandingPage Slot ");
@@ -567,7 +585,7 @@ public class PSNavLandingPageGeneratorEffect extends  PSNavAbstractEffect{
 	/***
 	  * Attempts a simple parse of the specified string to return CSV string represented as an array.
 	  * @param arg
-	  * @return
+	  * @return Returns an array of strings holding the parameters. If no params are found, returns null.
 	  */
 	 public String[] getCSVList(String arg){
 		 String ret[] = null;
@@ -618,7 +636,7 @@ public class PSNavLandingPageGeneratorEffect extends  PSNavAbstractEffect{
 	     * internal request to the content editor URL with appropriate htmnl
 	     * parameters.
 	     * 
-	     * @param req request conetxt object, must not be <code>null</code>.
+	     * @param req request context object, must not be <code>null</code>.
 	     * @param loc locator of the item to checkin, must nor be <code>null</code>.
 	     * @throws PSNavException if it fails to check the item in.
 	     */
