@@ -16,18 +16,25 @@ the `/Rhythmyx/AppServer/server/rx/deploy/rxapp.ear/rxapp.war/WEB-INF/lib` direc
 The PSCToolkit5.jar may be left in place if your installation uses it. 
 
 ## Download  
-
-* 7.03 - 7.2  [PSOToolkit7.x.zip](http//cdn.percussion.com/downloads/open/psotoolkit/PSOToolkit7.x.zip)
+* 7.03 - 7.2  [PSOToolkit7.x.zip](http://cdn.percussion.com/downloads/open/psotoolkit/PSOToolkit7.x.zip)
 * 6.7        [PSOToolkit6.7.zip](http://cdn.percussion.com/downloads/open/psotoolkit/PSOToolkit6.7.zip)
+* Latest Nightly Snapshot - [Nightly Snapshot](http://cdn.percussion.com/downloads/open/psotoolkit/PSOToolkit7.x-SNAPSHOT.zip)
+
 
 ## Installation  
 To deploy the toolkit, you must first build the project from source, or download a packaged distribution.
 Unzip the distribution into a new directory.
 
+To install on Windows run the following command from the unzipped directory.  Replacing c:\Rhythmyx with the path to your CM System installation.
 >Install.bat c:\Rhythmyx
->sh install.sh ~/Rhythmyx
 
-Where the argument is the home directory where Rhythmyx is installed. 
+To install on Linux or Solaris systems, run the following command from the unzipped directory, replacing ~/Rhythmyx with the path to your CM System installation. 
+>chmod +x install.sh   
+>dos2unix install.sh #temporary workaround for packaging bug.   
+>sh install.sh ~/Rhythmyx   
+
+Restart the Rhythmyx instance.
+
 
 ## Manual Install
 To manually install, you must have the Java 1.6 JDK with a JAVA_HOME environment variable,
