@@ -49,6 +49,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Node;
 
+import com.percussion.design.objectstore.PSField;
 import com.percussion.extension.IPSExtensionDef;
 import com.percussion.extension.IPSItemInputTransformer;
 import com.percussion.extension.IPSRequestPreProcessor;
@@ -154,6 +155,7 @@ public class PSOThumbnailGenerator extends PSFileInfo
       int width = 0; 
       int maxDimension = 0; 
       boolean useOriginalFileType = false; 
+      boolean clearThumbnail = false; 
       String sourceFieldName = params[0].toString();
       if(StringUtils.isBlank(sourceFieldName))
       {
@@ -205,8 +207,20 @@ public class PSOThumbnailGenerator extends PSFileInfo
     		  useOriginalFileType = true; 
     	  }
       }
+
+      //Test to see if the source image is being cleared.  If it is then clear the thumbnail fields. 
+      if(request.getParameter(sourceFieldName + PSField.CLEAR_BINARY_PARAM_SUFFIX,"no").equals("yes")){
+    	  request.setParameter(thumbFieldName + PSField.CLEAR_BINARY_PARAM_SUFFIX, "yes");
+    	  request.setParameter(thumbFieldName + "_filename", null);
+          request.setParameter(thumbFieldName + "_ext", null);
+          request.setParameter(thumbFieldName + "_type", null);
+          super.preProcessRequest(params, request);
+          return;
+      }
+	
       try
       {
+    	 
     	  Object obj = request.getParameterObject(sourceFieldName);
     	  if(obj != null && obj instanceof PSPurgableTempFile){
     		  PSPurgableTempFile temp = (PSPurgableTempFile) obj;
