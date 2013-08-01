@@ -2,7 +2,12 @@
 This is the PSOToolkit for Rhythmyx 7.2.   
 Routines will be added here as we find uses for them.  
 
-THIS VERSION REQUIRES RHYTHMYX 7.0.1 OR LATER 
+
+## Download  
+* 7.03 - 7.2  [PSOToolkit7.x.zip](http://cdn.percussion.com/downloads/open/psotoolkit/PSOToolkit7.x.zip)
+* 6.7        [PSOToolkit6.7.zip](http://cdn.percussion.com/downloads/open/psotoolkit/PSOToolkit6.7.zip)
+* Latest Nightly Snapshot - [Nightly Snapshot](http://cdn.percussion.com/downloads/open/psotoolkit/PSOToolkit7.x-SNAPSHOT.zip)
+
 
 If you are using 6.5.2 or 6.7 select the branch that matches your product version when checking out the code:
 
@@ -15,10 +20,6 @@ the `/Rhythmyx/AppServer/server/rx/deploy/rxapp.ear/rxapp.war/WEB-INF/lib` direc
 
 The PSCToolkit5.jar may be left in place if your installation uses it. 
 
-## Download  
-* 7.03 - 7.2  [PSOToolkit7.x.zip](http://cdn.percussion.com/downloads/open/psotoolkit/PSOToolkit7.x.zip)
-* 6.7        [PSOToolkit6.7.zip](http://cdn.percussion.com/downloads/open/psotoolkit/PSOToolkit6.7.zip)
-* Latest Nightly Snapshot - [Nightly Snapshot](http://cdn.percussion.com/downloads/open/psotoolkit/PSOToolkit7.x-SNAPSHOT.zip)
 
 
 ## Installation  
