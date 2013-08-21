@@ -1,9 +1,7 @@
 /*******************************************************************************
- * Copyright (c) 1999-2011 Percussion Software.
-/*
  * com.percussion.pso.jexl PSOFolderTools.java
  * 
- * COPYRIGHT (c) 1999 - 2008 by Percussion Software, Inc., Woburn, MA USA.
+ * COPYRIGHT (c) 1999 - 2013 by Percussion Software, Inc., Woburn, MA USA.
  * All rights reserved. This material contains unpublished, copyrighted
  * work including confidential and proprietary information of Percussion.
  *
@@ -14,9 +12,6 @@
 package com.percussion.pso.jexl;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -30,7 +25,6 @@ import org.apache.commons.logging.LogFactory;
 import com.percussion.cms.PSCmsException;
 import com.percussion.cms.objectstore.PSFolder;
 import com.percussion.cms.objectstore.PSFolderProperty;
-import com.percussion.design.objectstore.PSLocator;
 import com.percussion.extension.IPSExtensionDef;
 import com.percussion.extension.IPSJexlExpression;
 import com.percussion.extension.IPSJexlMethod;
@@ -38,6 +32,7 @@ import com.percussion.extension.IPSJexlParam;
 import com.percussion.extension.PSExtensionException;
 import com.percussion.extension.PSExtensionProcessingException;
 import com.percussion.extension.PSJexlUtilBase;
+import com.percussion.pso.utils.PSOItemFolderUtilities;
 import com.percussion.server.PSRequest;
 import com.percussion.server.webservices.PSServerFolderProcessor;
 import com.percussion.services.assembly.IPSAssemblyItem;
@@ -237,11 +232,7 @@ public class PSOFolderTools extends PSJexlUtilBase implements IPSJexlExpression
            returns="The folder path (String)"
    )
    public String getFolderPath(int id) throws PSCmsException {
-	   PSRequest req = (PSRequest) PSRequestInfo
-       .getRequestInfo(PSRequestInfo.KEY_PSREQUEST);
-	   PSServerFolderProcessor folderproc = new PSServerFolderProcessor(req,null);
-	   String[] ret = folderproc.getItemPaths(new PSLocator(id,-1));
-	   return  (ret.length>0) ? ret[0] : null;
+	  return PSOItemFolderUtilities.getFolderPath(id);
    }
   
    /**
@@ -255,11 +246,7 @@ public class PSOFolderTools extends PSJexlUtilBase implements IPSJexlExpression
    @IPSJexlMethod(description="get the folder path for this item", 
          params={@IPSJexlParam(name="itemId", description="the item GUID")})
    public List<String> getParentFolderPaths(IPSGuid guid) throws PSCmsException {
-	   PSRequest req = (PSRequest) PSRequestInfo
-       .getRequestInfo(PSRequestInfo.KEY_PSREQUEST);
-	   PSServerFolderProcessor folderproc = new PSServerFolderProcessor(req,null);
-	   String[] ret = folderproc.getFolderPaths(new PSLocator(guid.getUUID(),-1));
-	   return  Arrays.asList(ret);
+	   return PSOItemFolderUtilities.getFolderPathsForItem(guid);
    }
    
    
@@ -287,13 +274,9 @@ public class PSOFolderTools extends PSJexlUtilBase implements IPSJexlExpression
     */
    @IPSJexlMethod(description="get the parent folder id for this item id", 
 	         params={@IPSJexlParam(name="itemId", description="The item id to find the folder id for")})
-	   public int getParentFolderId(int itemId) throws PSCmsException {
-		   PSRequest req = (PSRequest) PSRequestInfo
-	       .getRequestInfo(PSRequestInfo.KEY_PSREQUEST);
-		   PSServerFolderProcessor folderproc = new PSServerFolderProcessor(req,null);
-		   int id = folderproc.getIdByPath(getFolderPath(itemId));
-		   return id;
-	   }
+   public int getParentFolderId(int itemId) throws PSCmsException {
+	   	return PSOItemFolderUtilities.getParentFolderId(itemId);
+	}
 	   
    
    @Override
