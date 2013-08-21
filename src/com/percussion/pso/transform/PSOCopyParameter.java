@@ -68,7 +68,7 @@ public class PSOCopyParameter implements IPSItemInputTransformer,IPSRequestPrePr
       String destinationName = getParameter(params, 1);
       if(StringUtils.isBlank(sourceName))
       {
-         emsg = "Desitination Field is required"; 
+         emsg = "Destination Field is required"; 
          log.error(emsg); 
          throw new IllegalArgumentException(emsg); 
       }
@@ -76,11 +76,12 @@ public class PSOCopyParameter implements IPSItemInputTransformer,IPSRequestPrePr
     
       String fieldSizeString = getParameter(params,3);
       int fieldSize = -1;
-      if(StringUtils.isNumeric(fieldSizeString))
-      {
-         fieldSize = Integer.valueOf(fieldSizeString);
+      if(fieldSizeString != null && !fieldSizeString.equals("")){
+    	if(StringUtils.isNumeric(fieldSizeString))
+      	{
+    	  fieldSize = Integer.valueOf(fieldSizeString);
+      	}
       }
-      
       String cleanupString = getParameter(params,4);
       boolean cleanup = cleanupString.equalsIgnoreCase("true");
       String includesExtensionString = getParameter(params,5);
