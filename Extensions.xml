@@ -887,4 +887,59 @@
       <interface name="com.percussion.extension.IPSWorkflowAction"/>
       <suppliedResources/>
    </Extension> 
+<!-- 
+	Extension disabled. 
+  <Extension name="PSSetFieldOnSlottedItemEffect" categorystring="relationship" context="user/" deprecated="no" handler="Java" restoreRequestParamsOnError="yes">
+		<initParam name="com.percussion.user.description">Sets the configured field on the configured type to the configured value.</initParam>
+		<initParam name="com.percussion.extension.version">1</initParam>
+		<initParam name="com.percussion.extension.reentrant">yes</initParam>
+		<initParam name="className">com.percussion.pso.effects.PSOSetFieldOnSlottedItemEffect</initParam>
+		<interface name="com.percussion.relationship.IPSEffect"/>
+		<PSXExtensionParamDef id="0">
+         <name>content_type</name>
+         <dataType>java.lang.String</dataType>
+         <description>Name of the content type. Required, may not be null or empty. </description>
+      </PSXExtensionParamDef>
+      	<PSXExtensionParamDef id="1">
+         <name>field_name</name>
+         <dataType>java.lang.String</dataType>
+         <description>The field to set the value on. Required, may not be null or empty. </description>
+      </PSXExtensionParamDef>
+      	<PSXExtensionParamDef id="2">
+         <name>field_value</name>
+         <dataType>java.lang.String</dataType>
+         <description>The value to set the field to. Optional, may be null or empty. </description>
+      </PSXExtensionParamDef>
+      	<PSXExtensionParamDef id="3">
+         <name>slot_id</name>
+         <dataType>java.lang.String</dataType>
+         <description>The id of the slot to monitor. Required. Adding an item to any slots on the item will trigger the value to be set on the configured field.</description>
+      </PSXExtensionParamDef>
+      <suppliedResources/>
+	</Extension> -->
+	<Extension categorystring="" context="global/percussion/user/" deprecated="no" handler="Java" name="PSOSetFieldOnSlottedItemTransform" restoreRequestParamsOnError="no">
+      <initParam name="com.percussion.user.description">Sets a field to the specified value if a slot on the item contains an entry.</initParam>
+      <initParam name="com.percussion.extension.version">1</initParam>
+      <initParam name="com.percussion.extension.reentrant">yes</initParam>
+      <initParam name="className">com.percussion.pso.transform.PSOSetFieldOnSlottedItemTransform</initParam>
+       	<interface name="com.percussion.extension.IPSItemInputTransformer"/>
+        <interface name="com.percussion.extension.IPSRequestPreProcessor"/>
+      	<PSXExtensionParamDef id="0">
+         <name>field_name</name>
+         <dataType>java.lang.String</dataType>
+         <description>The field to set the value on. Required, may not be null or empty. </description>
+      </PSXExtensionParamDef>
+       <PSXExtensionParamDef id="1">
+         <name>field_value</name>
+         <dataType>java.lang.String</dataType>
+         <description>The value to set the field to. Optional, may be null or empty. </description>
+      </PSXExtensionParamDef>
+       <PSXExtensionParamDef id="2">
+         <name>slotName</name>
+         <dataType>java.lang.String</dataType>
+         <description>The name of the slot to check for contents.</description>
+      </PSXExtensionParamDef>    
+      <suppliedResources/>
+   </Extension>
+   
 </PSXExtensionHandlerConfiguration>
