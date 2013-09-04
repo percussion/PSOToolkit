@@ -99,7 +99,13 @@ public class PSOSetFieldOnSlottedItemTransform  implements IPSItemInputTransform
 		ConfiguredParams configParams = new ConfiguredParams(params);
 		
 		PSRelationshipFilter filter = new PSRelationshipFilter();
-		IPSGuid itemGuid = gmgr.makeGuid(request.getParameter("sys_contentid"),PSTypeEnum.LEGACY_CONTENT);   
+		String contentid = request.getParameter("sys_contentid");
+		if(contentid==null){
+			return;
+		}
+		
+		IPSGuid itemGuid = gmgr.makeGuid(contentid,PSTypeEnum.LEGACY_CONTENT);   
+		
 		
 		PSLocator ownerLoc = gmgr.makeLocator(itemGuid);
 		filter.setOwner(ownerLoc);
