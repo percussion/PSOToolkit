@@ -878,6 +878,15 @@
       </PSXExtensionParamDef>          
 		<suppliedResources/>
 	</Extension>
+	<Extension categorystring="" context="global/percussion/workflow/" deprecated="no" handler="Java" name="psoSwitchCommunityWorkflowAction" restoreRequestParamsOnError="yes">
+      <initParam name="com.percussion.user.description">This workflow action will switch the items Community to the Community specified by the "defaultCommunityName" custom property of the items containing folder.  If the property is not found, this action will do nothing.</initParam>
+      <initParam name="com.percussion.extension.version">1</initParam>
+      <initParam name="com.percussion.extension.reentrant">yes</initParam>
+      <initParam name="className">com.percussion.pso.workflow.PSOSwitchCommunityWorkflowAction</initParam>
+      <initParam name="com.percussion.pso.workflow.PSOSwitchCommunityWorkflowAction.overrideVisibility">false</initParam>		
+      <interface name="com.percussion.extension.IPSWorkflowAction"/>
+      <suppliedResources/>
+   </Extension> 
 <!-- 
 	Extension disabled. 
   <Extension name="PSSetFieldOnSlottedItemEffect" categorystring="relationship" context="user/" deprecated="no" handler="Java" restoreRequestParamsOnError="yes">
