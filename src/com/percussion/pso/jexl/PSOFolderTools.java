@@ -274,9 +274,9 @@ public class PSOFolderTools extends PSJexlUtilBase implements IPSJexlExpression
     */
    @IPSJexlMethod(description="get the parent folder id for this item id", 
 	         params={@IPSJexlParam(name="itemId", description="The item id to find the folder id for")})
-   public int getParentFolderId(int itemId) throws PSCmsException {
+	   public int getParentFolderId(int itemId) throws PSCmsException {
 	   	return PSOItemFolderUtilities.getParentFolderId(itemId);
-	}
+	   }
 	   
    
    @Override
