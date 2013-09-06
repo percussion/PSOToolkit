@@ -944,11 +944,6 @@
          <dataType>java.lang.String</dataType>
          <description>The name of the slot to check for contents.</description>
       </PSXExtensionParamDef>    
-       <PSXExtensionParamDef id="4">
-         <name>includeInline</name>
-         <dataType>java.lang.Boolean</dataType>
-         <description>When "true" will include items in the inline slot - e.g. inserted in the Rich Text editor, when false will not.</description>
-      </PSXExtensionParamDef>    
       <suppliedResources/>
    </Extension>
    
