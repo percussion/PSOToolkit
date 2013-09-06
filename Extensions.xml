@@ -930,11 +930,16 @@
          <description>The field to set the value on. Required, may not be null or empty. </description>
       </PSXExtensionParamDef>
        <PSXExtensionParamDef id="1">
-         <name>field_value</name>
+         <name>valueIfEmpty</name>
          <dataType>java.lang.String</dataType>
-         <description>The value to set the field to. Optional, may be null or empty. </description>
+         <description>The value to set the field to if the slot is empty. Optional, may be null or empty. </description>
       </PSXExtensionParamDef>
        <PSXExtensionParamDef id="2">
+         <name>valueIfNotEmpty</name>
+         <dataType>java.lang.String</dataType>
+         <description>The value to set the field to if the slot is not empty. Optional, may be null or empty. </description>
+      </PSXExtensionParamDef>
+       <PSXExtensionParamDef id="3">
          <name>slotName</name>
          <dataType>java.lang.String</dataType>
          <description>The name of the slot to check for contents.</description>
