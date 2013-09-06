@@ -17,9 +17,14 @@ import com.percussion.extension.PSParameterMismatchException;
 import com.percussion.security.PSAuthorizationException;
 import com.percussion.server.IPSRequestContext;
 import com.percussion.server.PSRequestValidationException;
+import com.percussion.services.assembly.IPSAssemblyService;
+import com.percussion.services.assembly.IPSTemplateSlot;
+import com.percussion.services.assembly.PSAssemblyException;
+import com.percussion.services.assembly.PSAssemblyServiceLocator;
 import com.percussion.services.catalog.PSTypeEnum;
 import com.percussion.services.guidmgr.IPSGuidManager;
 import com.percussion.services.guidmgr.PSGuidManagerLocator;
+import com.percussion.util.IPSHtmlParameters;
 import com.percussion.utils.guid.IPSGuid;
 import com.percussion.webservices.PSErrorException;
 import com.percussion.webservices.content.IPSContentWs;
@@ -38,7 +43,7 @@ public class PSOSetFieldOnSlottedItemTransform  implements IPSItemInputTransform
 	private static Log log = LogFactory.getLog(PSOSetFieldOnSlottedItemTransform.class); 
 	private IPSGuidManager mGmgr;
 	private IPSContentWs mCws;
-	
+	private IPSAssemblyService mAss;
 	
 	/***
 	 * Inner class for handling the user configured parameters for the extension
@@ -52,7 +57,6 @@ public class PSOSetFieldOnSlottedItemTransform  implements IPSItemInputTransform
 		protected String valueIfEmpty;
 		protected String valueIfNotEmpty;		
 		protected String slotName;
-		protected boolean includeInline;
 		
 		/***
 		 * Constructor to initialize a new parameter object
@@ -63,7 +67,7 @@ public class PSOSetFieldOnSlottedItemTransform  implements IPSItemInputTransform
 			if(params!=null){
 				
 				//Make sure that all the parameters have been supplied.
-				if(params.length<5)
+				if(params.length<4)
 				{
 					throw new IllegalArgumentException("All parameters are required!");
 				}
@@ -96,13 +100,6 @@ public class PSOSetFieldOnSlottedItemTransform  implements IPSItemInputTransform
 					slotName=null;
 				}
 	
-				if(params[4]!=null){				
-					includeInline = Boolean.parseBoolean(params[4].toString().trim());
-					log.debug("includeInline=" + params[4]);
-				}else{
-					includeInline=false;
-				}
-	
 			}
 			
 			if(params == null || fieldName== null || slotName==null)
@@ -130,20 +127,31 @@ public class PSOSetFieldOnSlottedItemTransform  implements IPSItemInputTransform
 			return;
 		}
 		
-		PSRelationshipFilter filter = new PSRelationshipFilter();
-		String contentid = request.getParameter("sys_contentid");
+		String contentid = request.getParameter(IPSHtmlParameters.SYS_CONTENTID);
 		if(contentid==null){
 			return;
 		}
+	
+		String revision = request.getParameter(IPSHtmlParameters.SYS_REVISION);
+		if(revision == null){
+			revision = "-1";
+		}
+		
+		PSRelationshipFilter filter = new PSRelationshipFilter();
 		
 		IPSGuid itemGuid = gmgr.makeGuid(contentid,PSTypeEnum.LEGACY_CONTENT);   
-		
-		
 		PSLocator ownerLoc = gmgr.makeLocator(itemGuid);
+		ownerLoc.setRevision(Integer.parseInt(revision));
 		filter.setOwner(ownerLoc);
 		filter.setName(PSRelationshipFilter.FILTER_NAME_ACTIVE_ASSEMBLY);
+		filter.limitToEditOrCurrentOwnerRevision(true);
 		
-
+		IPSTemplateSlot slot = getSlot(configParams.slotName);
+		if(slot != null){
+			filter.setProperty(IPSHtmlParameters.SYS_SLOTID, String.valueOf(slot.getGUID().getUUID()));
+		}else{
+			return;
+		}
 
 		boolean found = false;
 		try{
@@ -154,7 +162,7 @@ public class PSOSetFieldOnSlottedItemTransform  implements IPSItemInputTransform
 					request.setParameter(configParams.fieldName, (configParams.valueIfNotEmpty + ""));
 					found=true;
 					log.debug("Found item in slot, setting " + configParams.fieldName + " to " + (configParams.valueIfNotEmpty + ""));
-					break;
+					//break;
 				}
 		  }
 			if(!found){
@@ -183,11 +191,35 @@ public class PSOSetFieldOnSlottedItemTransform  implements IPSItemInputTransform
 		return mCws;
 	}
 
-
+	private IPSAssemblyService getAssemblyService(){
+		if(mAss == null){
+			mAss = PSAssemblyServiceLocator.getAssemblyService();
+		}
+		return mAss;
+	}
+	
 	@Override
 	public void init(IPSExtensionDef arg0, File arg1)
 			throws PSExtensionException {
 		log.info("Extension Initialized.");		
+	}
+	
+	/***
+	 * Loads the specified slot. 
+	 * @param name the name of the slot
+	 * @return Null if the slot is not found, otherwise a valie IPSTemplateSlot instance for the specified slot.
+	 */
+	private IPSTemplateSlot getSlot(String name){
+		IPSTemplateSlot ret = null;
+		
+		try {
+			ret =  getAssemblyService().findSlotByName(name);
+			log.debug("Loaded slot " + name);
+		} catch (PSAssemblyException e) {
+			log.error("Unable to load slot " + name);
+		}
+		
+		return ret;
 	}
 	
 }
