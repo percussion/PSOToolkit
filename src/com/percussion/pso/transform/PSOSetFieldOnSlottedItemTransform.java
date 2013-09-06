@@ -47,7 +47,8 @@ public class PSOSetFieldOnSlottedItemTransform  implements IPSItemInputTransform
 	private class ConfiguredParams{
 
 		protected String fieldName;
-		protected String value;
+		protected String valueIfEmpty;
+		protected String valueIfNotEmpty;		
 		protected String slotName;
 		
 		/***
@@ -66,15 +67,22 @@ public class PSOSetFieldOnSlottedItemTransform  implements IPSItemInputTransform
 				}
 				
 				if(params[1]!=null){
-					value=params[1].toString();
+					valueIfEmpty=params[1].toString();
 					log.debug("value=" + params[1]);
 				}else{
-					value=null;
+					valueIfEmpty=null;
 				}
 				
-				if(params[2]!=null){				
-					slotName = params[2].toString().trim();
-					log.debug("slotId=" + params[2]);
+				if(params[2]!=null){
+					valueIfNotEmpty=params[2].toString();
+					log.debug("value=" + params[2]);
+				}else{
+					valueIfNotEmpty=null;
+				}
+				
+				if(params[3]!=null){				
+					slotName = params[3].toString().trim();
+					log.debug("slotName=" + params[3]);
 				}else{
 					slotName=null;
 				}
@@ -111,16 +119,22 @@ public class PSOSetFieldOnSlottedItemTransform  implements IPSItemInputTransform
 		filter.setOwner(ownerLoc);
 		filter.setName(PSRelationshipFilter.FILTER_NAME_ACTIVE_ASSEMBLY);
 		
+		boolean found = false;
 		try{
 			//Get all AA relationships and if we find one including the specified slot
 			//set the specified field to the specified value;
 			for (PSAaRelationship rel : cws.loadContentRelations(filter,true)) {
 				if(rel.getSlotName().equals(configParams.slotName)){
-					request.setParameter(configParams.fieldName, configParams.value);
-					log.debug("Setting " + configParams.fieldName + " to " + configParams.value );
+					request.setParameter(configParams.fieldName, (configParams.valueIfNotEmpty + ""));
+					found=true;
+					log.debug("Setting " + configParams.fieldName + " to " + (configParams.valueIfNotEmpty + ""));
 					break;
 				}
 		  }
+			if(!found){
+				request.setParameter(configParams.fieldName, (configParams.valueIfEmpty + ""));
+				log.debug("Setting " + configParams.fieldName + " to " + (configParams.valueIfEmpty + ""));
+			}
 		} catch (PSErrorException e) {
 			log.debug("Error processing slot relationships for item " + "" );
 		}finally{} 
