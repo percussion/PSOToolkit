@@ -28,6 +28,8 @@ import com.percussion.webservices.content.PSContentWsLocator;
 /***
  * Extension for setting the field on an item when it is saved and has an item in the specified slot. 
  * 
+ * @see com.percussion.extension.IPSItemInputTransformer
+ * @see com.percussion.extension.IPSRequestPreProcessor
  * @author natechadwick
  *
  */
@@ -50,6 +52,7 @@ public class PSOSetFieldOnSlottedItemTransform  implements IPSItemInputTransform
 		protected String valueIfEmpty;
 		protected String valueIfNotEmpty;		
 		protected String slotName;
+		protected boolean includeInline;
 		
 		/***
 		 * Constructor to initialize a new parameter object
@@ -59,7 +62,13 @@ public class PSOSetFieldOnSlottedItemTransform  implements IPSItemInputTransform
 			
 			if(params!=null){
 				
-				if(params[1]!=null){
+				//Make sure that all the parameters have been supplied.
+				if(params.length<5)
+				{
+					throw new IllegalArgumentException("All parameters are required!");
+				}
+						
+				if(params[0]!=null){
 					fieldName=params[0].toString();
 					log.debug("fieldName=" + params[0]);
 				}else{
@@ -68,14 +77,14 @@ public class PSOSetFieldOnSlottedItemTransform  implements IPSItemInputTransform
 				
 				if(params[1]!=null){
 					valueIfEmpty=params[1].toString();
-					log.debug("value=" + params[1]);
+					log.debug("valueIfEmpty=" + params[1]);
 				}else{
 					valueIfEmpty=null;
 				}
 				
 				if(params[2]!=null){
 					valueIfNotEmpty=params[2].toString();
-					log.debug("value=" + params[2]);
+					log.debug("valueIfNotEmpty=" + params[2]);
 				}else{
 					valueIfNotEmpty=null;
 				}
@@ -86,6 +95,14 @@ public class PSOSetFieldOnSlottedItemTransform  implements IPSItemInputTransform
 				}else{
 					slotName=null;
 				}
+	
+				if(params[4]!=null){				
+					includeInline = Boolean.parseBoolean(params[4].toString().trim());
+					log.debug("includeInline=" + params[4]);
+				}else{
+					includeInline=false;
+				}
+	
 			}
 			
 			if(params == null || fieldName== null || slotName==null)
@@ -104,7 +121,14 @@ public class PSOSetFieldOnSlottedItemTransform  implements IPSItemInputTransform
 		
 		IPSGuidManager gmgr = getGuidManager();
 		IPSContentWs cws = getContentWebService();
-		ConfiguredParams configParams = new ConfiguredParams(params);
+		ConfiguredParams configParams = null;
+		
+		try{
+			configParams = new ConfiguredParams(params);
+		}catch(IllegalArgumentException e){
+			log.warn(e.getLocalizedMessage());
+			return;
+		}
 		
 		PSRelationshipFilter filter = new PSRelationshipFilter();
 		String contentid = request.getParameter("sys_contentid");
@@ -119,6 +143,8 @@ public class PSOSetFieldOnSlottedItemTransform  implements IPSItemInputTransform
 		filter.setOwner(ownerLoc);
 		filter.setName(PSRelationshipFilter.FILTER_NAME_ACTIVE_ASSEMBLY);
 		
+
+
 		boolean found = false;
 		try{
 			//Get all AA relationships and if we find one including the specified slot
@@ -127,13 +153,13 @@ public class PSOSetFieldOnSlottedItemTransform  implements IPSItemInputTransform
 				if(rel.getSlotName().equals(configParams.slotName)){
 					request.setParameter(configParams.fieldName, (configParams.valueIfNotEmpty + ""));
 					found=true;
-					log.debug("Setting " + configParams.fieldName + " to " + (configParams.valueIfNotEmpty + ""));
+					log.debug("Found item in slot, setting " + configParams.fieldName + " to " + (configParams.valueIfNotEmpty + ""));
 					break;
 				}
 		  }
 			if(!found){
 				request.setParameter(configParams.fieldName, (configParams.valueIfEmpty + ""));
-				log.debug("Setting " + configParams.fieldName + " to " + (configParams.valueIfEmpty + ""));
+				log.debug("No item found in slot, setting " + configParams.fieldName + " to " + (configParams.valueIfEmpty + ""));
 			}
 		} catch (PSErrorException e) {
 			log.debug("Error processing slot relationships for item " + "" );
