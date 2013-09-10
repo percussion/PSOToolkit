@@ -2,18 +2,35 @@ package com.percussion.pso.transform;
 
 import java.io.File;
 
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import com.percussion.cms.objectstore.PSAaRelationship;
 import com.percussion.cms.objectstore.PSRelationshipFilter;
 import com.percussion.design.objectstore.PSLocator;
 import com.percussion.extension.IPSExtensionDef;
 import com.percussion.extension.IPSItemInputTransformer;
+import com.percussion.extension.IPSItemValidator;
 import com.percussion.extension.IPSRequestPreProcessor;
 import com.percussion.extension.PSExtensionException;
 import com.percussion.extension.PSExtensionProcessingException;
 import com.percussion.extension.PSParameterMismatchException;
+import com.percussion.pso.effects.PSOSetFieldOnSlottedItemEffect;
+import com.percussion.pso.utils.PSOSlotContents;
 import com.percussion.security.PSAuthorizationException;
 import com.percussion.server.IPSRequestContext;
 import com.percussion.server.PSRequestValidationException;
@@ -38,12 +55,12 @@ import com.percussion.webservices.content.PSContentWsLocator;
  * @author natechadwick
  *
  */
-public class PSOSetFieldOnSlottedItemTransform  implements IPSItemInputTransformer, IPSRequestPreProcessor {
+public class PSOSetFieldOnSlottedItemTransform  implements IPSItemInputTransformer, IPSRequestPreProcessor,com.percussion.extension.IPSResultDocumentProcessor {
 
 	private static Log log = LogFactory.getLog(PSOSetFieldOnSlottedItemTransform.class); 
 	private IPSGuidManager mGmgr;
 	private IPSContentWs mCws;
-	private IPSAssemblyService mAss;
+
 	
 	/***
 	 * Inner class for handling the user configured parameters for the extension
@@ -132,9 +149,23 @@ public class PSOSetFieldOnSlottedItemTransform  implements IPSItemInputTransform
 			return;
 		}
 	
+		//Get the current edit revision
 		String revision = request.getParameter(IPSHtmlParameters.SYS_REVISION);
 		if(revision == null){
-			revision = "-1";
+			revision = "-1"; //If no revision is on the request go revisionless
+		}
+		
+		//See if we are being triggered via the effect context (like on a Purge of a
+		//slot item), if we are then skip processing. 
+		String processedFlag = request.getParameter(PSOSetFieldOnSlottedItemEffect.PROCESSED_FLAG);
+		
+		if(processedFlag != null){
+			if(Boolean.parseBoolean(processedFlag) == true){
+				log.debug("Skipping transform as update handled by effect.");
+				return;
+			}
+		}else{
+			log.debug("No processed flag detected.");
 		}
 		
 		PSRelationshipFilter filter = new PSRelationshipFilter();
@@ -146,7 +177,7 @@ public class PSOSetFieldOnSlottedItemTransform  implements IPSItemInputTransform
 		filter.setName(PSRelationshipFilter.FILTER_NAME_ACTIVE_ASSEMBLY);
 		filter.limitToEditOrCurrentOwnerRevision(true);
 		
-		IPSTemplateSlot slot = getSlot(configParams.slotName);
+		IPSTemplateSlot slot = PSOSlotContents.getSlot(configParams.slotName);
 		if(slot != null){
 			filter.setProperty(IPSHtmlParameters.SYS_SLOTID, String.valueOf(slot.getGUID().getUUID()));
 		}else{
@@ -162,7 +193,7 @@ public class PSOSetFieldOnSlottedItemTransform  implements IPSItemInputTransform
 					request.setParameter(configParams.fieldName, (configParams.valueIfNotEmpty + ""));
 					found=true;
 					log.debug("Found item in slot, setting " + configParams.fieldName + " to " + (configParams.valueIfNotEmpty + ""));
-					//break;
+					break;
 				}
 		  }
 			if(!found){
@@ -191,35 +222,27 @@ public class PSOSetFieldOnSlottedItemTransform  implements IPSItemInputTransform
 		return mCws;
 	}
 
-	private IPSAssemblyService getAssemblyService(){
-		if(mAss == null){
-			mAss = PSAssemblyServiceLocator.getAssemblyService();
-		}
-		return mAss;
-	}
 	
 	@Override
 	public void init(IPSExtensionDef arg0, File arg1)
 			throws PSExtensionException {
 		log.info("Extension Initialized.");		
 	}
-	
-	/***
-	 * Loads the specified slot. 
-	 * @param name the name of the slot
-	 * @return Null if the slot is not found, otherwise a valie IPSTemplateSlot instance for the specified slot.
-	 */
-	private IPSTemplateSlot getSlot(String name){
-		IPSTemplateSlot ret = null;
-		
-		try {
-			ret =  getAssemblyService().findSlotByName(name);
-			log.debug("Loaded slot " + name);
-		} catch (PSAssemblyException e) {
-			log.error("Unable to load slot " + name);
-		}
-		
-		return ret;
+
+
+	@Override
+	public boolean canModifyStyleSheet() {
+		// TODO Auto-generated method stub
+		return false;
 	}
-	
+
+
+	@Override
+	public Document processResultDocument(Object[] arg0,
+			IPSRequestContext arg1, Document arg2)
+			throws PSParameterMismatchException, PSExtensionProcessingException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+		
 }
