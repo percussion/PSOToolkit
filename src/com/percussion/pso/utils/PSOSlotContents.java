@@ -27,6 +27,10 @@ import org.apache.commons.logging.LogFactory;
 import com.percussion.cms.objectstore.PSAaRelationship;
 import com.percussion.cms.objectstore.PSRelationshipFilter;
 import com.percussion.design.objectstore.PSLocator;
+import com.percussion.services.assembly.IPSAssemblyService;
+import com.percussion.services.assembly.IPSTemplateSlot;
+import com.percussion.services.assembly.PSAssemblyException;
+import com.percussion.services.assembly.PSAssemblyServiceLocator;
 import com.percussion.services.guidmgr.IPSGuidManager;
 import com.percussion.services.guidmgr.PSGuidManagerLocator;
 import com.percussion.utils.guid.IPSGuid;
@@ -67,6 +71,7 @@ public class PSOSlotContents
    
    private static IPSContentWs cws = null; 
    private static IPSGuidManager gmgr = null; 
+   private static IPSAssemblyService mAss;
    
    /**
     * Default constructor.  
@@ -203,5 +208,28 @@ public class PSOSlotContents
       PSOSlotContents.gmgr = gmgr;
    }
    
-   
+   /***
+	 * Loads the specified slot. 
+	 * @param name the name of the slot
+	 * @return Null if the slot is not found, otherwise a valie IPSTemplateSlot instance for the specified slot.
+	 */
+	public static IPSTemplateSlot getSlot(String name){
+		IPSTemplateSlot ret = null;
+		
+		try {
+			ret =  getAssemblyService().findSlotByName(name);
+			log.debug("Loaded slot " + name);
+		} catch (PSAssemblyException e) {
+			log.error("Unable to load slot " + name);
+		}
+		
+		return ret;
+	}
+	
+	protected static IPSAssemblyService getAssemblyService(){
+		if(mAss == null){
+			mAss = PSAssemblyServiceLocator.getAssemblyService();
+		}
+		return mAss;
+	}
 }

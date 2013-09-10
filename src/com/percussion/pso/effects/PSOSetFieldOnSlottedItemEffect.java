@@ -11,11 +11,16 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.percussion.cms.PSCmsException;
 import com.percussion.cms.objectstore.IPSFieldValue;
+import com.percussion.cms.objectstore.PSAaRelationship;
 import com.percussion.cms.objectstore.PSCoreItem;
+import com.percussion.cms.objectstore.PSInvalidContentTypeException;
 import com.percussion.cms.objectstore.PSItemField;
 import com.percussion.cms.objectstore.PSItemFieldMeta;
+import com.percussion.cms.objectstore.PSRelationshipFilter;
 import com.percussion.cms.objectstore.PSTextValue;
+import com.percussion.cms.objectstore.server.PSServerItem;
 import com.percussion.design.objectstore.PSField;
 import com.percussion.design.objectstore.PSLocator;
 import com.percussion.design.objectstore.PSRelationship;
@@ -23,15 +28,18 @@ import com.percussion.extension.IPSExtensionDef;
 import com.percussion.extension.PSExtensionException;
 import com.percussion.extension.PSExtensionProcessingException;
 import com.percussion.extension.PSParameterMismatchException;
+import com.percussion.pso.utils.PSOSlotContents;
 import com.percussion.relationship.IPSEffect;
 import com.percussion.relationship.IPSExecutionContext;
 import com.percussion.relationship.PSEffectResult;
 import com.percussion.relationship.annotation.PSEffectContext;
 import com.percussion.relationship.annotation.PSHandlesEffectContext;
 import com.percussion.server.IPSRequestContext;
+import com.percussion.server.PSRequestContext;
 import com.percussion.services.guidmgr.IPSGuidManager;
 import com.percussion.services.guidmgr.PSGuidManagerLocator;
 import com.percussion.utils.guid.IPSGuid;
+import com.percussion.webservices.PSErrorException;
 import com.percussion.webservices.PSErrorResultsException;
 import com.percussion.webservices.content.IPSContentWs;
 import com.percussion.webservices.content.PSContentWsLocator;
@@ -45,7 +53,7 @@ import com.percussion.webservices.content.PSContentWsLocator;
  * @author natechadwick
  *
  */
-@PSHandlesEffectContext(required=PSEffectContext.PRE_CHECKIN)
+@PSHandlesEffectContext(required=PSEffectContext.ALL)
 public class PSOSetFieldOnSlottedItemEffect implements IPSEffect{
 
 
@@ -53,7 +61,30 @@ public class PSOSetFieldOnSlottedItemEffect implements IPSEffect{
 	 * Logger for this class
 	 */
 	private static final Log log = LogFactory.getLog(PSOSetFieldOnSlottedItemEffect.class);
+	private static IPSContentWs mCws;  
+	private static IPSGuidManager mGmgr; 
+
+	/***
+	 * Returns a valid ContentWS instance
+	 * @return
+	 */
+	protected static IPSContentWs getContentService(){
+		if(mCws == null)
+			mCws = PSContentWsLocator.getContentWebservice();
+
+		return mCws;		
+	}
 	
+	/***
+	 * Returns a valid Guid Manager instance.
+	 * @return
+	 */
+	protected static IPSGuidManager getGuidManager(){
+		if(mGmgr==null)
+			mGmgr = PSGuidManagerLocator.getGuidMgr();
+		
+		return mGmgr;
+	}
 	
 	/***
 	 * Inner class for handling the user configured parameters for the extension
@@ -63,11 +94,12 @@ public class PSOSetFieldOnSlottedItemEffect implements IPSEffect{
 	 */
 	private class ConfiguredParams{
 
-		protected String contentType;
 		protected String fieldName;
-		protected String value;
+		protected String valueIfEmpty;
+		protected String valueIfNotEmpty;		
+		protected String slotName;
 		protected int slotId;
-
+		
 		/***
 		 * Constructor to initialize a new parameter object
 		 * @param params
@@ -75,44 +107,54 @@ public class PSOSetFieldOnSlottedItemEffect implements IPSEffect{
 		protected ConfiguredParams(Object[] params){
 			
 			if(params!=null){
-			
-				if(params[0]!=null){
-					contentType=params[0].toString();
-					log.debug("contentType=" + params[0]);
-				}else{
-					contentType=null;
+				
+				//Make sure that all the parameters have been supplied.
+				if(params.length<4)
+				{
+					throw new IllegalArgumentException("All parameters are required!");
 				}
-		
-				if(params[1]!=null){
-					fieldName=params[1].toString();
-					log.debug("fieldName=" + params[1]);
+						
+				if(params[0]!=null){
+					fieldName=params[0].toString();
+					log.debug("fieldName=" + params[0]);
 				}else{
 					fieldName=null;
 				}
 				
-				if(params[2]!=null){
-					value=params[2].toString();
-					log.debug("value=" + params[2]);
+				if(params[1]!=null){
+					valueIfEmpty=params[1].toString();
+					log.debug("valueIfEmpty=" + params[1]);
 				}else{
-					value=null;
+					valueIfEmpty=null;
+				}
+				
+				if(params[2]!=null){
+					valueIfNotEmpty=params[2].toString();
+					log.debug("valueIfNotEmpty=" + params[2]);
+				}else{
+					valueIfNotEmpty=null;
 				}
 				
 				if(params[3]!=null){				
-					slotId = Integer.parseInt(params[3].toString());
-					log.debug("slotId=" + params[3]);
+					slotName = params[3].toString().trim();
+					log.debug("slotName=" + params[3]);
 				}else{
-					slotId=0;
+					slotName=null;
 				}
+	
 			}
 			
-			if(params == null || contentType == null || fieldName== null || slotId==0)
+			if(params == null || fieldName== null || slotName==null)
 			{
-				throw new IllegalArgumentException("Content Type, Field Name, and SlotId parameters must be set.");
+				throw new IllegalArgumentException("Field Name, and SlotName parameters must be set.");
 			}
-	
+			
+			//Load the slot id
+			slotId = PSOSlotContents.getSlot(slotName).getGUID().getUUID();
+			
 		}
-		
 	}
+
 	
 	/***
 	 * Inner class for encapsulating the relationship parameters. 
@@ -228,42 +270,80 @@ public class PSOSetFieldOnSlottedItemEffect implements IPSEffect{
 		      IPSExecutionContext context, PSEffectResult result)
 			throws PSExtensionProcessingException, PSParameterMismatchException {
 			
-		if(context.isPreUpdate()){
+		if(context.isPostConstruction() || context.isPostDestruction()) {
 			//Get the configured params. 
 			ConfiguredParams configParams = new ConfiguredParams(params);
 			
 			PSRelationship rel = context.getCurrentRelationship();
-			//Update the item 
-		   log.debug("In Pre-Update..");
-		   //355
 			if(rel.isActiveAssemblyRelationship()){
 				log.debug("Loading relationship properties...");
 				RelationshipParams relParams = new RelationshipParams(rel.getProperties());
 				
 				if(relParams.slotid == configParams.slotId){
 						log.debug("Slot match.");
-						IPSContentWs csvc = PSContentWsLocator.getContentWebservice();
-						IPSGuidManager gmgr = PSGuidManagerLocator.getGuidMgr();
-						PSLocator loc = rel.getOwner();
-						loc.setRevision(-1);
-						IPSGuid guid = gmgr.makeGuid(rel.getOwner());
+					
+						IPSGuid guid = getGuidManager().makeGuid(
+								rel.getOwner()
+								);
 						
 
 						List<IPSGuid>guids = Collections.singletonList(guid);
 						try{
 							//Load the owner item. 
-							List<PSCoreItem> items = csvc.loadItems(guids, true, true, false,false);
+							List<PSCoreItem> items = getContentService().loadItems(
+									guids, true, true, false,false);
+							
 							if(items!=null && items.size()>0){
 								//Should only be one item. 
 								PSCoreItem item = items.get(0);
+								
+								if(context.isPreDestruction())
+									log.debug("Pre-Destruction");
+								else
+									log.debug("Pre-Construction");
 								log.debug("Updating Content ID:" + item.getContentId());
-								//Update the field.
-								updateField(item, configParams.fieldName, configParams.value);
+			
+								//Determine if this is a destroy or a create. 
+								if(context.isPostConstruction()){
+									updateField(item, configParams.fieldName, configParams.valueIfNotEmpty);
+									log.debug("Updating field for a construction event");
+								}else if(context.isPostDestruction()){
+									
+									PSRelationshipFilter filter = new PSRelationshipFilter();
+									
+									filter.setOwner(rel.getOwner());
+									filter.setName(PSRelationshipFilter.FILTER_NAME_ACTIVE_ASSEMBLY);
+									filter.limitToEditOrCurrentOwnerRevision(true);
+									
+									//If this is destruction then we need to see if there are any more items in the slot. 
+									boolean found = false;
+									try{
+										//Get all AA relationships and if we find one including the specified slot
+										//set the specified field to the specified value;
+										for (PSAaRelationship r : mCws.loadContentRelations(filter,true)) {
+											if(r.getId()!= rel.getId()){
+												if(r.getSlotName().equals(configParams.slotName)){
+													updateField(item, configParams.fieldName, configParams.valueIfNotEmpty + "");
+													found=true;
+													log.debug("Found item in slot, setting " + configParams.fieldName + " to " + (configParams.valueIfNotEmpty + ""));
+													break;
+												}
+											}
+									  }
+										if(!found){
+											updateField(item, configParams.fieldName, configParams.valueIfEmpty + "");
+											log.debug("No item found in slot, setting " + configParams.fieldName + " to " + (configParams.valueIfEmpty + ""));
+										}
+									} catch (PSErrorException e) {
+										log.debug("Error processing slot relationships for item " + "" );
+									}finally{} 
+								}
 								
 								//Save the owner item.
-								List<IPSGuid> savedItems = csvc.saveItems(Collections.singletonList(item), false, false);
-
-								log.debug(savedItems.size() + " item(s) updated.");
+								setProcessedFlag(request);
+								saveItem((PSRequestContext)request, rel.getOwner(), item);
+								clearProcessedFlag(request);
+								log.debug("Item updated.");
 							}else{
 								log.error("Unable to locate owner for relationship. Content ID:" + rel.getOwner().getId() + " not found!");
 							}
@@ -273,6 +353,12 @@ public class PSOSetFieldOnSlottedItemEffect implements IPSEffect{
 							log.error(e);
 						} catch (IOException e) {
 							log.error(e);
+						} catch (PSCmsException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (PSInvalidContentTypeException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
 						}finally{}
 				}
 			
@@ -346,8 +432,43 @@ public class PSOSetFieldOnSlottedItemEffect implements IPSEffect{
 			newValue = new PSTextValue((String)value);
 		}
 		
-		//TODO: Handle dates and binaries
 		
 		return newValue;
+	}
+	
+	public static String PROCESSED_FLAG= "PSOSetFieldOnSlottedItemProcessedFlag";
+	
+	/***
+	 * Sets the {@link #PROCESSED_FLAG} on the Request context so that the
+	 * input transform doesn't overwrite the output of the effect when running
+	 * in non Content Editor contexts. 
+	 * 
+	 * @param ctx
+	 */
+	private void setProcessedFlag(IPSRequestContext ctx){
+		ctx.setParameter(PROCESSED_FLAG, true);
+	}
+
+	/***
+	 * Clears the processed flag. 
+	 */
+	private void clearProcessedFlag(IPSRequestContext ctx){
+		ctx.removeParameter(PROCESSED_FLAG);
+	}
+	
+	
+	private void saveItem(PSRequestContext request, PSLocator loc, PSCoreItem item) throws PSCmsException, PSInvalidContentTypeException{
+			
+		PSServerItem serverItem = new PSServerItem(item.getItemDefinition());
+
+		serverItem.load(loc, request.getSecurityToken());
+
+           // merge the new data into the current item
+           serverItem.loadData(item);
+
+           // insert or update the item
+           serverItem.save(request.getRequest());
+
+
 	}
 }
