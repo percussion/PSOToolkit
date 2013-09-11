@@ -76,26 +76,56 @@ public class PSOCopyParameter implements IPSItemInputTransformer,IPSRequestPrePr
     
       String fieldSizeString = getParameter(params,3);
       int fieldSize = -1;
-      if(fieldSizeString != null && !fieldSizeString.equals("")){
-    	if(StringUtils.isNumeric(fieldSizeString))
-      	{
-    	  fieldSize = Integer.valueOf(fieldSizeString);
-      	}
+      if(StringUtils.isNotBlank(fieldSizeString) && 
+    		  StringUtils.isNumeric(fieldSizeString)){
+    	  fieldSize = Integer.parseInt(fieldSizeString);
       }
+      
       String cleanupString = getParameter(params,4);
-      boolean cleanup = cleanupString.equalsIgnoreCase("true");
+      boolean cleanup=false;
+      if(StringUtils.isNotBlank(cleanupString)){
+    	  cleanup = cleanupString.equalsIgnoreCase("true");
+      }
+      
       String includesExtensionString = getParameter(params,5);
-      boolean includesExtension = includesExtensionString.equalsIgnoreCase("true");
+      boolean includesExtension = false;
+      if(StringUtils.isNotBlank(includesExtensionString)){
+    	  includesExtension= includesExtensionString.equalsIgnoreCase("true");
+      }
+
       String forceLowerString = getParameter(params,6);
-      boolean forceLower =  forceLowerString.equalsIgnoreCase("true");
+      boolean forceLower = false;
+      if(StringUtils.isNotBlank(forceLowerString)){
+    	  forceLower = forceLowerString.equalsIgnoreCase("true");
+   	  }
+    		  
       String doNotCopyEmptyString = getParameter(params,7);
-      boolean doNotCopyEmpty = doNotCopyEmptyString.equalsIgnoreCase("true");
+      boolean doNotCopyEmpty = false;
+      if(StringUtils.isNotBlank(doNotCopyEmptyString)){
+    	  doNotCopyEmpty = doNotCopyEmptyString.equalsIgnoreCase("true");  
+      }
+      
       String stripExtensionString = getParameter(params,8);
-      boolean stripExtension = stripExtensionString.equalsIgnoreCase("true");
+      boolean stripExtension = false;
+      if(StringUtils.isNotBlank(stripExtensionString)){
+    	  stripExtension = stripExtensionString.equalsIgnoreCase("true");
+      }
+      
+      
       String prefix = getParameter(params,9);
+      if(prefix == null){
+    	  prefix = "";
+      }
+      
       String suffix = getParameter(params,10);
+      if(suffix == null){
+    	  suffix = "";
+      }
+      
       String forceExtension = getParameter(params,11);
-     
+      if(forceExtension == null){
+    	  forceExtension = "";
+      }
       String s = (String)request.getParameterObject(sourceName);
       String d = (String)request.getParameterObject(destinationName);
       
