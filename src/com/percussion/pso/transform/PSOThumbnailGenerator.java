@@ -171,7 +171,7 @@ public class PSOThumbnailGenerator extends PSFileInfo
          throw new IllegalArgumentException(emsg);
       }
       String maxD =params[2].toString(); 
-      if(StringUtils.isNotBlank(maxD))
+      if(StringUtils.isNotBlank(maxD) && StringUtils.isNumeric(maxD))
       {
          maxDimension = Integer.parseInt(maxD);
       }
@@ -186,7 +186,8 @@ public class PSOThumbnailGenerator extends PSFileInfo
       if(params.length > 4)
       {
          String thumbWidth = params[4].toString(); 
-         if(StringUtils.isNotBlank(thumbWidth))
+         //Issue #31 - NPE when no value is set
+         if(StringUtils.isNotBlank(thumbWidth) && StringUtils.isNumeric(thumbWidth))
          {
             width = Integer.parseInt(thumbWidth); 
          }
@@ -194,7 +195,7 @@ public class PSOThumbnailGenerator extends PSFileInfo
       if(params.length > 5)
       {
          String thumbHeight  = params[5].toString();
-         if(StringUtils.isNotBlank(thumbHeight))
+         if(StringUtils.isNotBlank(thumbHeight) && StringUtils.isNumeric(thumbHeight))
          {
             height = Integer.parseInt(thumbHeight); 
          }
