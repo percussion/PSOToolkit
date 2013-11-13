@@ -51,7 +51,6 @@
 			    	<include name="commons-jexl*.jar"/> 
 			    	<include name="jcr*.jar" /> 
 			    	<include name="commons-logging*.jar" /> 
-			    	<include name="commons-collections*.jar" /> 
 			    	<include name="commons-httpclient*.jar" /> 
 				</fileset>
 			    <fileset dir="${rhythmyx.home}/AppServer/lib/endorsed" >
