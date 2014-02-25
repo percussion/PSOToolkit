@@ -242,6 +242,8 @@
 	
 	<target name="dist" depends="init, clean, javadoc" description="generate the distribution">
 		<buildnumber/>
+		<fixcrlf srcdir="." includes="install.sh"
+         eol="lf" eof="remove" />
 		<antcall target="jarbuilder"/>	
 		<zip destfile="${distfile}">						
 			<zipfileset dir="${lib}" includes="${jarname}" prefix="${zipprefix}/lib" />
