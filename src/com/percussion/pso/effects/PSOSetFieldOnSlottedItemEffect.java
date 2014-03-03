@@ -370,11 +370,6 @@ public class PSOSetFieldOnSlottedItemEffect implements IPSEffect{
 		result.setSuccess();
 	}
 
-	@Override
-	public void recover(Object[] params, IPSRequestContext request, IPSExecutionContext context, PSExtensionProcessingException e, PSEffectResult result) throws PSExtensionProcessingException {
-			log.debug("recover method called.");
-			result.setSuccess(); 
-	}
 
 	@Override
 	public void test(Object[] params, IPSRequestContext request, IPSExecutionContext context, PSEffectResult result)
