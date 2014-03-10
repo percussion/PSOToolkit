@@ -62,10 +62,6 @@
 		 <fileset dir="${ivylib}">
 		 	<include name="**.jar"/>
 		 </fileset>
-		 <fileset dir="${lib}">
-			 	<include name="jdom.jar"/>
-			 	<include name="aws-java-sdk-1.4.4.1.jar"/>
-		 </fileset>
 		</path>
 	
 
@@ -242,8 +238,8 @@
 	
 	<target name="dist" depends="init, clean, javadoc" description="generate the distribution">
 		<buildnumber/>
-<!--  <fixcrlf srcdir="." includes="install.sh" -->		
-         eol="lf" eof="remove" />
+<!--  <fixcrlf srcdir="." includes="install.sh" 		
+         eol="lf" eof="remove" /> -->
 		<antcall target="jarbuilder"/>	
 		<zip destfile="${distfile}">						
 			<zipfileset dir="${lib}" includes="${jarname}" prefix="${zipprefix}/lib" />
