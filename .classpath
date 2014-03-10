@@ -58,6 +58,5 @@
 	<classpathentry kind="lib" path="ivylib/spring.jar"/>
 	<classpathentry kind="lib" path="ivylib/stax-api.jar"/>
 	<classpathentry kind="lib" path="ivylib/Tidy.jar"/>
-	<classpathentry kind="lib" path="lib/aws-java-sdk-1.4.4.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
