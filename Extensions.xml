@@ -808,33 +808,6 @@
       </PSXExtensionParamDef>
       <suppliedResources/>
    </Extension>
-  <Extension categorystring="" context="global/percussion/user/" deprecated="no" handler="Java" name="pso_S3DeliveryHandler" restoreRequestParamsOnError="no">
-      <initParam name="com.percussion.user.description">Provides a Publishing Delivery Handler for publishing content to Amazon's S3 service.</initParam>
-      <initParam name="com.percussion.extension.version">1</initParam>
-      <initParam name="com.percussion.extension.reentrant">yes</initParam>
-      <initParam name="className">com.percussion.pso.delivery.s3.PSS3DeliveryHandler</initParam>
-      <interface name="com.percussion.extension.IPSDeliveryHandler"/>
-      <PSXExtensionParamDef id="1">
-         <name>accessKey</name>
-         <dataType>java.lang.String</dataType>
-         <description>The AWS access key id for the account that will be published to.</description>
-      </PSXExtensionParamDef>
-      <PSXExtensionParamDef id="2">
-         <name>secretKey</name>
-         <dataType>java.lang.String</dataType>
-         <description>The AWS secret key for the supplied access key.  This can be retrieved from your AWS account.</description>
-      </PSXExtensionParamDef>
-      <PSXExtensionParamDef id="3">
-         <name>bucketName</name>
-         <dataType>java.lang.String</dataType>
-         <description>The name of the Bucket that will be published to.</description>
-      </PSXExtensionParamDef>
-      <PSXExtensionParamDef id="4">
-         <name>transactional</name>
-         <dataType>java.lang.Boolean</dataType>
-         <description>When true, items will be queued for one time transmittal to the remote bucket at the end of the edition, when false content will be delivered as it is processed by the publishing engine.</description>
-      </PSXExtensionParamDef>      
-   </Extension>
    <Extension name="PSNavLandingPageGeneratorEffect" categorystring="relationship" context="user/" deprecated="no" handler="Java" restoreRequestParamsOnError="yes">
 		<initParam name="com.percussion.user.description">Adds a Landing Page of the specified type to the NavOn's Landing Page slot.</initParam>
 		<initParam name="com.percussion.extension.version">1</initParam>

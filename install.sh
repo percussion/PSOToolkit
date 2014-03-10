@@ -36,4 +36,3 @@ else
   Help
   exit 3
 fi
-
