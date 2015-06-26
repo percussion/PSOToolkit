@@ -42,6 +42,8 @@
 	  <dependency org="org.springframework" name="spring-test" rev="2.5.5" conf="test->default"/>
 	  <dependency org="log4j" name="log4j" rev="1.2.14" conf="test->default" /> 
       <dependency org="rome" name="rome" rev="1.0" conf="test->default" />
+	  <dependency org="org.jsoup" name="jsoup" rev="1.5.2" conf="test->default" />
+	  <dependency org="net.sf.json-lib" name="json-lib" rev="2.2.1" conf="test->default" />
       <dependency org="org.eclipse.jgit" name="org.eclipse.jgit.ant" rev="2.0.0.201206130900-r" conf="test->default" />
 	</dependencies>
 </ivy-module>
