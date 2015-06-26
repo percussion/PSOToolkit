@@ -168,9 +168,9 @@ public class PSORemoteContentTools extends PSJexlUtilBase implements IPSJexlExpr
     @IPSJexlMethod(description="Returns JSONObject based on a URL.",
         params={
             @IPSJexlParam(name="urlString", description="url to pull content from, include query params if desired"),
+            @IPSJexlParam(name="headers", description="map of headers to set"),
             @IPSJexlParam(name="username", description="username"),
-            @IPSJexlParam(name="password", description="password"),
-            @IPSJexlParam(name="headers", description="map of headers to set")
+            @IPSJexlParam(name="password", description="password")
         },
         returns="Returns a net.sf.json.JSONObject")
     public JSONObject getRemoteJSONContent(String urlString, Map<String,String> headers, String username, String password)
