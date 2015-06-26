@@ -36,18 +36,7 @@ public class PSORemoteContentTools extends PSJexlUtilBase implements IPSJexlExpr
     public PSORemoteContentTools(){
         super();
     }
-
-
-    public static void main(String[] args){
-        PSORemoteContentTools tester = new PSORemoteContentTools();
-        try{System.out.println(
-                tester.getRemoteJSONContent("http://httpbin.org/basic-auth/user/passwd","user","passwd"));
-
-        }catch(Exception e){
-            System.out.println(e);
-        }
-
-    }
+    
     /**
      * This gets remote JSON content and returns a JSONobject.
      * @param urlString
