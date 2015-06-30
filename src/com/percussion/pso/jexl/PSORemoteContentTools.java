@@ -36,7 +36,162 @@ public class PSORemoteContentTools extends PSJexlUtilBase implements IPSJexlExpr
     public PSORemoteContentTools(){
         super();
     }
-    
+
+    /**
+     * This gets remote JSON content and returns a JSONobject.
+     * @param urlString
+     * @return org.jsoup.nodes.Document
+     * @throws IllegalArgumentException
+     * @throws IOException
+     */
+    @IPSJexlMethod(description="Returns a status code for a url",
+            params={
+                    @IPSJexlParam(name="urlString", description="url to pull content from, include query params if desired")
+            },
+            returns="Returns an integer status code")
+    public int getHTTPStatusCode(String urlString)
+            throws IllegalArgumentException, IOException {
+        HttpClient client = new HttpClient();
+        GetMethod get = new GetMethod(urlString);
+        String responseBody;
+        int statusCode = 400;
+        try{
+            statusCode = client.executeMethod(get);
+        }finally{
+            // Process the data from the input stream.
+            get.releaseConnection();
+        }
+        return statusCode;
+    }
+
+    /**
+     * This gets remote JSON content and returns a JSONobject.
+     * @param urlString
+     * @param username
+     * @param password
+     * @return org.jsoup.nodes.Document
+     * @throws IllegalArgumentException
+     * @throws IOException
+     */
+    @IPSJexlMethod(description="Returns a status code for a url",
+            params={
+                    @IPSJexlParam(name="urlString", description="url to pull content from, include query params if desired"),
+                    @IPSJexlParam(name="username", description="username"),
+                    @IPSJexlParam(name="password", description="password")
+            },
+            returns="Returns a integer status code")
+    public int getHTTPStatusCode(String urlString, String username, String password)
+            throws IllegalArgumentException, IOException {
+        HttpClient client = new HttpClient();
+        GetMethod get = new GetMethod(urlString);
+
+        Credentials defaultcreds = new UsernamePasswordCredentials(username, password);
+        URI uriObject = new URI(urlString);
+
+        int statusCode = 400;
+        try{
+            client.getState().setCredentials(
+                    new AuthScope(uriObject.getHost(),uriObject.getPort(), AuthScope.ANY_REALM),
+                    defaultcreds);
+
+            statusCode = client.executeMethod(get);
+
+        }finally{
+            // Process the data from the input stream.
+            get.releaseConnection();
+        }
+
+        return statusCode;
+    }
+
+    /**
+     * This gets remote JSON content and returns a JSONobject.
+     * @param urlString
+     * @param headers
+     * @return org.jsoup.nodes.Document
+     * @throws IllegalArgumentException
+     * @throws IOException
+     */
+    @IPSJexlMethod(description="Returns status code based on url",
+            params={
+                    @IPSJexlParam(name="urlString", description="url to pull content from, include query params if desired"),
+                    @IPSJexlParam(name="headers", description="map of headers to set")
+            },
+            returns="Returns a integer status code")
+    public int getHTTPStatusCode(String urlString, Map<String,String> headers)
+            throws IllegalArgumentException, IOException {
+        HttpClient client = new HttpClient();
+        GetMethod get = new GetMethod(urlString);
+
+        for (Map.Entry<String, String> entry : headers.entrySet())
+        {
+            get.setRequestHeader(entry.getKey(), entry.getValue());
+        }
+
+
+        int statusCode = 400;
+        try{
+
+            statusCode = client.executeMethod(get);
+
+        }finally{
+            // Process the data from the input stream.
+            get.releaseConnection();
+        }
+
+        return statusCode;
+    }
+
+    /**
+     * This gets a status code for a url.
+     * @param urlString
+     * @param headers
+     * @param username
+     * @param password
+     * @return org.jsoup.nodes.Document
+     * @throws IllegalArgumentException
+     * @throws IOException
+     */
+    @IPSJexlMethod(description="Returns status code based on a URL.",
+            params={
+                    @IPSJexlParam(name="urlString", description="url to pull content from, include query params if desired"),
+                    @IPSJexlParam(name="headers", description="map of headers to set"),
+                    @IPSJexlParam(name="username", description="username"),
+                    @IPSJexlParam(name="password", description="password")
+            },
+            returns="Returns a integer status code")
+    public int getHTTPStatusCode(String urlString, Map<String,String> headers, String username, String password)
+            throws IllegalArgumentException, IOException {
+        HttpClient client = new HttpClient();
+        GetMethod get = new GetMethod(urlString);
+
+        for (Map.Entry<String, String> entry : headers.entrySet())
+        {
+            get.setRequestHeader(entry.getKey(), entry.getValue());
+        }
+
+        Credentials defaultcreds = new UsernamePasswordCredentials(username, password);
+        URI uriObject = new URI(urlString);
+
+        int statusCode = 400;
+        try{
+            client.getState().setCredentials(
+                    new AuthScope(uriObject.getHost(),uriObject.getPort(), AuthScope.ANY_REALM),
+                    defaultcreds);
+
+            statusCode = client.executeMethod(get);
+
+        }finally{
+            // Process the data from the input stream.
+            get.releaseConnection();
+        }
+
+        return statusCode;
+    }
+
+
+
+
     /**
      * This gets remote JSON content and returns a JSONobject.
      * @param urlString
