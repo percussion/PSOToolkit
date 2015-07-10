@@ -88,6 +88,14 @@
 		<interface name="com.percussion.extension.IPSJexlExpression"/>
 		<suppliedResources/>
 	</Extension>
+	<Extension categorystring="" context="global/percussion/user/" deprecated="no" handler="Java" name="psoRemoteContentTools" restoreRequestParamsOnError="no">
+		<initParam name="com.percussion.user.description">PSO Remote Content Utilities</initParam>
+		<initParam name="com.percussion.extension.version">1</initParam>
+		<initParam name="com.percussion.extension.reentrant">yes</initParam>
+		<initParam name="className">com.percussion.pso.jexl.PSORemoteContentTools</initParam>
+		<interface name="com.percussion.extension.IPSJexlExpression"/>
+		<suppliedResources/>
+	</Extension>
 	<Extension categorystring="" context="global/percussion/user/" deprecated="no" handler="Java" name="psoMapTools" restoreRequestParamsOnError="no">
 		<initParam name="com.percussion.user.description">PSO Map utilities</initParam>
 		<initParam name="com.percussion.extension.version">1</initParam>
