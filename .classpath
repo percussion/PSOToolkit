@@ -58,5 +58,7 @@
 	<classpathentry kind="lib" path="ivylib/spring.jar"/>
 	<classpathentry kind="lib" path="ivylib/stax-api.jar"/>
 	<classpathentry kind="lib" path="ivylib/Tidy.jar"/>
+	<classpathentry kind="lib" path="ivylib/json-lib.jar"/>
+	<classpathentry kind="lib" path="ivylib/jsoup.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

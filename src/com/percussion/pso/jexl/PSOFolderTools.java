@@ -12,6 +12,7 @@
 package com.percussion.pso.jexl;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -23,6 +24,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.percussion.cms.PSCmsException;
+import com.percussion.cms.objectstore.PSComponentSummary;
 import com.percussion.cms.objectstore.PSFolder;
 import com.percussion.cms.objectstore.PSFolderProperty;
 import com.percussion.extension.IPSExtensionDef;
@@ -38,6 +40,8 @@ import com.percussion.server.webservices.PSServerFolderProcessor;
 import com.percussion.services.assembly.IPSAssemblyItem;
 import com.percussion.services.assembly.data.PSAssemblyWorkItem;
 import com.percussion.services.assembly.impl.nav.PSNavHelper;
+import com.percussion.services.catalog.PSTypeEnum;
+import com.percussion.services.content.data.PSItemSummary;
 import com.percussion.services.contentmgr.IPSNode;
 import com.percussion.services.filter.PSFilterException;
 import com.percussion.services.guidmgr.IPSGuidManager;
@@ -126,7 +130,34 @@ public class PSOFolderTools extends PSJexlUtilBase implements IPSJexlExpression
       log.warn("multiple paths found for item " + itemId);
       return paths.get(0);
    }
+   
+   
+   public PSFolder getFolder(String path){
+	   PSFolder folder = null;
+	   try {
+		   if(path == null)
+			   throw new RuntimeException("Path parameter cannot be null");
+		  
+		   folder = getContentWs().loadFolders(new String[] { path })
+                   .get(0);
+        
+           if(folder == null ){
+        	   throw new RuntimeException();
+           }
+        	   
+       } catch (PSErrorResultsException e) {
+           log.error("Could not locate Folder for: " + path, e);
+           throw new RuntimeException(e);
+       }catch (Exception e){
+    	   log.error("An unexpected exception occurred while retrieving Folder for:" + path,e);
+       }
+	return folder;
+   }
+   
 
+   
+   
+   
    /**
     * Gets the path of a folder containing this item. 
     * @param assemblyItem the assembly item whose parent folder will be fetched. 
@@ -249,6 +280,26 @@ public class PSOFolderTools extends PSJexlUtilBase implements IPSJexlExpression
 	   return PSOItemFolderUtilities.getFolderPathsForItem(guid);
    }
    
+   /***
+    * Returns a lightweight list of the child items and folders of this item.
+    */
+   @IPSJexlMethod(description="get the child folders & items for this item", 
+	         params={@IPSJexlParam(name="folderId", description="the folderid")})
+	   public List<PSItemSummary> getChildFolders(int folderId) throws PSCmsException, PSErrorException {
+	   
+	   	List<PSItemSummary> ret = new ArrayList<PSItemSummary>();
+	   	
+	   	try{
+	   		ret = contentWs.findFolderChildren(guidManager.makeGuid(folderId, PSTypeEnum.LEGACY_CONTENT),false);
+	   	}catch(PSErrorException psex){
+	   		log.error(psex.getLocalizedMessage());
+	   	}catch(Exception e){
+	   		log.error(e.getLocalizedMessage());
+	   	}
+	   	return ret;
+	   
+	   }
+   
    
    /**
     * Get the folder id for a folder path. 
@@ -277,7 +328,7 @@ public class PSOFolderTools extends PSJexlUtilBase implements IPSJexlExpression
 	   public int getParentFolderId(int itemId) throws PSCmsException {
 	   	return PSOItemFolderUtilities.getParentFolderId(itemId);
 	   }
-	   
+	      
    
    @Override
     public void init(IPSExtensionDef def, File codeRoot)
