@@ -302,17 +302,32 @@ public class PSOSwitchCommunityWorkflowAction implements IPSWorkflowAction{
 	 */
 	private String getDefaultCommunityProperty(int folder_id){
 		String community=null;
+		int nextParentFolderId=0;
 		
 		if(folder_id==0){
 			log.debug("Null folder passed to getDefaultCommunityProperty, returning null");
 			return community;
 		}
-		
 		Map<String,String> props = getFolderProperties(folder_id);
 		if(props.containsKey(DEFAULT_COMMUNITY_NAME)){
 			community = props.get(DEFAULT_COMMUNITY_NAME);
+			log.info("Default community identified in parent folder " + folder_id + ". Community: " + community);
+			return community;
 		}
-			
+		//start recursive code to check the next parent folder if no defaultCommunity is set
+		else {
+				try {
+					nextParentFolderId = PSOItemFolderUtilities.getItemParentFolderId(folder_id);
+				} catch (NumberFormatException e) {
+					log.error("Cannot retreive parent folder ID: current folder ID is not a number", e);
+				} catch (PSCmsException e) {
+					log.error("Error retreiving next parent folder ID", e);
+				}
+				
+			if(nextParentFolderId != 0 && nextParentFolderId != 1){
+				community = getDefaultCommunityProperty(nextParentFolderId);
+			}
+		}
 		return community;
 	}
 	
