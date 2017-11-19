@@ -7,7 +7,10 @@
 	<!-- base directory of Rhythmyx installation -->
 	<property name="rhythmyx.home" location="${env.RHYTHMYX_HOME}"/>
 	<property name="rhythmyx.WEB-INF" value="${rhythmyx.home}/AppServer/server/rx/deploy/rxapp.ear/rxapp.war/WEB-INF"/>
+	<property name="rhythmyx.jetty.WEB-INF" value="${rhythmyx.home}/jetty/base/webapps/Rhythmyx/WEB-INF" />
 	<property name="rhythmyx.lib" value="${rhythmyx.WEB-INF}/lib"/>
+	<property name="rhythmyx.jetty.lib" value="${rhythmyx.jetty.WEB-INF}/lib"/>
+	<property name="rhythmyx.jetty.logging.lib" value="${rhythmyx.home}/jetty/defaults/lib/perc-logging"/>
 	<!-- relative paths -->
 	<property name="lib" location="lib"/>
 	
@@ -21,6 +24,13 @@
 					    </fileset>
 					    <mapper type="glob" from="*" to="*.bak"/>
 		</move>
+      <move todir="${rhythmyx.jetty.lib}" failonerror="false">
+                                            <fileset dir="${rhythmyx.jetty.lib}">
+                                                <!-- remove old PSOToolkit if it exists -->
+                                                 <include name="PSOToolkit*.jar" />
+                                            </fileset>
+                                            <mapper type="glob" from="*" to="*.bak"/>
+                </move>
 		
 		<copy todir="${rhythmyx.lib}" verbose="true"> 
 			<fileset dir="${lib}">
@@ -30,6 +40,16 @@
 				<include name="**.jar" />
 			</fileset>
 		</copy>
+
+                <copy todir="${rhythmyx.jetty.lib}" verbose="true">
+                        <fileset dir="${lib}">
+                          <include name="**.jar" />
+                     </fileset>
+                        <fileset dir="${basedir}">
+                                <include name="**.jar" />
+                        </fileset>
+                </copy>
+
 		<copy todir="${rhythmyx.WEB-INF}" verbose="true">
 		   <fileset dir="WEB-INF" /> 
 		</copy>
@@ -41,6 +61,9 @@
 			<arg value="${rhythmyx.home}"/>
 			<arg value="${basedir}"/>
 			<classpath>
+			    <fileset dir="${rhythmyx.jetty.logging.lib}">
+				<include name="*.jar" />
+			    </fileset>
 			    <fileset dir="${rhythmyx.lib}">
 			    	<include name="rxserver.jar"/>
 			    	<include name="rxclient.jar"/> 
@@ -49,8 +72,7 @@
 			    	<include name="rxservices.jar" />
 			    	<include name="commons-lang*.jar"/>
 			    	<include name="commons-jexl*.jar"/> 
-			    	<include name="jcr*.jar" /> 
-			    	<include name="commons-logging*.jar" /> 
+			    	<include name="jcr*.jar" />  
 			    	<include name="commons-httpclient*.jar" /> 
 				</fileset>
 			    <fileset dir="${rhythmyx.home}/AppServer/lib/endorsed" >
