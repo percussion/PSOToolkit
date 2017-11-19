@@ -37,6 +37,12 @@ To install on Linux or Solaris systems, run the following command from the unzip
 
 Restart the Rhythmyx instance.
 
+Note: If this error is encountered:
+
+Error: Could not find or load main class org.apache.tools.ant.launch.Launcher
+
+then the installer is using the system Java version as opposed to the Rhythmyx Java installation.  This can be remedied by uninstalling Java from the system and running the install.sh script once more.
+
 
 ## Manual Install
 To manually install, you must have the Java 1.6 JDK with a JAVA_HOME environment variable,
