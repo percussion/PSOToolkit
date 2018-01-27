@@ -6,7 +6,7 @@
         module="pso-toolkit"
         revision="7.3.0"
         status="release" >
-    <description>This is the PSO Toolkit for use with Rhythmyx version 7.0 and later.
+    <description>This is the PSO Toolkit for use with Percussion CMS.
     Copyright 2005-2011 Percussion Software, Inc. All rights reserved. </description>
 	</info>
 	<configurations>

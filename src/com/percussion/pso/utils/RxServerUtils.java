@@ -29,7 +29,7 @@ import org.apache.commons.logging.LogFactory;
 import java.util.Map;
 
 /**
- * A collection of generally useful routines for Rhythmyx Server interactions.
+ * A collection of generally useful routines for Percussion CMS Server interactions.
  * 
  *
  * @author DavidBenua
@@ -50,7 +50,7 @@ public class RxServerUtils
    /**
     * Wait for the server to be ready. 
     * When initializing or performing actions from a service on startup,
-    * the Rhythmyx server may not be ready.  This routine polls for the
+    * the Percussion CMS server may not be ready.  This routine polls for the
     * server run lock file on 10 second intervals. 
     * <p>
     * This routine should be called from a new thread only, it should
@@ -104,10 +104,10 @@ public class RxServerUtils
    
    private static final String LOCK_FILE_NAME = "server_run_lock";
    private static final long LOCK_FILE_INTERVAL = 10000L; 
-   private static final String RHYTHMYX_HOME="RHYTHMYX_HOME";
+   private static final String PERCUSSION_HOME="PERCUSSION_HOME";
    
    /***
-    * Get the value of the RHYTHMYX_HOME environment variable or null if it is not set.
+    * Get the value of the PERCUSSION_HOME environment variable or null if it is not set.
     * 
     * @author natechadwick
     * @return 
@@ -116,8 +116,8 @@ public class RxServerUtils
    
 	   Map<String, String> env = System.getenv();
 
-	   if(env.containsKey(RHYTHMYX_HOME))
-		   return env.get(RHYTHMYX_HOME);
+	   if(env.containsKey(PERCUSSION_HOME))
+		   return env.get(PERCUSSION_HOME);
 	   else
 		   return null;
    }

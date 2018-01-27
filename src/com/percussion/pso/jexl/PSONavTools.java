@@ -161,7 +161,7 @@ public class PSONavTools extends PSJexlUtilBase implements IPSJexlExpression
          }
       /*
        * The JCR Javadoc says that calling getParent() from the root will
-       * throw this exception.  However, the Rhythmyx implementation will
+       * throw this exception.  However, the Percussion CMS implementation will
        * just return NULL instead. 
        */
       } catch (ItemNotFoundException ie)

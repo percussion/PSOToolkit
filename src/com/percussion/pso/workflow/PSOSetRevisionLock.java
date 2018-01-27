@@ -160,7 +160,7 @@ public class PSOSetRevisionLock extends PSDefaultExtension
    private static final String SQL_UPDATE = "UPDATE CONTENTSTATUS SET REVISIONLOCK = 'Y' where CONTENTID = ?";
    
    /**
-    * Database pool from Rhythmyx Server
+    * Database pool from Percussion CMS Server
     */
    static PSDatabasePool ms_pool = PSDatabasePool.getDatabasePool();
    

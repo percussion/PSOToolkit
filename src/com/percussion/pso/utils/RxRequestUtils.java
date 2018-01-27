@@ -20,7 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import com.percussion.server.IPSRequestContext;
 
 /**
- * Helper methods for accessing Rhythmyx request objects. 
+ * Helper methods for accessing Percussion CMS request objects. 
  *
  * @author DavidBenua
  *
@@ -40,10 +40,10 @@ public class RxRequestUtils
    }
    
    /**
-    * Gets the Rhythmyx request for this servlet request.
+    * Gets the Percussion CMS request for this servlet request.
     * @param req the calling servlet's request
-    * @return the Rhythmyx request context or null if this request
-    * did not originate in Rhythmyx. 
+    * @return the Percussion CMS request context or null if this request
+    * did not originate in Percussion CMS. 
     */
    public static IPSRequestContext getRequest(ServletRequest req)
    {
@@ -65,7 +65,7 @@ public class RxRequestUtils
       IPSRequestContext irq = getRequest(req); 
       if(irq == null)
       {
-         throw new IllegalStateException("Rhythmyx Request not found");
+         throw new IllegalStateException("Percussion CMS Request not found");
       }
       String sessionid = irq.getUserSessionId();
       log.debug("Session ID from request: " + sessionid); 

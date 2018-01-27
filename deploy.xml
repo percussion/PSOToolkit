@@ -1,38 +1,39 @@
-<project name="Rhythmyx 7 Install Extensions" default="dist" basedir=".">
+<project name="Percussion CMS Install Extensions" default="dist" basedir=".">
 	<description>
-       Install extensions on a Rhythmyx 7 server  
-	   The RHYTHMYX_HOME environment variable must be set 
+       Install extensions on a Percussion CMS server  
+	   The PERCUSSION_HOME environment variable must be set 
     </description>
 	<property environment="env"/>
-	<!-- base directory of Rhythmyx installation -->
-	<property name="rhythmyx.home" location="${env.RHYTHMYX_HOME}"/>
-	<property name="rhythmyx.WEB-INF" value="${rhythmyx.home}/AppServer/server/rx/deploy/rxapp.ear/rxapp.war/WEB-INF"/>
-	<property name="rhythmyx.jetty.WEB-INF" value="${rhythmyx.home}/jetty/base/webapps/Rhythmyx/WEB-INF" />
-	<property name="rhythmyx.lib" value="${rhythmyx.WEB-INF}/lib"/>
-	<property name="rhythmyx.jetty.lib" value="${rhythmyx.jetty.WEB-INF}/lib"/>
-	<property name="rhythmyx.jetty.logging.lib" value="${rhythmyx.home}/jetty/defaults/lib/perc-logging"/>
+	<!-- base directory of Percussion CMS installation -->
+	<property name="percussion.home" location="${env.PERCUSSION_HOME}"/>
+	<property name="percussion.WEB-INF" value="${percussion.home}/AppServer/server/rx/deploy/rxapp.ear/rxapp.war/WEB-INF"/>
+	<property name="percussion.jetty.WEB-INF" value="${percussion.home}/jetty/base/webapps/Rhythmyx/WEB-INF" />
+	<property name="percussion.lib" value="${percussion.WEB-INF}/lib"/>
+	<property name="percussion.jetty.lib" value="${percussion.jetty.WEB-INF}/lib"/>
+	<property name="percussion.jetty.logging.lib" value="${percussion.home}/jetty/defaults/lib/perc-logging"/>
 	<!-- relative paths -->
 	<property name="lib" location="lib"/>
-	
+
+	<mkdir dir="${percussion.jetty.logging.lib}"/>
 
 	<target name="jarcopy" description="copy the jar file" >
-		<fail unless="env.RHYTHMYX_HOME" message="You must set the RHYTHMYX_HOME environment variable"/>
-		<move todir="${rhythmyx.lib}" failonerror="false">
-					    <fileset dir="${rhythmyx.lib}">
+		<fail unless="env.PERCUSSION_HOME" message="You must set the PERCUSSION_HOME environment variable"/>
+		<move todir="${percussion.lib}" failonerror="false">
+					    <fileset dir="${percussion.lib}">
 					     	<!-- remove old PSOToolkit if it exists -->
 					    	 <include name="PSOToolkit*.jar" /> 
 					    </fileset>
 					    <mapper type="glob" from="*" to="*.bak"/>
 		</move>
-      <move todir="${rhythmyx.jetty.lib}" failonerror="false">
-                                            <fileset dir="${rhythmyx.jetty.lib}">
+      <move todir="${percussion.jetty.lib}" failonerror="false">
+                                            <fileset dir="${percussion.jetty.lib}">
                                                 <!-- remove old PSOToolkit if it exists -->
                                                  <include name="PSOToolkit*.jar" />
                                             </fileset>
                                             <mapper type="glob" from="*" to="*.bak"/>
                 </move>
 		
-		<copy todir="${rhythmyx.lib}" verbose="true"> 
+		<copy todir="${percussion.lib}" verbose="true"> 
 			<fileset dir="${lib}">
 		          <include name="**.jar" /> 
 		     </fileset>
@@ -41,7 +42,7 @@
 			</fileset>
 		</copy>
 
-                <copy todir="${rhythmyx.jetty.lib}" verbose="true">
+                <copy todir="${percussion.jetty.lib}" verbose="true">
                         <fileset dir="${lib}">
                           <include name="**.jar" />
                      </fileset>
@@ -50,24 +51,25 @@
                         </fileset>
                 </copy>
 
-		<copy todir="${rhythmyx.WEB-INF}" verbose="true">
+		<copy todir="${percussion.WEB-INF}" verbose="true">
 		   <fileset dir="WEB-INF" /> 
 		</copy>
 	</target>
 	
 	<target name="installExtensions">
-		<fail unless="env.RHYTHMYX_HOME" message="You must set the RHYTHMYX_HOME environment variable"/>
+		<fail unless="env.PERCUSSION_HOME" message="You must set the PERCUSSION_HOME environment variable"/>
 		<java classname="com.percussion.util.PSExtensionInstallTool" fork="true">
-			<arg value="${rhythmyx.home}"/>
+			<arg value="${percussion.home}"/>
 			<arg value="${basedir}"/>
 			<classpath>
-			    <fileset dir="${rhythmyx.jetty.logging.lib}">
+			    <fileset dir="${percussion.jetty.logging.lib}">
 				<include name="*.jar" />
 			    </fileset>
-			    <fileset dir="${rhythmyx.lib}">
+			    <fileset dir="${percussion.lib}">
 			    	<include name="rxserver.jar"/>
 			    	<include name="rxclient.jar"/> 
 			    	<include name="rxbusiness.jar"/> 
+			    	<include name="json-20070829.jar"/>
 			    	<include name="rxutils.jar" />
 			    	<include name="rxservices.jar" />
 			    	<include name="commons-lang*.jar"/>
@@ -75,11 +77,12 @@
 			    	<include name="jcr*.jar" />  
 			    	<include name="commons-httpclient*.jar" /> 
 				</fileset>
-			    <fileset dir="${rhythmyx.home}/AppServer/lib/endorsed" >
+			    <fileset dir="${percussion.home}/AppServer/lib/endorsed" >
 				    <include name="xml-apis.jar" />
 			    </fileset>
-				<fileset dir="${rhythmyx.home}/AppServer/server/rx/lib">
-    			    	        <include name="commons-collections*.jar" /> 
+				<fileset dir="${percussion.home}/AppServer/server/rx/lib">
+    			    <include name="commons-collections*.jar" /> 
+					<include name="commons-logging-1.1.1.jar" />
 					<include name="javax.servlet.jar" /> 
 					<!-- servlet-api required instead for 7.x-->
 					<include name="servlet-api.jar" /> 
@@ -87,31 +90,37 @@
 			</classpath>	
 		</java>
 		<!-- Copy Tidy Properties files for the Validating Velocity Assembler -->
-		<mkdir dir="${rhythmyx.home}/rx_resources/tidy" />
+		<mkdir dir="${percussion.home}/rx_resources/tidy" />
 		
 		<!--Backup old Property files -->
-		<copy file="${rhythmyx.home}/rx_resources/tidy/xhtml.properties" tofile="${rhythmyx.home}/rx_resources/tidy/xhtml.properties.bak" failonerror="false" overwrite="true"/>
-		<copy file="${rhythmyx.home}/rx_resources/tidy/xml.properties" tofile="${rhythmyx.home}/rx_resources/tidy/xml.properties.bak" failonerror="false" overwrite="true"/>
-		<copy file="${rhythmyx.home}/rx_resources/tidy/html.properties" tofile="${rhythmyx.home}/rx_resources/tidy/html.properties.bak" failonerror="false" overwrite="true"/>
-		<copy file="${rhythmyx.home}/rx_resources/tidy/sample-all.properties" tofile="${rhythmyx.home}/rx_resources/tidy/sample-all.properties.bak" failonerror="false" overwrite="true"/>
+		<copy file="${percussion.home}/AppServer/server/rx/deploy/rxapp.ear/rxapp.war/user/pages/DispatchTemplateGenerator.jsp" tofile="${percussion.home}/AppServer/server/rx/deploy/rxapp.ear/rxapp.war/user/pages/DispatchTemplateGenerator.jsp.bak" failonerror="false" overwrite="true"/>
+		<copy file="${percussion.home}/rxconfig/Workflow/dispatcher.properties" tofile="${percussion.home}/rxconfig/Workflow/dispatcher.properties.bak" failonerror="false" overwrite="true"/>
+		<copy file="${percussion.home}/jetty/base/webapps/Rhythmyx/user/pages/DispatchTemplateGenerator.jsp" tofile="${percussion.home}/jetty/base/webapps/Rhythmyx/user/pages/DispatchTemplateGenerator.jsp.bak" failonerror="false" overwrite="true"/>
+		<copy file="${percussion.home}/rx_resources/tidy/xhtml.properties" tofile="${percussion.home}/rx_resources/tidy/xhtml.properties.bak" failonerror="false" overwrite="true"/>
+		<copy file="${percussion.home}/rx_resources/tidy/xml.properties" tofile="${percussion.home}/rx_resources/tidy/xml.properties.bak" failonerror="false" overwrite="true"/>
+		<copy file="${percussion.home}/rx_resources/tidy/html.properties" tofile="${percussion.home}/rx_resources/tidy/html.properties.bak" failonerror="false" overwrite="true"/>
+		<copy file="${percussion.home}/rx_resources/tidy/sample-all.properties" tofile="${percussion.home}/rx_resources/tidy/sample-all.properties.bak" failonerror="false" overwrite="true"/>
 		
 		<!-- Release latest property files -->
-		<copy file="${basedir}/Rhythmyx/rx_resources/tidy/xhtml.properties" tofile="${rhythmyx.home}/rx_resources/tidy/xhtml.properties"/>
-		<copy file="${basedir}/Rhythmyx/rx_resources/tidy/xml.properties" tofile="${rhythmyx.home}/rx_resources/tidy/xml.properties"/>
-		<copy file="${basedir}/Rhythmyx/rx_resources/tidy/html.properties" tofile="${rhythmyx.home}/rx_resources/tidy/html.properties"/>
-		<copy file="${basedir}/Rhythmyx/rx_resources/tidy/sample-all.properties" tofile="${rhythmyx.home}/rx_resources/tidy/sample-all.properties"/>	
+		<copy file="${basedir}/InstallDir/AppServer/server/rx/deploy/rxapp.ear/rxapp.war/user/pages/DispatchTemplateGenerator.jsp" tofile="${percussion.home}/AppServer/server/rx/deploy/rxapp.ear/rxapp.war/user/pages/DispatchTemplateGenerator.jsp" failonerror="false"/>
+		<copy file="${basedir}/InstallDir/rxconfig/Workflow/dispatcher.properties" tofile="${percussion.home}/rxconfig/Workflow/dispatcher.properties"/>
+		<copy file="${basedir}/InstallDir/AppServer/server/rx/deploy/rxapp.ear/rxapp.war/user/pages/DispatchTemplateGenerator.jsp" tofile="${percussion.home}/jetty/base/webapps/Rhythmyx/user/pages/DispatchTemplateGenerator.jsp" failonerror="false"/>
+		<copy file="${basedir}/InstallDir/rx_resources/tidy/xhtml.properties" tofile="${percussion.home}/rx_resources/tidy/xhtml.properties"/>
+		<copy file="${basedir}/InstallDir/rx_resources/tidy/xml.properties" tofile="${percussion.home}/rx_resources/tidy/xml.properties"/>
+		<copy file="${basedir}/InstallDir/rx_resources/tidy/html.properties" tofile="${percussion.home}/rx_resources/tidy/html.properties"/>
+		<copy file="${basedir}/InstallDir/rx_resources/tidy/sample-all.properties" tofile="${percussion.home}/rx_resources/tidy/sample-all.properties"/>	
 	</target>
 	
 	<target name="javadoc">
-		<fail unless="env.RHYTHMYX_HOME" message="You must set the RHYTHMYX_HOME environment variable"/>
-		<copy todir="${rhythmyx.home}/Docs/Rhythmyx/PSOToolkit">
+		<fail unless="env.PERCUSSION_HOME" message="You must set the PERCUSSION_HOME environment variable"/>
+		<copy todir="${percussion.home}/Docs/PercussionCMS/PSOToolkit">
 		   <fileset dir="javadoc" />
 	    </copy>
 	</target>
 	
 	<target name="dist">
-		<fail unless="env.RHYTHMYX_HOME" message="You must set the RHYTHMYX_HOME environment variable"/>
-		<echo>Installing PSOToolkit to ${rhythmyx.home}</echo>
+		<fail unless="env.PERCUSSION_HOME" message="You must set the PERCUSSION_HOME environment variable"/>
+		<echo>Installing PSOToolkit to ${percussion.home}</echo>
 		<antcall target="jarcopy"/>
 		<antcall target="installExtensions"/>
 		<antcall target="javadoc" />

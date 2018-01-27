@@ -76,7 +76,7 @@ public class PSOReverseSlotContentFinder extends PSBaseSlotContentFinder  implem
    
    
    /**
-    * Initializes the Rhythmyx services pointers. 
+    * Initializes the Percussion CMS services pointers. 
     * Used to prevent calls to these services during extension registration. 
     */
    private static void initServices()

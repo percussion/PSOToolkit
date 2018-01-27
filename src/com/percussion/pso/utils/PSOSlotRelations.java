@@ -71,7 +71,7 @@ public class PSOSlotRelations
     * Gets the contents of a slot. 
     * @param owner the owning items GUID
     * @param slot the Slot template
-    * @param session the Rhythmyx session id. 
+    * @param session the Percussion CMS session id. 
     * @return a List of PSAaRelations.  Never <code>null</code> but may be empty. 
     * @throws PSCmsException
     */
@@ -93,7 +93,7 @@ public class PSOSlotRelations
     * Saves a list of relationships. These relationships have already been persisted
     * at least once, and are being updated. 
     * @param relations the list of relationships; 
-    * @param session the Rhythmyx session id. Never <code>null</code>
+    * @param session the Percussion CMS session id. Never <code>null</code>
     * @throws PSCmsException
     */
    public static void saveSlotRelations(List<PSAaRelationship> relations, String session) 
@@ -109,7 +109,7 @@ public class PSOSlotRelations
    /**
     * Adds new relations to a slot
     * @param relations a list of new relationships to add. 
-    * @param session the Rhythmyx session id; 
+    * @param session the Percussion CMS session id; 
     * @throws PSCmsException
     */
    public static void addSlotRelations(List<PSAaRelationship> relations, String session) 
@@ -124,7 +124,7 @@ public class PSOSlotRelations
    /**
     * Removes slot relations
     * @param relations the relations to remove
-    * @param session the Rhythmyx session id.
+    * @param session the Percussion CMS session id.
     * @throws PSCmsException
     */
    public static void removeSlotRelations(List<PSAaRelationship> relations, String session)
@@ -140,7 +140,7 @@ public class PSOSlotRelations
     * @param relations the relationships to reorder
     * @param top if <code>true</code> move the relationships to the top of the slot. 
     * Otherwise, they will be placed at the end of the slot. 
-    * @param session the Rhythmyx session id. 
+    * @param session the Percussion CMS session id. 
     * @throws PSCmsException
     */
    public static void reorderSlotRelations(List<PSAaRelationship> relations, boolean top, String session)
@@ -154,7 +154,7 @@ public class PSOSlotRelations
    
    /**
     * Gets the ActiveAssembly Proxy from the session id
-    * @param session the Rhythmyx session id. Never <code>null</code>
+    * @param session the Percussion CMS session id. Never <code>null</code>
     * @return the proxy to use.  
     * @throws PSCmsException
     */
