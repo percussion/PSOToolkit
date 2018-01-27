@@ -45,7 +45,7 @@
 	<property name="ivylib" location="ivylib" /> 
 	<property name="javadoc" location="javadoc" />
 	
-	<property name="zipprefix" value="PSOToolkit7.3" />
+	<property name="zipprefix" value="PSOToolkit-2018-01-26" />
 	
 	<!-- used for running Windows commands --> 
 	<property name="comspec" location="${env.ComSpec}"/>
