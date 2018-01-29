@@ -61,7 +61,7 @@ public class PSOTransform extends PSJexlUtilBase implements IPSJexlExpression
    /**
     * Transforms an XML string with XSLT. Convenience method without parameters 
     * @param source the source string.  Must be well formed. 
-    * @param stylesheetName the name of the stylesheet, relative to the Rhythmyx root. 
+    * @param stylesheetName the name of the stylesheet, relative to the Percussion CMS root. 
     * @return the result of the transform. 
     */
    @IPSJexlMethod(description="Transform a value with an XSLT transform", 
@@ -82,7 +82,7 @@ public class PSOTransform extends PSJexlUtilBase implements IPSJexlExpression
     * The parameters may be referenced with <code>&lt;xsl:param...</code> 
     * as a direct child of the <code>&lt;xsl:stylesheet></code> node.   
     * @param source the source string.  
-    * @param stylesheetName the name of the stylesheet, relative to the Rhythmyx root. This should be
+    * @param stylesheetName the name of the stylesheet, relative to the Percussion CMS root. This should be
     * a file url. For example: <code>file:rx_resource/stylesheets/myStylesheet.xsl</code>
     * @param params a map of parameter names and values. 
     * @return the transformed source

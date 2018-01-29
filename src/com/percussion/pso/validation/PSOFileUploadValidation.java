@@ -25,7 +25,7 @@ import com.percussion.server.IPSRequestContext;
 import com.percussion.util.PSPurgableTempFile;
 
 /**
- * A Rhythmyx post-exit to perform content field validation. This exit uses the
+ * A Percussion CMS post-exit to perform content field validation. This exit uses the
  * same code as in in the com.percussion.extensions.general.PSFileInfo class.
  *
  * @author Roy Kiesler

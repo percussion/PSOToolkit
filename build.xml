@@ -1,5 +1,5 @@
 <project name="PSOToolkit7x" default="dist" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
-	<description>PSO Toolkit for CM System 7.3</description>
+	<description>PSO Toolkit for Percussion CMS</description>
 	<!-- =================================
 	Download and install Ivy2 from http://ant.apache.org/ivy
     Modify your Ant runtime preferences in Eclipse to include the Ivy JARs
@@ -18,25 +18,25 @@
 	<!-- set global properties for this build -->
     
 	<property environment="env"/>
-	<!-- base directory of Rhythmyx installation --> 
-	<property name="rhythmyx.home" location="${env.RHYTHMYX_HOME}"/>
-	<!-- name of Rhythmyx Service -->
-	<property name="rhythmyx.service" value="${env.RHYTHMYX_SERVICE}"/>
+	<!-- base directory of Percussion CMS installation --> 
+	<property name="percussion.home" location="${env.PERCUSSION_HOME}"/>
+	<!-- name of Percussion CMS Service -->
+	<property name="percussion.service" value="${env.PERCUSSION_SERVICE}"/>
 
 	<!-- name of our output jar --> 
-	<property name="jarname" value="PSOToolkit-7.3.jar" />	
+	<property name="jarname" value="PSOToolkit-2018-01-26.jar" />	
 	<!-- name of our distribution zip -->
-	<property name="distfile" value="PSOToolkit7.3.zip" />	
-	<property name="testdistfile" value="PSOToolkit7.3-test.zip" /> 
+	<property name="distfile" value="PSOToolkit-2018-01-26.zip" />	
+	<property name="testdistfile" value="PSOToolkit-2018-01-26-test.zip" /> 
 	
-	<property name="rhythmyx.deploy" value="${rhythmyx.home}/AppServer/server/rx/deploy" /> 
-	<property name="rhythmyx.rxapp"  value="${rhythmyx.deploy}/rxapp.ear/rxapp.war" /> 
-	<property name="rhythmyx.rxpub"  value="${rhythmyx.deploy}/RxServices.war"/> 
-	<property name="rhythmyx.rxapp.lib"    value="${rhythmyx.rxapp}/WEB-INF/lib"/>
-	<property name="rhythmyx.server.lib"  value="${rhythmyx.home}/AppServer/server/rx/lib" /> 
-	<property name="rhythmyx.rxapp.spring-config"
-	value="${rhythmyx.rxapp}/WEB-INF/config/user/spring" />
-	<property name="rhythmyx.rxapp.WEB-INF" value="${rhythmyx.rxapp}/WEB-INF" />
+	<property name="percussion.deploy" value="${percussion.home}/AppServer/server/rx/deploy" /> 
+	<property name="percussion.rxapp"  value="${percussion.deploy}/rxapp.ear/rxapp.war" /> 
+	<property name="percussion.rxpub"  value="${percussion.deploy}/RxServices.war"/> 
+	<property name="percussion.rxapp.lib"    value="${percussion.rxapp}/WEB-INF/lib"/>
+	<property name="percussion.server.lib"  value="${percussion.home}/AppServer/server/rx/lib" /> 
+	<property name="percussion.rxapp.spring-config"
+	value="${percussion.rxapp}/WEB-INF/config/user/spring" />
+	<property name="percussion.rxapp.WEB-INF" value="${percussion.rxapp}/WEB-INF" />
 
 	<!-- relative paths -->
 	<property name="src" location="src"/>
@@ -45,7 +45,7 @@
 	<property name="ivylib" location="ivylib" /> 
 	<property name="javadoc" location="javadoc" />
 	
-	<property name="zipprefix" value="PSOToolkit7.3" /> 
+	<property name="zipprefix" value="PSOToolkit-2018-01-26" />
 	
 	<!-- used for running Windows commands --> 
 	<property name="comspec" location="${env.ComSpec}"/>
@@ -57,7 +57,7 @@
 		<available file="${ivylib}" type="dir"/>
 	</condition>
 	
-	<!-- Rhythmyx classpath  --> 
+	<!-- Percussion CMS classpath  --> 
 	<path id="rx.class.path"> 
 		 <fileset dir="${ivylib}">
 		 	<include name="**.jar"/>
@@ -172,10 +172,10 @@
 	
 	<target name="installExtensions">
 		<java classname="com.percussion.util.PSExtensionInstallTool" fork="true">
-		    <arg value="${rhythmyx.home}" />
+		    <arg value="${percussion.home}" />
 			<arg value="${basedir}" />
 			<classpath>
-			    <fileset dir="${rhythmyx.rxapp.lib}">
+			    <fileset dir="${percussion.rxapp.lib}">
 			    	<include name="rxserver.jar"/>
 			    	<include name="rxclient.jar"/> 
 			    	<include name="rxutils.jar" />
@@ -188,10 +188,10 @@
 			    	<include name="commons-collections*.jar" /> 
 			    	<include name="commons-httpclient*.jar" /> 
 				</fileset>
-			    <fileset dir="${rhythmyx.home}/AppServer/lib/endorsed" >
+			    <fileset dir="${percussion.home}/AppServer/lib/endorsed" >
 				    <include name="xml-apis.jar" />
 			    </fileset>
-				<fileset dir="${rhythmyx.home}/AppServer/server/rx/lib">
+				<fileset dir="${percussion.home}/AppServer/server/rx/lib">
 				<include name="javax.servlet.jar" /> 
  			    	<include name="commons-collections*.jar" /> 
   		    	    </fileset>				
@@ -200,25 +200,25 @@
 	</target>
 	
 	<target name="testbuild" description="build for local test">		
-		<echo>Stopping ${rhythmyx.service}</echo>
+		<echo>Stopping ${percussion.service}</echo>
 		
 		<exec executable="net.exe" failonerror="false">
-			<arg line="stop ${rhythmyx.service}"/>
+			<arg line="stop ${percussion.service}"/>
 			<env key="COMSPEC" path="${comspec}"/>
 		</exec>
 		<property name="build.number" value="test build" /> 
 		<antcall target="jarbuilder"/>
-		<delete file="${rhythmyx.home}/AppServer/server/rx/log/server.log" verbose="true" failonerror="false" />
-		<copy file="${lib}/${jarname}" todir="${rhythmyx.rxapp.lib}" verbose="true" />
-		<copy todir="${rhythmyx.rxapp.WEB-INF}" verbose="true" >
+		<delete file="${percussion.home}/AppServer/server/rx/log/server.log" verbose="true" failonerror="false" />
+		<copy file="${lib}/${jarname}" todir="${percussion.rxapp.lib}" verbose="true" />
+		<copy todir="${percussion.rxapp.WEB-INF}" verbose="true" >
 			<fileset dir="WEB-INF" />
 		</copy>
-		<!--copy file="mybeans.xml" todir="${rhythmyx.rxapp.spring-config}" verbose="true" /  -->
+		<!--copy file="mybeans.xml" todir="${percussion.rxapp.spring-config}" verbose="true" /  -->
 		<echo>waiting for shutdown...</echo>
 	    <sleep seconds="5" /> 
-		<echo>Restarting ${rhythmyx.service}</echo>
+		<echo>Restarting ${percussion.service}</echo>
 		<exec executable="net.exe" failonerror="true">
-			<arg line="start ${rhythmyx.service}"/>
+			<arg line="start ${percussion.service}"/>
 			<env key="COMSPEC" path="${comspec}"/>
 		</exec>
 	</target>
@@ -246,20 +246,20 @@
 			<zipfileset dir="${bin}" includes="build.properties"  prefix="${zipprefix}" />  			
 			<zipfileset dir="WEB-INF" prefix="${zipprefix}/WEB-INF" />
 			<zipfileset dir="${javadoc}" prefix="${zipprefix}/javadoc" />	
-			<zipfileset dir="Rhythmyx" prefix="${zipprefix}/Rhythmyx" />
+			<zipfileset dir="InstallDir" prefix="${zipprefix}/InstallDir" />
 		</zip>
 			
 	</target>	
 
 	<target name="testdeliver" depends="" description="generate the distribution">
 		  		<exec executable="VBoxManage" failifexecutionfails="false" > 
-				      <arg line="guestcontrol execute ${vbox.vmname}  /bin/bash --arguments '/mnt/hostdata/PSOToolkit66/install.sh /home/rhythmyx/Rhythmyx' --username rhythmyx --password demo --verbose --wait-for stdout"/> 
+				      <arg line="guestcontrol execute ${vbox.vmname}  /bin/bash --arguments '/mnt/hostdata/PSOToolkit66/install.sh /home/percussion/PercussionCMS' --username percussion --password demo --verbose --wait-for stdout"/> 
 				 </exec>
 	</target>
 	
-	<target name="stoprhythmyx" depends="" description="generate the distribution">
+	<target name="stoppercussion" depends="" description="generate the distribution">
 		<exec executable="VBoxManage" failifexecutionfails="false" > 
-			<arg line="guestcontrol execute ${vbox.vmname}  /bin/bash --arguments '/home/rhythmyx/Rhythmyx/bin/RhythmyxDaemon stop /home/rhythmyx/Rhythmyx/' --username rhythmyx --password demo --verbose --wait-for stdout"/> 
+			<arg line="guestcontrol execute ${vbox.vmname}  /bin/bash --arguments '/home/percussion/PercussionCMS/bin/RhythmyxDaemon stop /home/percussion/PercussionCMS/' --username percussion --password demo --verbose --wait-for stdout"/> 
 		</exec>
 	</target>
 </project>

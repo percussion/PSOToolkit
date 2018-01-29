@@ -4,7 +4,7 @@
 Help() {
    echo
    echo "Usage: "
-   echo "   $0 \"/home/percussion/Rhythmyx/\""
+   echo "   $0 \"/home/percussion/PercussionCMS/\""
    echo
 }
 test -d $1
@@ -12,7 +12,7 @@ echo $?
 if [ $# -ne 1 ]
 then
    echo
-   echo "You must specify a valid Rhythmyx root directory"
+   echo "You must specify a valid Percussion CMS root directory"
    Help
    exit 1
 elif [ "$1" = "-help" ]
@@ -21,10 +21,10 @@ then
    exit 2
 elif [ -d $1 ]
 then
-   export RHYTHMYX_HOME=$1
-   export JAVA_HOME=$RHYTHMYX_HOME/JRE/
-   export ANT_HOME=$RHYTHMYX_HOME/Patch/InstallToolkit/
-   echo RHYTHMYX_HOME=$RHYTHMYX_HOME
+   export PERCUSSION_HOME=$1
+   export JAVA_HOME=$PERCUSSION_HOME/JRE/
+   export ANT_HOME=$PERCUSSION_HOME/Patch/InstallToolkit/
+   echo PERCUSSION_HOME=$PERCUSSION_HOME
    echo JAVA_HOME=$JAVA_HOME
    echo ANT_HOME=$ANT_HOME
    export DIR_NAME=`dirname $0`

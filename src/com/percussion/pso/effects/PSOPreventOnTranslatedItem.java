@@ -37,7 +37,7 @@ import com.percussion.webservices.system.IPSSystemWs;
 import com.percussion.webservices.system.PSSystemWsLocator;
 
 /**
- * A Rhythmyx relationship effects that prevents operations on 
+ * A Percussion CMS relationship effects that prevents operations on 
  * content items which are Translated.
  * <p>
  * It can be used with any relationship (you must add it to the relationship configuration), 

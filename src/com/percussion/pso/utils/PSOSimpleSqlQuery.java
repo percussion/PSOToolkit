@@ -33,7 +33,7 @@ import com.percussion.server.IPSInternalRequest;
 import com.percussion.utils.jdbc.PSConnectionHelper;
 
 /**
- * Prepares and executes a simple SQL Query using the standard Rhythmyx repository 
+ * Prepares and executes a simple SQL Query using the standard Percussion CMS repository 
  * database.  Queries can be provided in two ways:
  * <ol>
  * <li>
@@ -69,7 +69,7 @@ public class PSOSimpleSqlQuery
    private static final Log ms_log = LogFactory.getLog(PSOSimpleSqlQuery.class);
 
    /**
-    * Database pool from Rhythmyx Server
+    * Database pool from Percussion CMS Server
     */
    //static PSDatabasePool ms_pool = PSDatabasePool.getDatabasePool();
    

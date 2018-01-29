@@ -116,7 +116,7 @@ public class PSOWFActionService implements IPSOWFActionService
    {
       /*
        * The reason for this complexity is that when the init method
-       * is called (by Spring), the Rhythmyx server is not yet running,
+       * is called (by Spring), the Percussion CMS server is not yet running,
        * and the Extension manager is NULL.  We have to launch a new 
        * thread which waits for the server to initialize before calling
        * the internal initServices() routine.  
