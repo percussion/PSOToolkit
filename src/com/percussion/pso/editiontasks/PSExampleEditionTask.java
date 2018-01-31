@@ -1,4 +1,4 @@
-package com.percussion.pso.editiontask;
+package com.percussion.pso.editiontasks;
 
 import com.percussion.extension.IPSExtensionDef;
 import com.percussion.rx.publisher.IPSEditionTask;
