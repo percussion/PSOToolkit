@@ -4,11 +4,11 @@ Routines will be added here as we find uses for them.
 
 
 ## Download
-* For Rhythmyx 7.3.2 or CM1 5.3 SR1 or Greater [PSOToolkit-2018-01-26] (http://cdn.percussion.com/downloads/open/psotoolkit/PSOToolkit-2018-01-26.zip)
+* For Rhythmyx 7.3.2 or CM1 5.3 SR1 or Greater  [PSOToolkit-2018-01-26](http://cdn.percussion.com/downloads/open/psotoolkit/PSOToolkit-2018-01-26.zip)
 * 7.3  [PSOToolkit7.3.zip](http://cdn.percussion.com/downloads/open/psotoolkit/PSOToolkit7.3.zip) 
 * 7.03 - 7.2  [PSOToolkit7.x.zip](http://cdn.percussion.com/downloads/open/psotoolkit/PSOToolkit7.x.zip)
 * 6.7        [PSOToolkit6.7.zip](http://cdn.percussion.com/downloads/open/psotoolkit/PSOToolkit6.7.zip)
-* Latest Nightly Snapshot - [Nightly Snapshot](http://cdn.percussion.com/downloads/open/psotoolkit/PSOToolkit7.x-SNAPSHOT.zip)
+* Latest Nightly Snapshot - [Nightly Snapshot](http://cdn.percussion.com/downloads/open/psotoolkit/PSOToolkit-SNAPSHOT.zip)
 
 
 If you are using 6.5.2 or 6.7 select the branch that matches your product version when checking out the code:
