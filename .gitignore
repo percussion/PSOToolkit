@@ -6,3 +6,9 @@
 build.number
 PSOToolkit*.zip
 /README.md~
+/target
+._.DS_Store
+PSOToolkit.iml
+solutions.log
+ivy-local.properties
+/._.DS_Store
