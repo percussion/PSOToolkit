@@ -33,19 +33,13 @@
                                             <mapper type="glob" from="*" to="*.bak"/>
                 </move>
 		
-		<copy todir="${percussion.lib}" verbose="true"> 
-			<fileset dir="${lib}">
-		          <include name="**.jar" /> 
-		     </fileset>
+		<copy todir="${percussion.lib}" verbose="true">
 			<fileset dir="${basedir}">
 				<include name="**.jar" />
 			</fileset>
 		</copy>
 
                 <copy todir="${percussion.jetty.lib}" verbose="true">
-                        <fileset dir="${lib}">
-                          <include name="**.jar" />
-                     </fileset>
                         <fileset dir="${basedir}">
                                 <include name="**.jar" />
                         </fileset>
@@ -111,18 +105,10 @@
 		<copy file="${basedir}/InstallDir/rx_resources/tidy/sample-all.properties" tofile="${percussion.home}/rx_resources/tidy/sample-all.properties"/>	
 	</target>
 	
-	<target name="javadoc">
-		<fail unless="env.PERCUSSION_HOME" message="You must set the PERCUSSION_HOME environment variable"/>
-		<copy todir="${percussion.home}/Docs/PercussionCMS/PSOToolkit">
-		   <fileset dir="javadoc" />
-	    </copy>
-	</target>
-	
 	<target name="dist">
 		<fail unless="env.PERCUSSION_HOME" message="You must set the PERCUSSION_HOME environment variable"/>
 		<echo>Installing PSOToolkit to ${percussion.home}</echo>
 		<antcall target="jarcopy"/>
 		<antcall target="installExtensions"/>
-		<antcall target="javadoc" />
 	</target>
 </project>
