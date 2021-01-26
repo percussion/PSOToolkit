@@ -14,7 +14,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <build.profile.id>dev</build.profile.id>
-        <spring.version>3.2.13.RELEASE</spring.version>
+        <spring.version>5.2.9.RELEASE</spring.version>
         <cxf.version>3.2.7</cxf.version>
         <servlet.spec>3.1.0</servlet.spec>
         <hibernate.version>5.1.14.Final</hibernate.version>
