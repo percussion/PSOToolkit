@@ -1,3 +1,6 @@
+## This project is archived
+The PSO Toolkit has been archived.  It will be included with Percussion CMS 8.0.3 by default going forward.
+
 ## Overview
 This is the PSOToolkit for Percussion CMS.   
 
